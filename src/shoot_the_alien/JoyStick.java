@@ -1,8 +1,10 @@
 package shoot_the_alien;
 
-
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-
+import javax.swing.JOptionPane;
 import net.java.games.input.Component;
 import net.java.games.input.Controller;
 import net.java.games.input.ControllerEnvironment;
@@ -10,59 +12,114 @@ import net.java.games.input.Component.Identifier;
 
 
 /**
+ * Control the actions of the joystick.
  * 
  * @author Luiz Eduardo da Costa
  * @version 1.0, 03/04/2016
  */
 public class JoyStick implements Runnable {
 
+	/** The code of the restart button.*/
+	public static final int BTN_RESTART = 3;
+	/** The code of the button shoot (R1).*/
+	public static final int BTN_SHOOT = 5;
+	/** The code of the button SELECT.*/
+	public static final int BTN_SELECT = 8;
+	/** The code of the button start.*/
+	public static final int BTN_START = 9;
+	
+	
 	
 	/**
-	 * The cod of button, verified if it was pressed or not.
-	 */
-	public static int VERIFIED_BUTTON = 9;// start=9, shoot=5.
-	
-	public static boolean isButtonPressed = false;
-	
-	
-	
-	
+     * Instance of the class, used in the Singleton statement.
+     */
+    private static JoyStick joystick = null;	
 	/**
-	 * ArrayList with all the instances of controllers have found.
+	 * ArrayList with the controllers used to play the game.
 	 */
 	private ArrayList<Controller> foundControllers = null;
+	/**
+	 * The instance of the first controller found.
+	 */
+	private Controller controller;
+	/**
+	 * The controller's components.
+	 */
+	private Component[] components = null;
+    /**
+     * Buffer of the shotgun sight image.
+     */
+    private BufferedImage sightImg;
+    /**
+     * The point location of the Soystick sight.
+     */
+    private Point location = new Point();
+    
+    
+    
+    
+    
+    
 	
-	private PlayWAVFile pf;
-	
-	
-	
-	
-	public JoyStick() {  
-		
-		this.foundControllers = new ArrayList<Controller>();
-		searchForControllers();
+    /**
+     * The private constructor of the class.
+     */
+    private JoyStick(){
+    	initialize();
+    }
+    
+    
+    
+    /**
+     * Get the instance of the class. Singleton query.
+     * It is necessary to exist just one instance of the class in all parts of the program.
+     * 
+     * @return An instance of joystick class.
+     */
+	public static JoyStick getInstance() {  		
+		if(joystick == null){
+			joystick = new JoyStick();
+		}
+		return joystick;
 	}
 	
 	
 	
 	
 	
+	/**
+	 * Run the update of the controller's values and the joystick position.
+	 */
 	@Override
 	public void run() {
 		
+		// This loop must to be infite to update the controler values.
         while (true) {
-            
         	update();
-			isButtonPressed = checkButtonPressed(VERIFIED_BUTTON);
+        	location = getJoystickPosition();
         }
 	}
 	
 	
 	
 	
+	/**
+	 * Initialize the objects.
+	 */
+	private void initialize(){		
+		foundControllers = new ArrayList<Controller>();
+		sightImg = new Image().getSightImg();
+		
+		searchForControllers();
+		
+		if(foundControllers.size() > 0){
+			controller = foundControllers.get( 0 );
+		}
+	}
 	
 	
-
+	
+	
     /**
      * Search for all controllers connected.
      */
@@ -73,23 +130,67 @@ public class JoyStick implements Runnable {
             Controller controller = controllers[i];
             
             // Verify if it is a stick controller.
-            if (controller.getType() == Controller.Type.STICK )
+            if (controller.getType() == Controller.Type.STICK)
             {
                 // Add new controller to the list of all controllers.
                 foundControllers.add(controller);
-               
             }
         }
     }
+	
+	
+	
+	/**
+	 * Draw the sight on the screen.
+	 * @param g2d
+	 */
+	public void drawSight(Graphics2D g2d){
+		
+		int x = (int) location.getX();
+		int y = (int) location.getY();
+		
+		if(x >= Window.frameWidth){
+			x = (Window.frameWidth - sightImg.getWidth());
+		}
+		
+		if(y >= Window.frameHeight){
+			y = Window.frameHeight - sightImg.getHeight();
+		}
+		
+        g2d.drawImage(sightImg, x , y , null);
+	}
+	
+	
+	
+	
+	
+	
+	/**
+     * Verify if there are any controller on the list.
+     * @return true or false.
+     */
+    public boolean thereAreControllers(){
+    	return (foundControllers.size() > 0);
+    }
+	
+	
     
     
     
-    
-    
-    
+    /**
+     * Use the method pool() to make an update in the state of the component.
+     * This action makes every round of the game loop the updated data controls 
+     * are available to be read. 
+     * 
+     * Also it helps to verify if the controller is still connected.
+     * If the method pool() returns false, it's mean there is no controller connected.
+     * 
+     * If there's no controller connected, show an error message.
+     */
     private void update() {
-        for (int i = 0; i < foundControllers.size(); i++) {
-            foundControllers.get( i ).poll();
+    	// get the first controller of the list.
+    	if(!controller.poll()){
+        	showControllerDisconected();
         }
     }
 
@@ -99,44 +200,106 @@ public class JoyStick implements Runnable {
     /**
      * Check if the button was pressed.
      * 
-     * @param button
+     * @param button The code of the button. (0-12)
      * @return true or false.
      */
-    private boolean checkButtonPressed(int button) {
+    public boolean checkButtonPressed(int button) {
 
-        if(!foundControllers.isEmpty()){
-        	
-        	for (int i = 0; i < foundControllers.size(); i++) {
+    	// Get the components of the first controller found.
+        this.components = this.controller.getComponents();
+        
+        for (int c = 0; c < components.length; c++) {
 
-                Component[] components = foundControllers.get( i ).getComponents();
-                
-                for (int c = 0; c < components.length; c++) {
-
-                	Component cmp = components[ c ];
-                    Identifier compIdentifier = cmp.getIdentifier();
-                
-                    // Verifica se é um botão que tem número no nome.
-                    if(compIdentifier.getName().matches(""+button)){
-                    	if(cmp.getPollData() != 0.0f)
-                    		return true;
-                    }
-                }
+        	Component comp = components[ c ];
+            Identifier id = comp.getIdentifier();
+        
+            // Check if in the button's name there's the identifier number. 
+            if(id.getName().matches(""+button)){
+            	if(comp.getPollData() == 1.0f)
+            		return true;
             }
         }
         return false;
     }
     
     
+   
+    
+    
+    
+    /** 
+     * @return The position of the joystick.
+     */
+    public Point getJoystickPosition(){    	
+
+    	 // X axis and Y axis
+        int xAxisPercentage = 0;
+        int yAxisPercentage = 0;
+    	
+    	components = controller.getComponents();
+
+    	for(int i=0; i < components.length; i++){
+    		if(components[ i ].isAnalog()){
+    			
+    			Component compStick = components[ i ];
+    			
+    			float axisValue = compStick.getPollData();
+    			Identifier compIdentifier = compStick.getIdentifier();
+    	        int axisValueInPercentage = getAxisValueInPercentage(axisValue);
+    	            	        
+    	        // X axis
+    	        if(compIdentifier == Component.Identifier.Axis.X){
+    	            xAxisPercentage = axisValueInPercentage;
+    	        }
+    	        // Y axis
+    	        if(compIdentifier == Component.Identifier.Axis.Y){
+    	            yAxisPercentage = axisValueInPercentage;
+    	        }
+    		}
+    	}    	
+    	return new Point(xAxisPercentage, yAxisPercentage);
+    }
+    
+    
+    
     
     
     /**
-     * Verify if there are any controller on the list.
-     * @return true or false.
+     * Given value of axis in percentage.
+     * Percentages increases from left/top to right/bottom.
+     * 
+     * @return value of axis in percentage.
      */
-    public boolean thereAreControllers(){
-    	return (foundControllers.size() > 0);
+    private int getAxisValueInPercentage(float axisValue)
+    {    	
+        return (int)(((2 - (1 - axisValue)) * Window.frameWidth) / 2);
     }
+    
+    
+    
+    
+    
+    
+    /**
+     * Show the message of none controller found.
+     */
+    public void showControllerNotFound(){
+    	String msg = "Nenhum controle encontrado!!\n\n"
+    			+ "Conecte um controlador USB e reinicie o jogo.";
+    	JOptionPane.showMessageDialog(null, msg, "Univaders", JOptionPane.ERROR_MESSAGE);
+		System.exit( 0 );
+    }
+   
 
+    /**
+     * Show the message of controller disconected.
+     */
+    public void showControllerDisconected(){
+    	String msg = "Controle Desconectado!!\n\n"
+    			+ "Reconecte o controle e reinicie o jogo.";
+    	JOptionPane.showMessageDialog(null, msg, "Univaders", JOptionPane.ERROR_MESSAGE);
+		System.exit( 0 );
+    }
     
 	
 }

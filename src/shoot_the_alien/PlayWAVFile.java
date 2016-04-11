@@ -33,7 +33,7 @@ public class PlayWAVFile implements Runnable {
 	/**
 	 * How many times the soung must to replay.
 	 */
-	private int loop = 1;
+	private int loop;
 	
 	
 
@@ -72,7 +72,7 @@ public class PlayWAVFile implements Runnable {
 			Thread.sleep(clip.getMicrosecondLength());
 			
 		} catch (Exception e) {
-			System.err.println("Não foi possível executar o Som WAV!! "+e.getMessage());
+			System.err.println("Não foi possível executar o Som WAV!! \n"+e.getMessage());
 		}
 	}
 	

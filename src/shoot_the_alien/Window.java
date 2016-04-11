@@ -1,5 +1,8 @@
 package shoot_the_alien;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
+
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
@@ -17,27 +20,43 @@ public class Window extends JFrame{
 	
 	private static final long serialVersionUID = 1L;
 
-
+	/**
+     * Width of the frame.
+     */
+    public static int frameWidth;
+    /**
+     * Height of the frame.
+     */
+    public static int frameHeight;
+	/**
+	 * Dimension of the user's screen.
+	 */
+    private Dimension screenDimension;
+	
+	
+	
 
 	/**
 	 * Sets the properties of the frame.
 	 */
 	private Window()
     {
-        // Sets the title for this frame.
-        this.setTitle("UNIVADERS - Shoot The Alien");
-        
+        // Sets the title for this frame. It will be visible when setUndecorated() is false.
+        super.setTitle("UNIVADERS - Shoot The Alien");
         // Disables decorations for this frame.
-        this.setUndecorated(true);
+        super.setUndecorated(true);
+        // Get the dimension of the user's screen.
+        this.screenDimension = Toolkit.getDefaultToolkit().getScreenSize();      
         // Puts the frame to full screen.
-        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
-          
+        super.setSize(screenDimension);
+        // Set the Width and Height individual.
+        Window.frameHeight = (int) screenDimension.getHeight();
+        Window.frameWidth = (int) screenDimension.getWidth();
         // Exit the application when user close the frame.
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
-        // Add the panel.
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);      
+        // Add the game panel.
         this.setContentPane(new Framework());
-        
+        // Set visible of the frame.
         this.setVisible(true);
     }
 

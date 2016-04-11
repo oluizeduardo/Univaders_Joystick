@@ -5,21 +5,17 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.logging.Logger;
-import javax.imageio.ImageIO;
+import shoot_the_alien.Alien;
 
 /**
  * The actual game.
  * 
  * @author www.gametutorial.net
  * @author Luiz Eduardo da Costa
- * @category Game
+ * @category Game Control
  * @version 2.0
  */
 public class Game {
@@ -28,40 +24,27 @@ public class Game {
 	/**
 	 * Maximum number of fugitives.
 	 */
-	private static final int MAX_ALIENS_RUNAWAY = 20;
+	private static final int MAX_ALIENS_RUNAWAY = 100;
     /**
-     * We use this object to generate a random number.
+     * This object is used to generate a random number.
      */
-    private Random random;
-    
+    private Random random;      
     /**
-     * Font that we will use to write statistic on the screen.
-     */
-    private Font font;
-    
-    /**
-     * Array list of the aliens.
+     * ArrayList of the aliens that will appear on the screen.
      */
     private ArrayList<Alien> aliens;
-    
     /**
-     * How many aliens leave the screen alive?
+     * A buffer of the background image.
      */
-    private int runawayAliens;
-    
-   /**
-     * How many aliens the player killed?
-     */
-    private int killedAliens;
-    
+    private BufferedImage backgroundImg;  
     /**
-     * For each killed alien, the player gets points.
+     * A buffer of the footer image Univás logo.
      */
-    private int score; 
+    private BufferedImage univas_logo; 
     /**
-     * How many times a player is shot?
+     * Alien images.
      */
-    private int shoots;
+    private BufferedImage alienImg_1, alienImg_2; 
     /**
      * Last time of the shoot.
      */
@@ -71,32 +54,28 @@ public class Game {
      */
     private long timeBetweenShots;
     /**
-     * Game background image.
-     */
-    private BufferedImage backgroundImg;  
-    /**
-     * Univás logo bottom.
-     */
-    private BufferedImage univas_rodape_Img;  
-    /**
-     * Alien images.
-     */
-    private BufferedImage alienImg_1, alienImg_2;   
-    /**
-     * Shotgun sight image.
-     */
-    private BufferedImage sightImg;
-    /**
      * Red border to game over.
      */
     private BufferedImage red_borderImg;
-    /**
-     * There is any alien dead?
-     */
-    private boolean hasAlienDead = false;
     
     
-
+    /**  How many aliens leave the screen alive? */
+    private int runawayAliens = 0;
+    /** How many aliens the player killed?   */
+    private int killedAliens = 0;
+    /** For each killed alien, the player gets points.   */
+    private int score = 0; 
+    /** How many times a player is shot?   */
+    private int shoots = 0;
+    
+    // It said if the button was pressed or not.
+    private boolean isSelectPressed = false;
+    private boolean isShootPressed = false;
+    private boolean isRestartPressed = false;
+    
+    
+    
+    
     
     /**
      * The constructor of the class.
@@ -112,7 +91,7 @@ public class Game {
                 Initialize();
                 // Load game files (images, sounds, ...)
                 LoadContent();
-                
+                // Chage the state of the game. Let's start to play!
                 Framework.gameState = Framework.GameState.PLAYING;
             }
         };
@@ -120,23 +99,22 @@ public class Game {
     }
     
     
+    
+    
+    
    /**
-     * Set variables and objects for the game.
+     * Set variables and objects for the new game.
      */
     private void Initialize()
-    {
-        random = new Random();        
-        font = new Font("monospaced", Font.BOLD, 25);
-        
+    {       
+        random = new Random();
         aliens = new ArrayList<Alien>();
-        
+        lastTimeShoot = 0;
+        timeBetweenShots = (int) (Framework.secInNanosec * 0.2);      
         runawayAliens = 0;
         killedAliens = 0;
         score = 0;
         shoots = 0;
-        
-        lastTimeShoot = 0;
-        timeBetweenShots = Framework.secInNanosec / 4;
     }
     
     
@@ -147,53 +125,36 @@ public class Game {
      */
     private void LoadContent()
     {
-    	// URL common to all files.
-    	String url = "/shoot_the_alien/resources/images/";
-        try
-        {
-            URL backgroundImgUrl = this.getClass().getResource(url+"background.jpg");
-            backgroundImg = ImageIO.read(backgroundImgUrl);
-            
-            URL univas_rodape_ImgUrl = this.getClass().getResource(url+"logo_base.png");
-            univas_rodape_Img = ImageIO.read(univas_rodape_ImgUrl);
-            
-            URL alienImgUrl_1 = this.getClass().getResource(url+"alien1.png");
-            alienImg_1 = ImageIO.read(alienImgUrl_1);
-            
-            URL alienImgUrl_2 = this.getClass().getResource(url+"alien2.png");
-            alienImg_2 = ImageIO.read(alienImgUrl_2);
-            
-            URL sightImgUrl = this.getClass().getResource(url+"sight.png");
-            sightImg = ImageIO.read(sightImgUrl);
-            
-            URL red_borderImgUrl = this.getClass().getResource(url+"red_border.png");
-            red_borderImg = ImageIO.read(red_borderImgUrl);
-            
-        }
-        catch (IOException ex) {
-        	
-        	Logger.getLogger(Game.class.getName());
-        }
+    	Image objImage = new Image();
+    	
+    	backgroundImg = objImage.getBackgroundImg();
+    	univas_logo = objImage.getUnivasLogoImg();
+    	red_borderImg = objImage.getRedborderImg();
+    	alienImg_1 = objImage.getAlienImg1();
+    	alienImg_2 = objImage.getAlienImg2();
     }
+    
+       
     
     
     /**
      * Restart game - reset some variables.
      */
-    public void RestartGame()
+    public void restartGame()
     {
         // Removes all the aliens from this list.
         aliens.clear();
-        
         // We set last alien time to zero.
-        Alien.lastAlienTime = 0;
-        
+        Alien.lastAlienTime = 0;      
         score = 0;
         shoots = 0;
         runawayAliens = 0;
         killedAliens = 0;
         lastTimeShoot = 0;
     }
+    
+    
+    
     
     
     
@@ -205,32 +166,17 @@ public class Game {
      * @param gameTime The game time.
      * @param mousePosition Current mouse position.
      */
-    public void UpdateGame(long gameTime, Point mousePosition)
+    public void UpdateGame(long gameTime)
     {
-        // Creates a new alien, if it's the time, and add it to the array list.
+    	// Check if any main button was pressed while game is running.
+    	CheckButtonsPressed();
+    	
+    	// Creates a new alien, if it's the time, and add it to the array list.
         if(System.nanoTime() - Alien.lastAlienTime >= Alien.timeBetweenAliens)
         {
-        	
-        	int x 	  = Alien.alienLines[Alien.nextAlienLines][0] + random.nextInt(200);// demora um pouco mais para aparecer.
-        	int y 	  = Alien.alienLines[Alien.nextAlienLines][1] ;
-        	int speed = Alien.alienLines[Alien.nextAlienLines][2];
-        	int score = Alien.alienLines[Alien.nextAlienLines][3];
-        	
-        	// Prepare a new objet Alien.
-        	Alien newAlien = null;
-        	
-        	// Random a number.
-        	int random = new Random().nextInt(10);
-        	
-        	// Check if the selected number is even or odd.
-        	if((random % 2) == 0)
-        		newAlien = new Alien(x, y, speed, score, alienImg_1);
-        	else
-        		newAlien = new Alien(x, y, speed * 2, score * 2, alienImg_2);
-        	
-        	// After created a new alien, must add it to the array list.
-        	aliens.add(newAlien);
-        	
+        	 
+        	// Create a new alien and add it on the list of aliens.
+        	CreateNewAlien();
             
             // Here we increase nextAlienLines so that next alien will be created in next line.
             Alien.nextAlienLines++;
@@ -242,68 +188,157 @@ public class Game {
             Alien.lastAlienTime = System.nanoTime();
         }
         
-        // Update all of the aliens.
-        for(int i = 0; i < aliens.size(); i++)
-        {
-            // Move the alien.
-            aliens.get(i).Update();
-            
-            // Checks if the duck leaves the screen and remove it if it does.
-            if(aliens.get(i).x < 0 - alienImg_1.getWidth())
-            {
-                aliens.remove(i);
-                runawayAliens++;
-            }
-        }
+        
+        UpdateTheAliensOnTheScreen();
+
         
         // Does player shoots?
-        if(Canvas.mouseButtonState(MouseEvent.BUTTON1))
+        if(isShootPressed)
         {
-            // Checks if it can shoot again.
-            if(System.nanoTime() - lastTimeShoot >= timeBetweenShots)
-            {
-                shoots++;
+        	
+        	if(System.nanoTime() - lastTimeShoot >= timeBetweenShots){
+        		
+        		// Play the sound of shoot.
+        		PlayWAVFile pf = new PlayWAVFile(PlayWAVFile.SHOOT_LASER, 1);
+    			Thread t = new Thread(pf);
+    			t.start();
+    			
+    			// Count one new shoot.
+    			shoots++;
+    			
+    			
+    			CheckSomeAlienDead();
+    			
                 
-                // We go over all the aliens and we look if any of them was shoot.
-                for(int i = 0; i < aliens.size(); i++)
-                {
-                	
-                	int x = aliens.get(i).x;
-                	int y = aliens.get(i).y;
-                	int larg = 100;
-                	int altu = 100;
-                	Rectangle rec = new Rectangle(x, y, larg, altu);
-                
-                	
-                	// We check, if the mouse was over the aliens body, when player has shot.
-                	if(rec.contains(mousePosition)){
-
-                        killedAliens++;
-                        score += aliens.get(i).score;
-                        
-                        //Controls the execution of the sound of alien dead.
-                        this.hasAlienDead = true;
-                        
-                        // Remove the alien from the array list.
-                        aliens.remove(i);
-                        
-                        // We found the alien that player shoot, so we can leave the for loop.
-                        break;
-                    }
-                }
-                
-                lastTimeShoot = System.nanoTime();
-            }
+    			lastTimeShoot = System.nanoTime();
+        	}
         }
-        
         // When 'MAX_ALIENS_RUNAWAY' aliens runaway, the game ends.
         if(runawayAliens >= MAX_ALIENS_RUNAWAY)
             Framework.gameState = Framework.GameState.GAMEOVER;
+    	
     }
+    
+    
+    
+    
+    /**
+     * Do a loop on the list and update all aliens on the screen.
+     */
+    private void UpdateTheAliensOnTheScreen(){
+    	// Update all of the aliens.
+        for(int i = 0; i < aliens.size(); i++)
+        {
+            
+        	Alien currentAlien = aliens.get(i);
+
+        	// Move the alien.
+        	currentAlien.Update();
+            
+            // Checks if the alien leaves the screen and remove it..
+            if(currentAlien.x < 0 - currentAlien.getImage().getWidth())
+            {
+                aliens.remove(currentAlien);
+                runawayAliens++;
+            }
+        }
+    }
+    
+    
+    
+    
+    
+    /**
+     * Go over all the aliens and check if any of them was killed.
+     */
+    private void CheckSomeAlienDead(){
+    	
+        for(int i = 0; i < aliens.size(); i++)
+        {
+        	
+        	int x = aliens.get(i).x;
+        	int y = aliens.get(i).y;
+        	int width = aliens.get(i).getImage().getWidth();
+        	int height = aliens.get(i).getImage().getHeight();
+        	
+        	Rectangle rec = new Rectangle(x, y, width, height);
+        
+        	Point p = JoyStick.getInstance().getJoystickPosition();
+        	
+        	// We check, if the sight was over the aliens body, when player has shot.
+        	if(rec.contains(p)){
+
+                killedAliens++;
+                score += aliens.get(i).score;
+                
+                // Remove the alien from the array list.
+                aliens.remove(i);
+                
+                // The alien dead was found, so leave the loop.
+                break;
+            }
+        }
+    }
+    
+    
+    
+    
+    
+    /**
+     * Create a new Alien and add it on the list of aliens.
+     */
+    private void CreateNewAlien(){
+    	int x 	  = Alien.alienLines[Alien.nextAlienLines][0] + random.nextInt(200);
+    	int y 	  = Alien.alienLines[Alien.nextAlienLines][1] ;
+    	int speed = Alien.alienLines[Alien.nextAlienLines][2];
+    	int score = Alien.alienLines[Alien.nextAlienLines][3];
+    	
+    	// Prepare a new objet Alien.
+    	Alien newAlien = null;
+    	
+    	// Random a number.
+    	int random = new Random().nextInt(10);
+    	
+    	// Check if the selected number is even or odd.
+    	if((random % 2) == 0)
+    		newAlien = new Alien(x, y, speed, score, alienImg_1);
+    	else
+    		newAlien = new Alien(x, y, speed * 2, score * 2, alienImg_2);
+    	
+    	// After created a new alien, must add it to the array list.
+    	aliens.add(newAlien);
+    }
+    
+    
+    
+    
     
         
     
     
+    /**
+     * Verifies if any of the mains buttons of the controller were pressed.
+     * This method must to be used while the game is running.
+     */
+    private void CheckButtonsPressed(){
+    	
+    	this.isSelectPressed = JoyStick.getInstance().checkButtonPressed(JoyStick.BTN_SELECT);
+    	this.isShootPressed = JoyStick.getInstance().checkButtonPressed(JoyStick.BTN_SHOOT);
+    	this.isRestartPressed = JoyStick.getInstance().checkButtonPressed(JoyStick.BTN_RESTART);
+
+    	if(isSelectPressed){
+    		Framework.gameState = Framework.GameState.MAIN_MENU;
+
+    	}else{
+
+    		if(isRestartPressed){
+    			Framework.gameState = Framework.GameState.RESTART;
+    		}
+    	}
+    }
+    
+    
+   
  
     
     
@@ -313,43 +348,35 @@ public class Game {
      * @param g2d Graphics2D
      * @param mousePosition current mouse position.
      */
-    public void Draw(Graphics2D g2d, Point mousePosition)
+    public void Draw(Graphics2D g2d)
     {
+    	
     	// Draw the background image.
-        g2d.drawImage(backgroundImg, 0, 0, Framework.frameWidth, Framework.frameHeight, null);
+        g2d.drawImage(backgroundImg, 0, 0, Window.frameWidth, Window.frameHeight, null);
         
-        // Here we draw all the aliens.
+        // Draw all the aliens on the screen.
         for(int i = 0; i < aliens.size(); i++)
-        {
             aliens.get(i).Draw(g2d);
-        }
         
         // Draw the Univás logo in the lower left corner.
-        g2d.drawImage(univas_rodape_Img, 0, Framework.frameHeight - (univas_rodape_Img.getHeight() + 10), 250, 70, null);
-        // Draw the sight.
-        g2d.drawImage(sightImg, mousePosition.x , mousePosition.y , null);
-        
-        g2d.setFont(font);
+        g2d.drawImage(univas_logo, 0, Window.frameHeight - (univas_logo.getHeight() + 10), 250, 70, null);
+      
+        g2d.setFont(new Font("monospaced", Font.BOLD, 25));
         g2d.setColor(Color.MAGENTA);
-        
+
         // Draw the scoreboard in the higher left corner.
         g2d.drawString("FUGITIVOS..: " + runawayAliens, 10, 20);
         g2d.drawString("CAPTURADOS.: " + killedAliens, 10, 45);
         g2d.drawString("TIROS......: " + shoots, 10, 70);
         g2d.drawString("PONTOS.....: " + score, 10, 95);
         
-        
-        if(hasAlienDead){
-        	
-        	// Play the sound of shoot.
-        	PlayWAVFile pf = new PlayWAVFile(PlayWAVFile.SHOOT_LASER, 1);
-        	Thread t = new Thread(pf);
-            t.start();
-
-            hasAlienDead = false;
-        }
-        
+        // Update the sight image on the screen.
+    	JoyStick.getInstance().drawSight(g2d);   
     }
+    
+    
+    
+    
     
     
     /**
@@ -358,18 +385,21 @@ public class Game {
      * @param g2d Graphics2D
      * @param mousePosition Current mouse position.
      */
-    public void DrawGameOver(Graphics2D g2d, Point mousePosition)
+    public void DrawGameOver(Graphics2D g2d)
     {
-        Draw(g2d, mousePosition);
+        Draw(g2d);
         
         // Draw the Game Over image.
-        g2d.drawImage(red_borderImg, 0, 0, Framework.frameWidth, Framework.frameHeight, null);
+        g2d.drawImage(red_borderImg, 0, 0, Window.frameWidth, Window.frameHeight, null);
         
         g2d.setColor(Color.red);
-        g2d.drawString("Game Over!!!", Framework.frameWidth / 2 - 50, (int)(Framework.frameHeight / 2)-40);
-        g2d.drawString("Pontuação final: "+score, Framework.frameWidth / 2 - 140, (int)(Framework.frameHeight / 2));
-        g2d.drawString("Pressione ESPAÇO ou ENTER para continuar", Framework.frameWidth / 2 - 300, (int)(Framework.frameHeight /2) + 50);
+        g2d.drawString("Game Over!!!", Window.frameWidth / 2 - 50, (int)(Window.frameHeight / 2)-40);
+        g2d.drawString("Pontuação final: "+score, Window.frameWidth / 2 - 140, (int)(Window.frameHeight / 2));
+        g2d.drawString("Pressione SELECT ou ENTER para continuar", Window.frameWidth / 2 - 300, (int)(Window.frameHeight /2) + 50);
     }
+    
+    
+    
     
     
     

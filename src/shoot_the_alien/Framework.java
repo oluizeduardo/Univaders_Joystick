@@ -3,15 +3,11 @@ package shoot_the_alien;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.imageio.ImageIO;
-import javax.swing.JOptionPane;
+import shoot_the_alien.Game;
+import shoot_the_alien.JoyStick;
+import shoot_the_alien.Framework;
+import shoot_the_alien.Stopwatch;
 
 /**
  * Framework that controls the game (Game.java) that created it, update it 
@@ -26,16 +22,6 @@ public class Framework extends Canvas {
     
   
 	private static final long serialVersionUID = 1L;
-	
-	
-	/**
-     * Width of the frame.
-     */
-    public static int frameWidth;
-    /**
-     * Height of the frame.
-     */
-    public static int frameHeight;
 
     /**
      * Time of one second in nanoseconds.
@@ -55,7 +41,7 @@ public class Framework extends Canvas {
      * 
      * Increase or decrease this value moves at the speed of aliens.
      */
-    private final int GAME_FPS = 60;
+    private final int GAME_FPS = 60;// Initial value: 60.
     /**
      * Pause between updates. It is in nanoseconds.
      */
@@ -90,14 +76,13 @@ public class Framework extends Canvas {
      */
     private BufferedImage background_main_menu;    
     /**
-     * A flag to control the execution of the GameOver sound.
-     */
-    private boolean playedTheGameOverSound = false;
-    /**
      * Control the execution of the joystick controller.
      */
     private JoyStick joyStick = null;
-    
+    /**
+     * A flag to control the execution of the GameOver sound.
+     */
+    private boolean playedTheGameOverSound = false;
     
     
     
@@ -110,24 +95,22 @@ public class Framework extends Canvas {
     public Framework ()
     {
         super();
-
+ 
         
-    	this.joyStick = new JoyStick();
+        //Yeah! It's about two hours playng the sound of background =)
+        PlayWAVFile pf = new PlayWAVFile(PlayWAVFile.INTRO_WARRIOR, 120);
+        new Thread(pf).start();
+        
+
+        // Get the instance of the joystick class.
+    	this.joyStick = JoyStick.getInstance();
     	
-    	// Verify if any controller was found.
+    	// Check if any controller was found.
     	if(joyStick.thereAreControllers()){
     		
     		new Thread(joyStick).start();
-    		
-    		// Yeah! It's about two hours playng the sound of background =)
-            PlayWAVFile pf = new PlayWAVFile(PlayWAVFile.INTRO_WARRIOR, 120);
-            new Thread(pf).start();
 
-            
-            gameState = GameState.VISUALIZING;
-            
-            //We start game in new thread.
-            // Esse trecho precisa estar dentro de um Thread para funcionar as configuraÃ§Ãµes de UI.
+            // We must start the game in a new thread to work the configurations of UI.
             Thread gameThread = new Thread() {
                 @Override
                 public void run(){
@@ -136,10 +119,11 @@ public class Framework extends Canvas {
             };
             gameThread.start();
             
+            gameState = GameState.VISUALIZING;
+            
     	}else{
     		
-    		JOptionPane.showMessageDialog(null, "Nenhum controle encontrado!!");
-    		System.exit( 0 );
+    		joyStick.showControllerNotFound();
     	}
     }
     
@@ -154,17 +138,13 @@ public class Framework extends Canvas {
      */
     private void LoadContent()
     {  	
-    	
     	// Load the initial image background.
-        try
-        {
-            URL backgroundMenuImg = this.getClass().getResource("/shoot_the_alien/resources/images/background_menu.png");
-            
-            background_main_menu = ImageIO.read(backgroundMenuImg);
-        }
-        catch (IOException ex) {
-            Logger.getLogger(Framework.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    	background_main_menu = new Image().getBackgroundMenuImg();
+    	/*
+    	 // Yeah! It's about two hours playng the sound of background =)
+        PlayWAVFile pf = new PlayWAVFile(PlayWAVFile.INTRO_WARRIOR, 120);
+        new Thread(pf).start();
+    	 */
     }
     
     
@@ -187,6 +167,10 @@ public class Framework extends Canvas {
         // put thread to sleep to meet the GAME_FPS.
         long beginTime, timeTaken, timeLeft;
         
+        // Control if the START, SELECT or any other button was pressed.
+        boolean isButtonPressed = false;
+        
+        
         while(true)
         {
             beginTime = System.nanoTime();
@@ -203,9 +187,9 @@ public class Framework extends Canvas {
 	                // so that we although get approximately size.
 	                if(this.getWidth() > 1 && visualizingTime > secInNanosec)
 	                {                    	
-	                    frameWidth = this.getWidth();
-	                    frameHeight = this.getHeight();
-	
+	                    Window.frameWidth = this.getWidth();
+	                    Window.frameHeight = this.getHeight();
+
 	                    // When we get size of frame we change status.
 	                    gameState = GameState.STARTING;
 	                }
@@ -214,35 +198,7 @@ public class Framework extends Canvas {
 	                    visualizingTime += System.nanoTime() - lastVisualizingTime;
 	                    lastVisualizingTime = System.nanoTime();
 	                }	                
-	            break;
-                case PLAYING:
-                    gameTime += System.nanoTime() - lastTime;
-                    
-                    game.UpdateGame(gameTime, mousePosition());
-                    
-                    lastTime = System.nanoTime();
-                break;
-                case GAMEOVER:
-                	
-                	if(!playedTheGameOverSound){
-                		// Play the sound of the Game Over.
-                    	PlayWAVFile pf = new PlayWAVFile(PlayWAVFile.GAME_OVER, 2);
-                    	Thread t = new Thread(pf);
-                        t.start();
-                        
-                        playedTheGameOverSound = true;
-                	}
-                	
-                break;
-                case RESTART:
-                	this.restartGame();
-                break;
-                case GAME_CONTENT_LOADING:
-                	// Wait a time before start the game.
-					try {
-						Thread.sleep(1500);
-					} catch (InterruptedException e) { }
-                break;
+	            break;                
                 case STARTING: 
                     // Load files - images, sounds, ...
                     this.LoadContent();
@@ -252,15 +208,63 @@ public class Framework extends Canvas {
                     gameState = GameState.MAIN_MENU;
                 break;
                 case MAIN_MENU:
+                	Stopwatch.isStopwatchRunning = false;  
+                	
+                	isButtonPressed = JoyStick.getInstance().checkButtonPressed(JoyStick.BTN_START);
+                	
+                	if(isButtonPressed)               		
+                		LoadNewGame();                		
+                	 	
+                break;
+                case GAME_CONTENT_LOADING:
+                	// Wait a time before start the game.
+                	try {
+						Thread.sleep(500);
+					} catch (InterruptedException e) { }
+                	
+
+                	try{
+	                	if(!Framework.th_stopwatch.isAlive())               		
+	                		Framework.th_stopwatch.start();
+                	}catch (IllegalThreadStateException e) { }
+                	
+                	Stopwatch.isStopwatchRunning = true;
+                		
+                break;
+                case PLAYING:
                 	                	
-                	if(JoyStick.isButtonPressed){
-                		newGame();
+                    gameTime += System.nanoTime() - lastTime;
+                    
+                    game.UpdateGame(gameTime);
+                    
+                    lastTime = System.nanoTime();
+                break;
+                case RESTART:
+                	RestartGame();
+                break;
+                case GAMEOVER:
+                	// Stop the timewatch.
+            		//Stopwatch.isStopwatchRunning = false;
+                	if(!playedTheGameOverSound){
+                		// Stop the timewatch.
+                		Stopwatch.isStopwatchRunning = false;
+                		
+                		// Play the sound of the Game Over.
+                    	PlayWAVFile pf = new PlayWAVFile(PlayWAVFile.GAME_OVER, 2);
+                    	Thread t = new Thread(pf);
+                        t.start();
+                        
+                        playedTheGameOverSound = true;
                 	}
                 	
+                	isButtonPressed = JoyStick.getInstance().checkButtonPressed(JoyStick.BTN_SELECT);
                 	
-                	// Restart this flag to can play the sound again.
-                	playedTheGameOverSound = false;                	
+                	if(isButtonPressed) 
+                		gameState = GameState.MAIN_MENU;
                 break;
+				default:
+					gameState = GameState.MAIN_MENU;
+					break;
                 
             }
             
@@ -274,7 +278,7 @@ public class Framework extends Canvas {
             // If the time is less than 10 milliseconds, then we will put thread to sleep for 10 millisecond so that some other thread can do some work.
             if (timeLeft < 10) 
                 timeLeft = 10; //set a minimum
-            try {
+            try {            	
                  //Provides the necessary delay and also yields control so that other thread can do work.
                  Thread.sleep(timeLeft);
             } catch (InterruptedException ex) { }
@@ -294,40 +298,61 @@ public class Framework extends Canvas {
     {
         switch (gameState)
         {
-            case PLAYING:
-                game.Draw(g2d, mousePosition());
-            break;
-            case GAMEOVER:
-                game.DrawGameOver(g2d, mousePosition());
-            break;
+	        case PLAYING:
+	        	game.Draw(g2d);
+	            
+	        break;
             case MAIN_MENU:
-            	
-            	int x = (frameWidth / 2) - 150;
-            	int y = (frameHeight / 2);
-            	
-            	g2d.setColor(Color.red);
-                g2d.setFont(new Font("Lucida Sans", Font.BOLD, 18));
-            	
-            	g2d.drawImage(background_main_menu, 0, 0, frameWidth, frameHeight, null);       
-                g2d.drawString("Pressione START para iniciar o jogo. . .", x, (int) (y*1.40)); 
- 
-                g2d.setColor(Color.white);
-                g2d.setFont(new Font("Lucida Sans", Font.BOLD, 25));
-                g2d.drawString("SISTEMAS DE INFORMÇÃO - UNIVÁS - 2016", 10, frameHeight - 10);
+            	ShowInitialMessage(g2d);
                 
-                
-            break;
-            case OPTIONS:
-                //...
             break;
             case GAME_CONTENT_LOADING:
-
-                g2d.setColor(Color.white);
-                g2d.setFont(new Font("Lucida Sans", Font.BOLD, 35));
-                g2d.drawString("CARREGANDO...", frameWidth / 2 - 120, frameHeight / 2);
+            	ShowLoadingMessage(g2d);
+            	
             break;
+            case GAMEOVER:
+	            game.DrawGameOver(g2d);
+	        break;
+            default:
+            	ShowLoadingMessage(g2d);
+			break;
            
         }
+    }
+    
+    
+    
+    
+    /**
+     * Show this message when the game is loading.
+     * @param g2d
+     */
+    private void ShowLoadingMessage(Graphics2D g2d){
+    	g2d.setColor(Color.white);
+        g2d.setFont(new Font("Lucida Sans", Font.BOLD, 35));
+        g2d.drawString("CARREGANDO...", Window.frameWidth / 2 - 120, Window.frameHeight / 2);
+    }
+    
+    
+    
+    
+    /**
+     * Show this message when the gamestate is MAIN_MENU.
+     * @param g2d
+     */
+    private void ShowInitialMessage(Graphics2D g2d){
+    	int x = (Window.frameWidth / 2) - 150;
+    	int y = (Window.frameHeight / 2);
+    	
+    	g2d.setColor(Color.red);
+        g2d.setFont(new Font("Lucida Sans", Font.BOLD, 18));
+    	
+    	g2d.drawImage(background_main_menu, 0, 0, Window.frameWidth, Window.frameHeight, null);       
+        g2d.drawString("Pressione START para iniciar o jogo. . .", x, (int) (y*1.40)); 
+
+        g2d.setColor(Color.white);
+        g2d.setFont(new Font("Lucida Sans", Font.BOLD, 25));
+        g2d.drawString("SISTEMAS DE INFORMAÇÃO - UNIVÁS - 2016", 10, Window.frameHeight - 10);
     }
     
     
@@ -337,7 +362,7 @@ public class Framework extends Canvas {
     /**
      * Starts a new game.
      */
-    private void newGame()
+    private void LoadNewGame()
     {
         // We set gameTime to zero and lastTime to current time for later calculations.
         gameTime = 0;
@@ -346,51 +371,23 @@ public class Framework extends Canvas {
     }
     
     
-    
-    
-    
-    
-    
+  
     /**
-     *  Restart game - reset game time and call RestartGame() method of game object so that reset some variables.
+     *  Restart game - reset game time and call RestartGame() method 
+     *  of game object so that reset some variables.
      */
-    private void restartGame()
+    private void RestartGame()
     {
+    	Stopwatch.restart(); 
+    	
         // We set gameTime to zero and lastTime to current time for later calculations.
         gameTime = 0;
         lastTime = System.nanoTime();
-        game.RestartGame();
+        game.restartGame();
                 
         // We change game status so that the game can start.
         gameState = GameState.PLAYING;
     }
-    
-    
-    
-    
-    
-    /**
-     * Returns the position of the mouse pointer in game frame/window.
-     * If mouse position is null than this method return 0,0 coordinate.
-     * 
-     * @return Point of mouse coordinates.
-     */
-    private Point mousePosition()
-    {
-    	Point mp = null;
-    	
-        try
-        {
-            mp = this.getMousePosition();
-        }
-        catch (Exception e)
-        {
-            mp = new Point(300, 300);
-        }
-        return mp;
-    }
-    
-    
 
     
     

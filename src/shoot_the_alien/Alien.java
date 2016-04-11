@@ -17,7 +17,7 @@ public class Alien {
     /**
      * How much time must pass in order to create a new alien?
      */
-    public static long timeBetweenAliens = (long) (Framework.secInNanosec / 2);
+    public static long timeBetweenAliens = (long) (2 * Framework.secInNanosec);
     /**
      * Last time when the alien was created.
      */
@@ -30,31 +30,18 @@ public class Alien {
      * How many points is a alien worth?
      */
     public static int[][] alienLines = {
-                                       {Framework.frameWidth, (int)(Framework.frameHeight * 0.40), -5, 90},
-                                       {Framework.frameWidth, (int)(Framework.frameHeight * 0.50), -3, 30},
-                                       {Framework.frameWidth, (int)(Framework.frameHeight * 0.55), -3, 10},
-                                       {Framework.frameWidth, (int)(Framework.frameHeight * 0.65), -4, 40},
-                                       {Framework.frameWidth, (int)(Framework.frameHeight * 0.78), -5, 50}
+                                       {Window.frameWidth, (int)(Window.frameHeight * 0.40), -2, 90},
+                                       {Window.frameWidth, (int)(Window.frameHeight * 0.50), -3, 30},
+                                       {Window.frameWidth, (int)(Window.frameHeight * 0.55), -2, 10},
+                                       {Window.frameWidth, (int)(Window.frameHeight * 0.65), -3, 40},
+                                       {Window.frameWidth, (int)(Window.frameHeight * 0.78), -2, 50}
                                       };
-    
-   
-    /*
-    public static int[][] alienLines = {
-            {(int)(Framework.frameWidth * 0.05), 0, -5, 90},
-            {(int)(Framework.frameWidth * 0.25), 0, -3, 30},
-            {(int)(Framework.frameWidth * 0.58), 0, -3, 10},
-            {(int)(Framework.frameWidth * 0.68), 0, -4, 40},
-            {(int)(Framework.frameWidth * 0.80), 0, -5, 50}
-           };
-    */
     
     
     /**
      * Indicate which is next alien line.
      */
     public static int nextAlienLines = 0;
-    
-    
     /**
      * X coordinate of the alien.
      */
@@ -73,7 +60,6 @@ public class Alien {
      * How many points this alien is worth?
      */
     public int score;
-    
     /**
      * Alien image.
      */
@@ -110,7 +96,6 @@ public class Alien {
     public void Update()
     {
     	 x += speed;
-       // y -= speed;
     }
     
     
@@ -125,5 +110,16 @@ public class Alien {
         g2d.drawImage(alienImage, x, y, null);
     }
 
+    
+    
+    /**
+     * @return The image of this Alien.
+     */
+    public BufferedImage getImage(){
+    	return alienImage;
+    }
+    
+    
+    
     
 }
