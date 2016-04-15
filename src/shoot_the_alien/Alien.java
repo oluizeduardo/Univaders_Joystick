@@ -3,7 +3,6 @@ package shoot_the_alien;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
-
 /**
  * This class to build a new alien.
  * 
@@ -12,7 +11,7 @@ import java.awt.image.BufferedImage;
  * @category Game
  * @version 2.0
  */
-public class Alien {
+public class Alien{
     
     /**
      * How much time must pass in order to create a new alien?
@@ -118,6 +117,11 @@ public class Alien {
     public BufferedImage getImage(){
     	return alienImage;
     }
+
+
+
+
+
     
     
     

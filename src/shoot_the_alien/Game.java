@@ -25,6 +25,10 @@ public class Game {
 	 * Maximum number of fugitives.
 	 */
 	private static final int MAX_ALIENS_RUNAWAY = 100;
+	/**
+	 * Maximum number of shoots.
+	 */
+	private static final int MAX_SHOOTS = 200;
     /**
      * This object is used to generate a random number.
      */
@@ -66,12 +70,11 @@ public class Game {
     /** For each killed alien, the player gets points.   */
     private int score = 0; 
     /** How many times a player is shot?   */
-    private int shoots = 0;
+    private int shoots = MAX_SHOOTS;
     
     // It said if the button was pressed or not.
     private boolean isSelectPressed = false;
     private boolean isShootPressed = false;
-    private boolean isRestartPressed = false;
     
     
     
@@ -110,11 +113,11 @@ public class Game {
         random = new Random();
         aliens = new ArrayList<Alien>();
         lastTimeShoot = 0;
-        timeBetweenShots = (int) (Framework.secInNanosec * 0.2);      
+        timeBetweenShots = (int) (Framework.secInNanosec * 0.2);         
         runawayAliens = 0;
         killedAliens = 0;
         score = 0;
-        shoots = 0;
+        shoots = MAX_SHOOTS;
     }
     
     
@@ -144,7 +147,7 @@ public class Game {
     {
         // Removes all the aliens from this list.
         aliens.clear();
-        // We set last alien time to zero.
+        // Set last alien time to zero.
         Alien.lastAlienTime = 0;      
         score = 0;
         shoots = 0;
@@ -169,14 +172,14 @@ public class Game {
     public void UpdateGame(long gameTime)
     {
     	// Check if any main button was pressed while game is running.
-    	CheckButtonsPressed();
+    	checkButtonsPressed();
     	
     	// Creates a new alien, if it's the time, and add it to the array list.
         if(System.nanoTime() - Alien.lastAlienTime >= Alien.timeBetweenAliens)
         {
         	 
         	// Create a new alien and add it on the list of aliens.
-        	CreateNewAlien();
+        	createNewAlien();
             
             // Here we increase nextAlienLines so that next alien will be created in next line.
             Alien.nextAlienLines++;
@@ -189,7 +192,7 @@ public class Game {
         }
         
         
-        UpdateTheAliensOnTheScreen();
+        updateAliensOnTheScreen();
 
         
         // Does player shoots?
@@ -204,11 +207,9 @@ public class Game {
     			t.start();
     			
     			// Count one new shoot.
-    			shoots++;
+    			shoots = shoots <= 0 ? 0 : --shoots;
     			
-    			
-    			CheckSomeAlienDead();
-    			
+    			checkSomeAlienDead();
                 
     			lastTimeShoot = System.nanoTime();
         	}
@@ -225,7 +226,7 @@ public class Game {
     /**
      * Do a loop on the list and update all aliens on the screen.
      */
-    private void UpdateTheAliensOnTheScreen(){
+    private void updateAliensOnTheScreen(){
     	// Update all of the aliens.
         for(int i = 0; i < aliens.size(); i++)
         {
@@ -251,7 +252,7 @@ public class Game {
     /**
      * Go over all the aliens and check if any of them was killed.
      */
-    private void CheckSomeAlienDead(){
+    private void checkSomeAlienDead(){
     	
         for(int i = 0; i < aliens.size(); i++)
         {
@@ -287,7 +288,7 @@ public class Game {
     /**
      * Create a new Alien and add it on the list of aliens.
      */
-    private void CreateNewAlien(){
+    private void createNewAlien(){
     	int x 	  = Alien.alienLines[Alien.nextAlienLines][0] + random.nextInt(200);
     	int y 	  = Alien.alienLines[Alien.nextAlienLines][1] ;
     	int speed = Alien.alienLines[Alien.nextAlienLines][2];
@@ -320,20 +321,13 @@ public class Game {
      * Verifies if any of the mains buttons of the controller were pressed.
      * This method must to be used while the game is running.
      */
-    private void CheckButtonsPressed(){
+    private void checkButtonsPressed(){
     	
     	this.isSelectPressed = JoyStick.getInstance().checkButtonPressed(JoyStick.BTN_SELECT);
     	this.isShootPressed = JoyStick.getInstance().checkButtonPressed(JoyStick.BTN_SHOOT);
-    	this.isRestartPressed = JoyStick.getInstance().checkButtonPressed(JoyStick.BTN_RESTART);
 
     	if(isSelectPressed){
     		Framework.gameState = Framework.GameState.MAIN_MENU;
-
-    	}else{
-
-    		if(isRestartPressed){
-    			Framework.gameState = Framework.GameState.RESTART;
-    		}
     	}
     }
     

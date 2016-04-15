@@ -54,11 +54,22 @@ public class Framework extends Canvas {
     							GAME_CONTENT_LOADING, 
     							MAIN_MENU, OPTIONS, 
     							PLAYING, RESTART, GAMEOVER}
-    
     /**
      * Current state of the game.
      */
     public static GameState gameState;
+    /**
+     * Possible button selected.
+     */
+    public static enum ButtonSelected {NEW_GAME, RANKING, EXIT};   
+    /**
+     * The button currently selected.
+     */
+    public static ButtonSelected currentlyButtonSelected = ButtonSelected.NEW_GAME;
+    /**
+     * An array of ButtonSelected.
+     */
+    private ButtonSelected [] mainButtons = ButtonSelected.values();
     /**
      * Elapsed game time in nanoseconds.
      */
@@ -75,6 +86,18 @@ public class Framework extends Canvas {
      * Background image of the main menu.
      */
     private BufferedImage background_main_menu;    
+    /**
+     * Object BufferedImage to open the image of New Game button.
+     */
+    private BufferedImage imgBtnNewGame, imgBtnNewGame2; 
+    /**
+     * Object BufferedImage to open the image of Ranking button.
+     */
+    private BufferedImage imgBtnRanking, imgBtnRanking2;
+    /**
+     * Object BufferedImage to open the image of Exit button.
+     */
+    private BufferedImage imgBtnExit, imgBtnExit2;
     /**
      * Control the execution of the joystick controller.
      */
@@ -95,12 +118,6 @@ public class Framework extends Canvas {
     public Framework ()
     {
         super();
- 
-        
-        //Yeah! It's about two hours playng the sound of background =)
-        PlayWAVFile pf = new PlayWAVFile(PlayWAVFile.INTRO_WARRIOR, 120);
-        new Thread(pf).start();
-        
 
         // Get the instance of the joystick class.
     	this.joyStick = JoyStick.getInstance();
@@ -138,22 +155,32 @@ public class Framework extends Canvas {
      */
     private void LoadContent()
     {  	
+    	Image objImage = new Image();
+    	
     	// Load the initial image background.
-    	background_main_menu = new Image().getBackgroundMenuImg();
-    	/*
-    	 // Yeah! It's about two hours playng the sound of background =)
+    	background_main_menu = objImage.getBackgroundMenuImg();
+    	imgBtnNewGame = objImage.getBtnNewGameImg();
+    	imgBtnNewGame2 = objImage.getBtnNewGameImg2();
+    	imgBtnRanking = objImage.getBtnRankingImg();
+    	imgBtnRanking2 = objImage.getBtnRankingImg2();
+    	imgBtnExit = objImage.getBtnExitImg();
+    	imgBtnExit2 = objImage.getBtnExitImg2();
+    	
+    	// Yeah! It's about two hours playing the sound of background =)
         PlayWAVFile pf = new PlayWAVFile(PlayWAVFile.INTRO_WARRIOR, 120);
         new Thread(pf).start();
-    	 */
     }
     
     
     
     
+    private int btnSelectedIndex = 0;
+    
+    
     
     
     /**
-     * In specific intervals of time (GAME_UPDATE_PERIOD) the game/logic is updated 
+     * In specific intervals of time (GAME_UPDATE_PERIOD) the game/logic is up to date 
      * and then the game is drawn on the screen again.
      */
     private void GameLoop()
@@ -166,9 +193,6 @@ public class Framework extends Canvas {
         // This variables are used for calculating the time that defines for how long we should 
         // put thread to sleep to meet the GAME_FPS.
         long beginTime, timeTaken, timeLeft;
-        
-        // Control if the START, SELECT or any other button was pressed.
-        boolean isButtonPressed = false;
         
         
         while(true)
@@ -208,13 +232,10 @@ public class Framework extends Canvas {
                     gameState = GameState.MAIN_MENU;
                 break;
                 case MAIN_MENU:
-                	Stopwatch.isStopwatchRunning = false;  
+                	Stopwatch.isStopwatchRunning = false;
                 	
-                	isButtonPressed = JoyStick.getInstance().checkButtonPressed(JoyStick.BTN_START);
+                	checkButtonPressed();
                 	
-                	if(isButtonPressed)               		
-                		LoadNewGame();                		
-                	 	
                 break;
                 case GAME_CONTENT_LOADING:
                 	// Wait a time before start the game.
@@ -257,10 +278,13 @@ public class Framework extends Canvas {
                         playedTheGameOverSound = true;
                 	}
                 	
-                	isButtonPressed = JoyStick.getInstance().checkButtonPressed(JoyStick.BTN_SELECT);
+                	boolean isSelectedPressed = JoyStick.getInstance().checkButtonPressed(JoyStick.BTN_SELECT);
                 	
-                	if(isButtonPressed) 
+                	if(isSelectedPressed){
+                		playedTheGameOverSound = false;
                 		gameState = GameState.MAIN_MENU;
+                	}
+                		
                 break;
 				default:
 					gameState = GameState.MAIN_MENU;
@@ -336,26 +360,119 @@ public class Framework extends Canvas {
     
     
     
+    
+    /**
+     * Check which button was pressed and do anything.
+     */
+    private void checkButtonPressed(){
+    	boolean isStartPressed = JoyStick.getInstance().checkButtonPressed(JoyStick.BTN_START);               	
+    	boolean isUpPressed = JoyStick.getInstance().checkPOVPressed(JoyStick.BTN_UP);
+        boolean isDownPressed = JoyStick.getInstance().checkPOVPressed(JoyStick.BTN_DOWN);
+        	
+        mainButtons = ButtonSelected.values();
+        
+        
+    	if(isStartPressed){
+    		if(currentlyButtonSelected == ButtonSelected.NEW_GAME)
+    			LoadNewGame();
+    		if(currentlyButtonSelected == ButtonSelected.EXIT)
+    			System.exit(0);
+    	}
+    	
+    	if(isUpPressed || isDownPressed){
+    		if(isDownPressed){
+        		
+        		btnSelectedIndex = btnSelectedIndex == mainButtons.length - 1 ? 0 : ++btnSelectedIndex;
+        		currentlyButtonSelected = mainButtons[ btnSelectedIndex ];
+        	}
+        	if(isUpPressed){
+        		
+        		btnSelectedIndex = btnSelectedIndex == 0 ? btnSelectedIndex = mainButtons.length - 1 : --btnSelectedIndex;                   		
+        		currentlyButtonSelected = mainButtons[ btnSelectedIndex ];
+        	}
+        	
+        	PlayWAVFile clickSound = new PlayWAVFile(PlayWAVFile.CLICK, 1);
+            new Thread(clickSound).start();
+        	
+        	// Wait a little time to change the button again.
+			try {
+				Thread.sleep(180);
+			} catch (InterruptedException e1) { }
+    	}
+    }
+    
+    
+    
+    
+    
+    
+    // Images of menu's button.
+    BufferedImage imgNewGame=null;
+	BufferedImage imgRanking=null;
+	BufferedImage imgExit   =null;
+    
+    /**
+     * Draw the image of the currently button selected on the screen.
+     * @param g2d
+     */
+    private void drawSelectedButton(Graphics2D g2d){
+    	
+    	switch (currentlyButtonSelected) {
+			case NEW_GAME:
+				imgNewGame=imgBtnNewGame2;
+		    	imgRanking=imgBtnRanking;
+		    	imgExit   =imgBtnExit;
+				break;
+	
+			case RANKING:
+				imgNewGame=imgBtnNewGame;
+		    	imgRanking=imgBtnRanking2;
+		    	imgExit   =imgBtnExit;
+				break;
+			case EXIT:
+				imgNewGame=imgBtnNewGame;
+		    	imgRanking=imgBtnRanking;
+		    	imgExit   =imgBtnExit2;
+				break;
+			default:
+				currentlyButtonSelected = ButtonSelected.NEW_GAME;
+				break;
+		}
+    	int btn_x = (Window.frameWidth / 2) - (imgBtnNewGame.getWidth() / 2);
+    	int btn_y = (Window.frameHeight / 2) ;
+    	
+    	g2d.drawImage(imgNewGame, btn_x, btn_y, imgBtnNewGame.getWidth(), imgBtnNewGame.getHeight(), null); 
+    	g2d.drawImage(imgRanking, btn_x, (int) (btn_y*1.25), imgBtnRanking.getWidth(), imgBtnRanking.getHeight(), null); 
+    	g2d.drawImage(imgExit,    btn_x, (int) (btn_y*1.50), imgBtnExit.getWidth(), imgBtnExit.getHeight(), null); 
+    	
+    }
+    
+    
+    
+    
+    
+    
+    
+    
     /**
      * Show this message when the gamestate is MAIN_MENU.
      * @param g2d
      */
     private void ShowInitialMessage(Graphics2D g2d){
-    	int x = (Window.frameWidth / 2) - 150;
-    	int y = (Window.frameHeight / 2);
     	
     	g2d.setColor(Color.red);
         g2d.setFont(new Font("Lucida Sans", Font.BOLD, 18));
     	
-    	g2d.drawImage(background_main_menu, 0, 0, Window.frameWidth, Window.frameHeight, null);       
-        g2d.drawString("Pressione START para iniciar o jogo. . .", x, (int) (y*1.40)); 
-
+    	g2d.drawImage(background_main_menu, 0, 0, Window.frameWidth, Window.frameHeight, null);
+   
+    	drawSelectedButton(g2d);
+    	
         g2d.setColor(Color.white);
         g2d.setFont(new Font("Lucida Sans", Font.BOLD, 25));
         g2d.drawString("SISTEMAS DE INFORMAÇÃO - UNIVÁS - 2016", 10, Window.frameHeight - 10);
     }
     
-    
+
     
     
     
