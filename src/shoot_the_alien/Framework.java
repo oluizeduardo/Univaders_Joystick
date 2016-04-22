@@ -106,6 +106,11 @@ public class Framework extends Canvas {
      * A flag to control the execution of the GameOver sound.
      */
     private boolean playedTheGameOverSound = false;
+    /**
+     * Displays in a bar the game's status like the number of runaway aliens 
+     * and remaining shoots.
+     */
+    private StatusBar runawayAliens, shootStatus;
     
     
     
@@ -118,7 +123,8 @@ public class Framework extends Canvas {
     public Framework ()
     {
         super();
-
+        createStatusBar();
+        
         // Get the instance of the joystick class.
     	this.joyStick = JoyStick.getInstance();
     	
@@ -145,6 +151,23 @@ public class Framework extends Canvas {
     }
     
     
+    
+    
+    /**
+     * Create the game's status bars.
+     */
+    private void createStatusBar(){
+    	runawayAliens = new StatusBar();
+    	runawayAliens.setBounds(10, 10, 350, 30);
+    	runawayAliens.setMaximum(Game.MAX_ALIENS_RUNAWAY);
+        
+    	shootStatus = new StatusBar();
+    	shootStatus.setBounds(Window.frameWidth - 360, 10, 350, 30);
+    	shootStatus.setMaximum(Game.MAX_SHOOTS);
+    	
+        super.add(runawayAliens);
+        super.add(shootStatus);
+    }
  
     
     
@@ -231,6 +254,9 @@ public class Framework extends Canvas {
                 case MAIN_MENU:
                 	Stopwatch.isStopwatchRunning = false;
                 	
+                	if(game != null)
+                		setStatusBarsVisibility(false);
+                	
                 	checkButtonPressed();
                 	
                 break;
@@ -246,8 +272,11 @@ public class Framework extends Canvas {
 	                		Framework.th_stopwatch.start();
                 	}catch (IllegalThreadStateException e) { }
                 	
-                	Stopwatch.isStopwatchRunning = true;
-                		
+                	// Turn on the Stopwatch.
+                	Stopwatch.isStopwatchRunning = true;               	
+                	
+                	setStatusBarsVisibility(true);
+                	
                 break;
                 case PLAYING:
                 	                	
@@ -262,10 +291,11 @@ public class Framework extends Canvas {
                 break;
                 case GAMEOVER:
                 	// Stop the timewatch.
-            		//Stopwatch.isStopwatchRunning = false;
                 	if(!playedTheGameOverSound){
                 		// Stop the timewatch.
                 		Stopwatch.isStopwatchRunning = false;
+                		
+                		setStatusBarsVisibility(false);
                 		
                 		// Play the sound of the Game Over.
                 		PlayWAVFile pf = new PlayWAVFile(PlayWAVFile.GAME_OVER, 2);
@@ -309,6 +339,8 @@ public class Framework extends Canvas {
     
     
     
+   
+   
     
     
     /**
@@ -352,6 +384,20 @@ public class Framework extends Canvas {
     	g2d.setColor(Color.white);
         g2d.setFont(new Font("Lucida Sans", Font.BOLD, 35));
         g2d.drawString("CARREGANDO...", Window.frameWidth / 2 - 120, Window.frameHeight / 2);
+    }
+    
+    
+    
+    
+    
+    
+    /**
+     * Set the visibility of the progress bars.
+     * @param isVisibility
+     */
+    private void setStatusBarsVisibility(boolean isVisibility){
+    	game.runawayAliensStatus.setVisible(isVisibility);
+    	game.shootsStatus.setVisible(isVisibility);
     }
     
     
@@ -487,7 +533,7 @@ public class Framework extends Canvas {
         // We set gameTime to zero and lastTime to current time for later calculations.
         gameTime = 0;
         lastTime = System.nanoTime();
-        game = new Game();
+        game = new Game(runawayAliens, shootStatus);
     }
     
     

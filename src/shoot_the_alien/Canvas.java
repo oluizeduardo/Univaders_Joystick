@@ -2,7 +2,6 @@ package shoot_the_alien;
 
 import java.awt.Color;
 import java.awt.Cursor;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -12,7 +11,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
-import javax.swing.JProgressBar;
 
 import shoot_the_alien.Stopwatch;
 
@@ -40,8 +38,8 @@ public abstract class Canvas extends JPanel {
      * An object Thread to start the chronometer of the game.
      */
     public static Thread th_stopwatch = null;
-  	
-  	
+
+    
   	
     
     
@@ -69,33 +67,6 @@ public abstract class Canvas extends JPanel {
         
         // Adds the keyboard listener to JPanel to receive key events from this component.
         this.addKeyListener(getKeyListener());
-
-        
-        JProgressBar progressBar = new JProgressBar();
-        progressBar.setBounds(10, 10, 350, 40);
-        progressBar.setString("UNIVÁS 90/100");
-        progressBar.setStringPainted(true);
-        progressBar.setMaximum(100);
-        progressBar.setValue(90);
-        progressBar.setBorderPainted(true);
-        progressBar.setBackground(Color.white);
-        progressBar.setForeground(Color.red);
-        progressBar.setFont(new Font("Verdana", Font.BOLD, 20));
-        
-        JProgressBar progressBar2 = new JProgressBar();
-        progressBar2.setBounds(Window.frameWidth-360, 10, 350, 40);
-        progressBar2.setString("Tiros 70/100");
-        progressBar2.setStringPainted(true);
-        progressBar2.setMaximum(100);
-        progressBar2.setValue(70);
-        progressBar2.setBorderPainted(true);
-        progressBar2.setBackground(Color.white);
-        progressBar2.setForeground(Color.red);
-        progressBar2.setFont(new Font("Verdana", Font.BOLD, 20));
-        
-        super.add(progressBar);
-        super.add(progressBar2);
-        
     }
     
     

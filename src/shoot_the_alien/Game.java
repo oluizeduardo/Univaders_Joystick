@@ -24,11 +24,11 @@ public class Game {
 	/**
 	 * Maximum number of fugitives.
 	 */
-	private static final int MAX_ALIENS_RUNAWAY = 100;
+	public static final int MAX_ALIENS_RUNAWAY = 50;
 	/**
 	 * Maximum number of shoots.
 	 */
-	private static final int MAX_SHOOTS = 100;
+	public static final int MAX_SHOOTS = 100;
 	/**
 	 * Limit shoots to appear the ammunition kit on the screen.
 	 */
@@ -68,7 +68,7 @@ public class Game {
     /**
      * The ammunition kit.
      */
-    private Ammunition ammunition = null;
+    private Ammunition ammunition = null;    
     
     /**  How many aliens leave the screen alive? */
     private int runawayAliens = 0;
@@ -84,14 +84,24 @@ public class Game {
     private boolean isShootPressed = false;
     private boolean isGetKitPressed = false;
     
+    /**Progress bar which will display the status of the game.*/
+    public StatusBar runawayAliensStatus, shootsStatus;
+    
+    
+    
     
     
     
     /**
      * The constructor of the class.
      */
-    public Game()
+    public Game(StatusBar aliensBar, StatusBar shootsBar)
     {
+    	this.runawayAliensStatus = aliensBar;   	
+    	this.shootsStatus = shootsBar;
+    	
+    	
+    	
         Framework.gameState = Framework.GameState.GAME_CONTENT_LOADING;
         
         Thread threadForInitGame = new Thread() {
@@ -157,10 +167,11 @@ public class Game {
         // Set last alien time to zero.
         Alien.lastAlienTime = 0;      
         score = 0;
-        shoots = 0;
+        shoots = MAX_SHOOTS;
         runawayAliens = 0;
         killedAliens = 0;
         lastTimeShoot = 0;
+        ammunition = null;
     }
     
     
@@ -212,10 +223,6 @@ public class Game {
         		ammunition = null;
         	}
         }
-        
-        
-
-
         
         if(isGetKitPressed){
         	
@@ -451,6 +458,13 @@ public class Game {
         g2d.drawString("CAPTURADOS.: " + killedAliens, 10, 45);
         g2d.drawString("TIROS......: " + shoots, 10, 70);
         g2d.drawString("PONTOS.....: " + score, 10, 95);*/
+        
+        shootsStatus.setValue(shoots);
+        runawayAliensStatus.setValue(MAX_ALIENS_RUNAWAY - runawayAliens);
+     	runawayAliensStatus.setString("UNIVÁS "+runawayAliens+"/"+MAX_ALIENS_RUNAWAY);
+    	shootsStatus.setString("TIROS "+shoots+"/"+MAX_SHOOTS);
+        
+        
         
         // Update the sight image on the screen.
     	JoyStick.getInstance().drawSight(g2d);
