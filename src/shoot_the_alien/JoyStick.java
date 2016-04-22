@@ -19,14 +19,20 @@ import net.java.games.input.Component.Identifier;
  */
 public class JoyStick implements Runnable {
 
-	/** The code of the restart button.*/
-	public static final int BTN_RESTART = 3;
+	
+	/** The code of the button to get the ammunition kit (L1).*/
+	public static final Identifier BTN_GET_KIT = Identifier.Button._2;
 	/** The code of the button shoot (R1).*/
-	public static final int BTN_SHOOT = 5;
+	public static final Identifier BTN_SHOOT = Identifier.Button._5;
 	/** The code of the button SELECT.*/
-	public static final int BTN_SELECT = 8;
+	public static final Identifier BTN_SELECT = Identifier.Button._8;
 	/** The code of the button start.*/
-	public static final int BTN_START = 9;
+	public static final Identifier BTN_START = Identifier.Button._9;
+	/** The float value of the button UP.*/
+	public static final float BTN_UP = Component.POV.UP;
+	/** The float value of the button DOWN.*/
+	public static final float BTN_DOWN = Component.POV.DOWN;
+	
 	
 	
 	
@@ -203,7 +209,7 @@ public class JoyStick implements Runnable {
      * @param button The code of the button. (0-12)
      * @return true or false.
      */
-    public boolean checkButtonPressed(int button) {
+    public boolean checkButtonPressed(Identifier idBtn) {
 
     	// Get the components of the first controller found.
         this.components = this.controller.getComponents();
@@ -213,15 +219,42 @@ public class JoyStick implements Runnable {
         	Component comp = components[ c ];
             Identifier id = comp.getIdentifier();
         
-            // Check if in the button's name there's the identifier number. 
-            if(id.getName().matches(""+button)){
-            	if(comp.getPollData() == 1.0f)
+            if(id.equals(idBtn)){
+            	if(comp.getPollData() != 0.0f)
             		return true;
             }
         }
         return false;
     }
     
+    
+    
+    
+
+    /**
+     * Check if some POV button was pressed.
+     * 
+     * @param componentPOV The float value of the button.
+     * @return true or false.
+     */
+    public boolean checkPOVPressed(float componentPOV){
+    	// Get the components of the first controller found.
+        this.components = this.controller.getComponents();
+        
+        for (int c = 0; c < components.length; c++) {
+        	Component comp = components[ c ];
+            Identifier id = comp.getIdentifier();
+        
+            if(id == Component.Identifier.Axis.POV){
+        		
+            	float valuePressed = comp.getPollData();
+
+        		if(Float.compare(valuePressed, componentPOV) == 0)
+                    return true;
+            }
+        }
+        return false;
+    }
     
    
     

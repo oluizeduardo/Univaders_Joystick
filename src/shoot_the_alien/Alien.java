@@ -3,7 +3,6 @@ package shoot_the_alien;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
-
 /**
  * This class to build a new alien.
  * 
@@ -12,12 +11,12 @@ import java.awt.image.BufferedImage;
  * @category Game
  * @version 2.0
  */
-public class Alien {
+public class Alien implements FloatingObject{
     
     /**
      * How much time must pass in order to create a new alien?
      */
-    public static long timeBetweenAliens = (long) (2 * Framework.secInNanosec);
+    public static long timeBetweenAliens = Framework.secInNanosec;
     /**
      * Last time when the alien was created.
      */
@@ -30,11 +29,11 @@ public class Alien {
      * How many points is a alien worth?
      */
     public static int[][] alienLines = {
-                                       {Window.frameWidth, (int)(Window.frameHeight * 0.40), -2, 90},
-                                       {Window.frameWidth, (int)(Window.frameHeight * 0.50), -3, 30},
-                                       {Window.frameWidth, (int)(Window.frameHeight * 0.55), -2, 10},
-                                       {Window.frameWidth, (int)(Window.frameHeight * 0.65), -3, 40},
-                                       {Window.frameWidth, (int)(Window.frameHeight * 0.78), -2, 50}
+                                       {Window.frameWidth, (int)(Window.frameHeight * 0.40), 2, 90},
+                                       {Window.frameWidth, (int)(Window.frameHeight * 0.50), 3, 30},
+                                       {Window.frameWidth, (int)(Window.frameHeight * 0.55), 2, 10},
+                                       {Window.frameWidth, (int)(Window.frameHeight * 0.65), 3, 40},
+                                       {Window.frameWidth, (int)(Window.frameHeight * 0.78), 2, 50}
                                       };
     
     
@@ -93,10 +92,12 @@ public class Alien {
     /**
      * Move the alien.
      */
+    @Override
     public void Update()
     {
-    	 x += speed;
+    	 x -= speed;
     }
+    
     
     
     
@@ -105,6 +106,7 @@ public class Alien {
      * Draw the alien to the screen.
      * @param g2d Graphics2D
      */
+    @Override
     public void Draw(Graphics2D g2d)
     {
         g2d.drawImage(alienImage, x, y, null);
@@ -115,9 +117,15 @@ public class Alien {
     /**
      * @return The image of this Alien.
      */
+    @Override
     public BufferedImage getImage(){
     	return alienImage;
     }
+
+
+
+
+
     
     
     

@@ -22,6 +22,7 @@ public class PlayWAVFile implements Runnable {
 	public static final String INTRO_WARRIOR = "src/shoot_the_alien/resources/audio/intro_warrior.wav";
 	public static final String SHOOT_LASER = "src/shoot_the_alien/resources/audio/shoot_laser.wav";
 	public static final String GAME_OVER = "src/shoot_the_alien/resources/audio/game_over.wav";
+	public static final String CLICK = "src/shoot_the_alien/resources/audio/click.wav";
 	
 	private File file = null;
 	
