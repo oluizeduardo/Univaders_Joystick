@@ -20,8 +20,11 @@ import net.java.games.input.Component.Identifier;
 public class JoyStick implements Runnable {
 
 	
+<<<<<<< HEAD
 	/** The code of the button to get the ammunition kit (L1).*/
 	public static final Identifier BTN_GET_KIT = Identifier.Button._2;
+=======
+>>>>>>> b1b8e0df50aee013663d63432993b066019338ad
 	/** The code of the button shoot (R1).*/
 	public static final Identifier BTN_SHOOT = Identifier.Button._5;
 	/** The code of the button SELECT.*/
