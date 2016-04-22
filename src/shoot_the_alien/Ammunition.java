@@ -6,7 +6,7 @@ import java.awt.image.BufferedImage;
 
 
 /**
- * The ammunation of the game.
+ * The ammunation kit of the game.
  * <p>
  * When the ammunition icon appears on the screen, the gamer have a possibility
  * to catch it and reload your ammunition kit to more shoots. 
@@ -38,7 +38,6 @@ public class Ammunition implements FloatingObject {
     /**
      * Ammunitions lines.
      * Where is starting location for the ammunition icon? ( X, Y )
-     * Speed of the ammunition icon?
      */
     public static int[][] ammunitionLines = {
                                        {Window.frameWidth, (int)(Window.frameHeight * 0.25)},

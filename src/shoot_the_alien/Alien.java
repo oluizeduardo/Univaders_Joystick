@@ -11,11 +11,7 @@ import java.awt.image.BufferedImage;
  * @category Game
  * @version 2.0
  */
-<<<<<<< HEAD
 public class Alien implements FloatingObject{
-=======
-public class Alien{
->>>>>>> b1b8e0df50aee013663d63432993b066019338ad
     
     /**
      * How much time must pass in order to create a new alien?

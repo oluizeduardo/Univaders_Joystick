@@ -174,9 +174,6 @@ public class Framework extends Canvas {
     
     
     
-    private int btnSelectedIndex = 0;
-    
-    
     
     
     /**
@@ -271,9 +268,9 @@ public class Framework extends Canvas {
                 		Stopwatch.isStopwatchRunning = false;
                 		
                 		// Play the sound of the Game Over.
-                    	PlayWAVFile pf = new PlayWAVFile(PlayWAVFile.GAME_OVER, 2);
-                    	Thread t = new Thread(pf);
-                        t.start();
+                		PlayWAVFile pf = new PlayWAVFile(PlayWAVFile.GAME_OVER, 2);
+                		Thread t = new Thread(pf);
+                		t.start();
                         
                         playedTheGameOverSound = true;
                 	}
@@ -361,6 +358,11 @@ public class Framework extends Canvas {
     
     
     
+    
+    /**The index of the currently selected button on the main menu.*/
+    private int btnSelectedIndex = 0;
+    
+    
     /**
      * Check which button was pressed and do anything.
      */
@@ -391,8 +393,9 @@ public class Framework extends Canvas {
         		currentlyButtonSelected = mainButtons[ btnSelectedIndex ];
         	}
         	
-        	PlayWAVFile clickSound = new PlayWAVFile(PlayWAVFile.CLICK, 1);
-            new Thread(clickSound).start();
+        	PlayWAVFile pf = new PlayWAVFile(PlayWAVFile.CLICK, 1);
+    		Thread t = new Thread(pf);
+    		t.start();
         	
         	// Wait a little time to change the button again.
 			try {

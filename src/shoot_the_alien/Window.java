@@ -1,10 +1,13 @@
 package shoot_the_alien;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  * Creates frame and set its properties.
@@ -40,7 +43,7 @@ public class Window extends JFrame{
 	 * Sets the properties of the frame.
 	 */
 	private Window()
-    {
+    {				
         // Sets the title for this frame. It will be visible when setUndecorated() is false.
         super.setTitle("UNIVADERS - Shoot The Alien");
         // Disables decorations for this frame.

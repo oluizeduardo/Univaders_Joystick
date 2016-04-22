@@ -54,6 +54,7 @@ public class Stopwatch extends JLabel implements Runnable {
 		Stopwatch.save_sec = SECONDS;
 		
 		super.setText("00:00");		
+		super.setHorizontalAlignment(JLabel.CENTER);
 		super.setForeground(Color.red);
 		super.setFont(new Font("Lucida Sans", Font.BOLD, 70));
 		super.setVisible(false);

@@ -28,15 +28,11 @@ public class Game {
 	/**
 	 * Maximum number of shoots.
 	 */
-<<<<<<< HEAD
 	private static final int MAX_SHOOTS = 100;
 	/**
 	 * Limit shoots to appear the ammunition kit on the screen.
 	 */
 	private static final int LIMIT_TO_APPEAR_AMMUNITION = 30;
-=======
-	private static final int MAX_SHOOTS = 200;
->>>>>>> b1b8e0df50aee013663d63432993b066019338ad
     /**
      * This object is used to generate a random number.
      */
@@ -86,11 +82,7 @@ public class Game {
     // It said if the button was pressed or not.
     private boolean isSelectPressed = false;
     private boolean isShootPressed = false;
-<<<<<<< HEAD
     private boolean isGetKitPressed = false;
-=======
-    
->>>>>>> b1b8e0df50aee013663d63432993b066019338ad
     
     
     
@@ -195,12 +187,6 @@ public class Game {
         	 
         	// Create a new alien and add it on the list of aliens.
         	createNewAlien();
-<<<<<<< HEAD
-=======
-            
-            // Here we increase nextAlienLines so that next alien will be created in next line.
-            Alien.nextAlienLines++;
->>>>>>> b1b8e0df50aee013663d63432993b066019338ad
             
         	// Used to don't exceed the bounds of the array.
             if(Alien.nextAlienLines >= Alien.alienLines.length)
@@ -228,10 +214,6 @@ public class Game {
         }
         
         
-<<<<<<< HEAD
-=======
-        updateAliensOnTheScreen();
->>>>>>> b1b8e0df50aee013663d63432993b066019338ad
 
 
         
@@ -252,8 +234,8 @@ public class Game {
             		
             		// Play the sound of shoot.
             		PlayWAVFile pf = new PlayWAVFile(PlayWAVFile.CLICK, 1);
-        			Thread t = new Thread(pf);
-        			t.start();
+            		Thread t = new Thread(pf);
+            		t.start();
             		
             		shoots = MAX_SHOOTS;
             		ammunition = null;
@@ -266,16 +248,15 @@ public class Game {
         // Does player shoots?
         if(isShootPressed)
         {
-<<<<<<< HEAD
         
         	// Check if there are ammunition to shoot.
         	if(shoots > 0){
         		if(System.nanoTime() - lastTimeShoot >= timeBetweenShots){
             		
             		// Play the sound of shoot.
-            		PlayWAVFile pf = new PlayWAVFile(PlayWAVFile.SHOOT_LASER, 1);
-        			Thread t = new Thread(pf);
-        			t.start();
+        			PlayWAVFile pf = new PlayWAVFile(PlayWAVFile.SHOOT_LASER, 1);
+            		Thread t = new Thread(pf);
+            		t.start();
         			
         			// Count one new shoot.
         			shoots = shoots <= 0 ? 0 : --shoots;
@@ -284,22 +265,6 @@ public class Game {
                     
         			lastTimeShoot = System.nanoTime();
             	}
-=======
-        	
-        	if(System.nanoTime() - lastTimeShoot >= timeBetweenShots){
-        		
-        		// Play the sound of shoot.
-        		PlayWAVFile pf = new PlayWAVFile(PlayWAVFile.SHOOT_LASER, 1);
-    			Thread t = new Thread(pf);
-    			t.start();
-    			
-    			// Count one new shoot.
-    			shoots = shoots <= 0 ? 0 : --shoots;
-    			
-    			checkSomeAlienDead();
-                
-    			lastTimeShoot = System.nanoTime();
->>>>>>> b1b8e0df50aee013663d63432993b066019338ad
         	}
         }
         // When 'MAX_ALIENS_RUNAWAY' aliens runaway, the game ends.
@@ -309,6 +274,8 @@ public class Game {
     }
     
     
+    
+
     
     
     /**
@@ -444,12 +411,8 @@ public class Game {
     	
     	this.isSelectPressed = JoyStick.getInstance().checkButtonPressed(JoyStick.BTN_SELECT);
     	this.isShootPressed = JoyStick.getInstance().checkButtonPressed(JoyStick.BTN_SHOOT);
-<<<<<<< HEAD
     	this.isGetKitPressed = JoyStick.getInstance().checkButtonPressed(JoyStick.BTN_GET_KIT);
     	
-=======
-
->>>>>>> b1b8e0df50aee013663d63432993b066019338ad
     	if(isSelectPressed){
     		Framework.gameState = Framework.GameState.MAIN_MENU;
     	}
@@ -481,13 +444,13 @@ public class Game {
             aliens.get(i).Draw(g2d);
       
         g2d.setFont(new Font("monospaced", Font.BOLD, 25));
-        g2d.setColor(Color.MAGENTA);
+    /*    g2d.setColor(Color.MAGENTA);
 
         // Draw the scoreboard in the higher left corner.
         g2d.drawString("FUGITIVOS..: " + runawayAliens, 10, 20);
         g2d.drawString("CAPTURADOS.: " + killedAliens, 10, 45);
         g2d.drawString("TIROS......: " + shoots, 10, 70);
-        g2d.drawString("PONTOS.....: " + score, 10, 95);
+        g2d.drawString("PONTOS.....: " + score, 10, 95);*/
         
         // Update the sight image on the screen.
     	JoyStick.getInstance().drawSight(g2d);
