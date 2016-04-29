@@ -8,7 +8,6 @@ import java.awt.image.BufferedImage;
  * 
  * @author www.gametutorial.net
  * @author Luiz Eduardo da Costa
- * @category Game
  * @version 2.0
  */
 public class Alien implements FloatingObject{

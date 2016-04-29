@@ -22,7 +22,7 @@ public class Image {
 	private BufferedImage bfBackgroundMenu;
 	
 	/** Buffer of the Background's image. */
-	private BufferedImage bfbackground;
+	private BufferedImage bfbackground, bfbackground_winner;
 	
 	/** Buffer of the Logo Univás image.*/
 	private BufferedImage bfUnivasLogo;
@@ -51,6 +51,13 @@ public class Image {
 	/**Buffer of the exit button image.*/
 	private BufferedImage bfBtnExit, bfBtnExit2;
 	
+	/**Buffer of the Save button image.*/
+	private BufferedImage bfBtnSave, bfBtnSave2;
+	
+	/**Buffer of the Cancel button image.*/
+	private BufferedImage bfBtnCancel, bfBtnCancel2;
+	
+	
 	
 	
 	
@@ -71,47 +78,61 @@ public class Image {
 	private void loadContent(){
 		
 		// URL common to all files.
-    	String url = "/shoot_the_alien/resources/images/";
-		
+    	String strUrl = "/shoot_the_alien/resources/images/";
+		URL url;
+    	
 		try {
-        	URL sightImgUrl = this.getClass().getResource(url+"sight.png");
-        	bfSight = ImageIO.read(sightImgUrl);
+			url = this.getClass().getResource(strUrl+"sight.png");
+        	bfSight = ImageIO.read(url);
         	
-        	URL backgroundMenuImg = this.getClass().getResource(url+"backgrounds/background_menu.gif");          
-        	bfBackgroundMenu = ImageIO.read(backgroundMenuImg);
+        	url = this.getClass().getResource(strUrl+"backgrounds/background_menu.gif");          
+        	bfBackgroundMenu = ImageIO.read(url);
         	
-        	URL ammunitionURL = this.getClass().getResource(url+"/ammunition_kit.png");          
-        	bfAmmunition = ImageIO.read(ammunitionURL);
+        	url = this.getClass().getResource(strUrl+"/ammunition_kit.png");          
+        	bfAmmunition = ImageIO.read(url);
         	
-        	URL backgroundImgUrl = this.getClass().getResource(url+"backgrounds/background.jpg");
-            bfbackground = ImageIO.read(backgroundImgUrl);
+        	url = this.getClass().getResource(strUrl+"backgrounds/background.jpg");
+            bfbackground = ImageIO.read(url);
             
-            URL univas_logo_ImgUrl = this.getClass().getResource(url+"backgrounds/logo_base.png");
-            bfUnivasLogo = ImageIO.read(univas_logo_ImgUrl);
+            url = this.getClass().getResource(strUrl+"backgrounds/bkgd_winner.gif");
+            bfbackground_winner = ImageIO.read(url);
             
-            URL alienImgUrl_1 = this.getClass().getResource(url+"aliens/alien1.png");
-            bfAlien_1 = ImageIO.read(alienImgUrl_1);
+            url = this.getClass().getResource(strUrl+"backgrounds/logo_base.png");
+            bfUnivasLogo = ImageIO.read(url);
             
-            URL alienImgUrl_2 = this.getClass().getResource(url+"aliens/alien2.png");
-            bfAlien_2 = ImageIO.read(alienImgUrl_2);
+            url = this.getClass().getResource(strUrl+"aliens/alien1.png");
+            bfAlien_1 = ImageIO.read(url);
             
-            URL red_borderImgUrl = this.getClass().getResource(url+"backgrounds/red_border.png");
-            bfRedBorder = ImageIO.read(red_borderImgUrl);
+            url = this.getClass().getResource(strUrl+"aliens/alien2.png");
+            bfAlien_2 = ImageIO.read(url);
+            
+            url = this.getClass().getResource(strUrl+"backgrounds/red_border.png");
+            bfRedBorder = ImageIO.read(url);
 
-            URL btnNewGameUrl = this.getClass().getResource(url+"buttons/btn_newgame.png");
-            bfBtnNewGame = ImageIO.read(btnNewGameUrl);
-            URL btnNewGameUrl2 = this.getClass().getResource(url+"buttons/btn_newgame2.png");
-            bfBtnNewGame2 = ImageIO.read(btnNewGameUrl2);
+            url = this.getClass().getResource(strUrl+"buttons/btn_newgame.png");
+            bfBtnNewGame = ImageIO.read(url);
+            url = this.getClass().getResource(strUrl+"buttons/btn_newgame2.png");
+            bfBtnNewGame2 = ImageIO.read(url);
             
-            URL btnRankingUrl = this.getClass().getResource(url+"buttons/btn_ranking.png");
-            bfBtnRanking = ImageIO.read(btnRankingUrl);
-            URL btnRankingUrl2 = this.getClass().getResource(url+"buttons/btn_ranking2.png");
-            bfBtnRanking2 = ImageIO.read(btnRankingUrl2);
+            url = this.getClass().getResource(strUrl+"buttons/btn_ranking.png");
+            bfBtnRanking = ImageIO.read(url);
+            url = this.getClass().getResource(strUrl+"buttons/btn_ranking2.png");
+            bfBtnRanking2 = ImageIO.read(url);
             
-            URL btnExitUrl = this.getClass().getResource(url+"buttons/btn_exit.png");
-            bfBtnExit = ImageIO.read(btnExitUrl);
-            URL btnExitUrl2 = this.getClass().getResource(url+"buttons/btn_exit2.png");
-            bfBtnExit2 = ImageIO.read(btnExitUrl2);
+            url = this.getClass().getResource(strUrl+"buttons/btn_exit.png");
+            bfBtnExit = ImageIO.read(url);
+            url = this.getClass().getResource(strUrl+"buttons/btn_exit2.png");
+            bfBtnExit2 = ImageIO.read(url);
+            
+            url = this.getClass().getResource(strUrl+"buttons/btn_save.png");
+            bfBtnSave = ImageIO.read(url);
+            url = this.getClass().getResource(strUrl+"buttons/btn_save2.png");
+            bfBtnSave2 = ImageIO.read(url);
+            
+            url = this.getClass().getResource(strUrl+"buttons/btn_cancel.png");
+            bfBtnCancel = ImageIO.read(url);
+            url = this.getClass().getResource(strUrl+"buttons/btn_cancel2.png");
+            bfBtnCancel2 = ImageIO.read(url);
             
         	
 		} catch (IOException e) {
@@ -140,6 +161,9 @@ public class Image {
 		return bfbackground;
 	}
 
+	public BufferedImage getBackgroundWinnerImg(){
+		return bfbackground_winner;
+	}
 	
 	public BufferedImage getRedborderImg(){
 		return bfRedBorder;
@@ -187,7 +211,19 @@ public class Image {
 		return bfAmmunition;
 	}
 	
+	public BufferedImage getBtnSaveImg2(){
+		return bfBtnSave2;
+	}
 	
+	public BufferedImage getBtnSaveImg(){
+		return bfBtnSave;
+	}
 	
+	public BufferedImage getBtnCancelImg2(){
+		return bfBtnCancel2;
+	}
 	
+	public BufferedImage getBtnCancelImg(){
+		return bfBtnCancel;
+	}
 }

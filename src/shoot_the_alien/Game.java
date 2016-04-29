@@ -31,6 +31,7 @@ public class Game {
 	public static final int MAX_SHOOTS = 100;
 	/**
 	 * Limit shoots to appear the ammunition kit on the screen.
+	 * This constante is to use when
 	 */
 	private static final int LIMIT_TO_APPEAR_AMMUNITION = 30;
     /**
@@ -82,11 +83,10 @@ public class Game {
     // It said if the button was pressed or not.
     private boolean isSelectPressed = false;
     private boolean isShootPressed = false;
-    private boolean isGetKitPressed = false;
+    private boolean isGetKitBtnPressed = false;
     
     /**Progress bar which will display the status of the game.*/
     public StatusBar runawayAliensStatus, shootsStatus;
-    
     
     
     
@@ -96,7 +96,7 @@ public class Game {
      * The constructor of the class.
      */
     public Game(StatusBar aliensBar, StatusBar shootsBar)
-    {
+    {  	    	
     	this.runawayAliensStatus = aliensBar;   	
     	this.shootsStatus = shootsBar;
     	
@@ -207,14 +207,13 @@ public class Game {
         	
         	// Check if it is necessary appear a new ammunition kit icon on the screen.
         	if(shoots < MAX_SHOOTS){
-	        	if((shoots % LIMIT_TO_APPEAR_AMMUNITION) == 0){
+        		if((shoots % LIMIT_TO_APPEAR_AMMUNITION) == 0){
 	        		createNewAmmunitionKit();	        		
 	        	}
         	}
-        }
+        }        
         
-        updateAliensOnTheScreen();
-        
+        updateAliensOnTheScreen();     
         
         if(ammunition != null){
         	ammunition.Update();
@@ -224,30 +223,24 @@ public class Game {
         	}
         }
         
-        if(isGetKitPressed){
+        // Does it was pressed the button to get the ammunition kit?
+        if(isGetKitBtnPressed){
         	
+        	// The ammunition icon is on the screen?
         	if(ammunition != null){
-
-            	int pos_x = ammunition.getX();
-            	int pos_y = ammunition.getY();
-            	int width = ammunition.getImage().getWidth();
-            	int height = ammunition.getImage().getHeight();
-            	
-            	Rectangle rec = new Rectangle(pos_x, pos_y, width, height);
-            
-            	Point p = JoyStick.getInstance().getJoystickPosition();
-            	
-            	if(rec.contains(p)){
-            		
-            		// Play the sound of shoot.
+        		
+        		// Check if the ammunition kit was captured.
+        		if(isAmmunitionCaptured()){
+        			
+        			// Play the sound of shoot.
             		PlayWAVFile pf = new PlayWAVFile(PlayWAVFile.CLICK, 1);
             		Thread t = new Thread(pf);
             		t.start();
             		
             		shoots = MAX_SHOOTS;
             		ammunition = null;
-            		isGetKitPressed = false;
-            	}
+            		isGetKitBtnPressed = false;
+        		}
         	}
         }
         
@@ -275,9 +268,40 @@ public class Game {
         	}
         }
         // When 'MAX_ALIENS_RUNAWAY' aliens runaway, the game ends.
-        if(runawayAliens >= MAX_ALIENS_RUNAWAY)
-            Framework.gameState = Framework.GameState.GAMEOVER;
+        if(runawayAliens >= MAX_ALIENS_RUNAWAY){
+        	Framework.gameState = Framework.GameState.GAMEOVER;
+        }else{
+        	// Check if the stopwatch is over.
+            if(!Stopwatch.isStopwatchRunning){
+            	Framework.gameState = Framework.GameState.WINNER;
+            }
+        }
+          
+        
+        
     	
+        
+        
+    }
+    
+    
+    
+    
+    
+    /**
+     * Check if the ammunition kit was captured.
+     */
+    private boolean isAmmunitionCaptured(){
+    	int pos_x = ammunition.getX();
+    	int pos_y = ammunition.getY();
+    	int width = ammunition.getImage().getWidth();
+    	int height = ammunition.getImage().getHeight();
+    	
+    	Rectangle rec = new Rectangle(pos_x, pos_y, width, height);
+    
+    	Point p = JoyStick.getInstance().getJoystickPosition();
+    	
+    	return rec.contains(p);
     }
     
     
@@ -418,7 +442,7 @@ public class Game {
     	
     	this.isSelectPressed = JoyStick.getInstance().checkButtonPressed(JoyStick.BTN_SELECT);
     	this.isShootPressed = JoyStick.getInstance().checkButtonPressed(JoyStick.BTN_SHOOT);
-    	this.isGetKitPressed = JoyStick.getInstance().checkButtonPressed(JoyStick.BTN_GET_KIT);
+    	this.isGetKitBtnPressed = JoyStick.getInstance().checkButtonPressed(JoyStick.BTN_GET_KIT);
     	
     	if(isSelectPressed){
     		Framework.gameState = Framework.GameState.MAIN_MENU;

@@ -52,8 +52,8 @@ public class Framework extends Canvas {
      */
     public static enum GameState{STARTING, VISUALIZING, 
     							GAME_CONTENT_LOADING, 
-    							MAIN_MENU, OPTIONS, 
-    							PLAYING, RESTART, GAMEOVER}
+    							MAIN_MENU, PLAYING, 
+    							RESTART, GAMEOVER, WINNER}
     /**
      * Current state of the game.
      */
@@ -99,6 +99,21 @@ public class Framework extends Canvas {
      */
     private BufferedImage imgBtnExit, imgBtnExit2;
     /**
+     * Object to open a new image.
+     */
+    private BufferedImage background, background_winner, univas_logo;
+    /**
+     * Object BufferedImage to open the image of Cancel button.
+     */
+    private BufferedImage imgBtnCancel, imgBtnCancel2;
+    /**
+     * Object BufferedImage to open the image of Save button.
+     */
+    private BufferedImage imgBtnSave, imgBtnSave2;
+    
+    
+    
+    /**
      * Control the execution of the joystick controller.
      */
     private JoyStick joyStick = null;
@@ -123,7 +138,7 @@ public class Framework extends Canvas {
     public Framework ()
     {
         super();
-        createStatusBar();
+        createStatusBar();              
         
         // Get the instance of the joystick class.
     	this.joyStick = JoyStick.getInstance();
@@ -189,6 +204,17 @@ public class Framework extends Canvas {
     	imgBtnExit = objImage.getBtnExitImg();
     	imgBtnExit2 = objImage.getBtnExitImg2();
     	
+    	imgBtnSave = objImage.getBtnSaveImg();
+    	imgBtnSave2 = objImage.getBtnSaveImg2();
+    	imgBtnCancel = objImage.getBtnCancelImg();
+    	imgBtnCancel2 = objImage.getBtnCancelImg2();
+    	
+    	background  = objImage.getBackgroundImg();
+    	background_winner  = objImage.getBackgroundWinnerImg();
+        univas_logo = objImage.getUnivasLogoImg();
+    	
+        
+        
     	// Yeah! It's about two hours playing the sound of background =)
         PlayWAVFile pf = new PlayWAVFile(PlayWAVFile.INTRO_WARRIOR, 120);
         new Thread(pf).start();
@@ -266,7 +292,8 @@ public class Framework extends Canvas {
 						Thread.sleep(500);
 					} catch (InterruptedException e) { }
                 	
-
+                	System.out.println("===<<>>===");
+                	
                 	try{
 	                	if(!Framework.th_stopwatch.isAlive())               		
 	                		Framework.th_stopwatch.start();
@@ -288,6 +315,14 @@ public class Framework extends Canvas {
                 break;
                 case RESTART:
                 	RestartGame();
+                break;
+                case WINNER:	
+                	
+                	if(areStatusbarVisible())
+                		setStatusBarsVisibility(false);
+                	if(super.pnBaseFields == null)
+                    	super.add(getPanelFields());
+                	
                 break;
                 case GAMEOVER:
                 	// Stop the timewatch.
@@ -339,8 +374,6 @@ public class Framework extends Canvas {
     
     
     
-   
-   
     
     
     /**
@@ -365,7 +398,24 @@ public class Framework extends Canvas {
             break;
             case GAMEOVER:
 	            game.DrawGameOver(g2d);
-	        break;
+	        break; 
+            case WINNER:
+
+            	String msg = "Use TAB e Shift+TAB para navergar entre os campos";         	
+            	g2d.setColor(Color.WHITE);
+            	g2d.setFont(new Font("Lucida Sans", Font.BOLD, 16));
+            	g2d.drawImage(background_winner, 0, 0, Window.frameWidth, Window.frameHeight, null);                
+                g2d.drawImage(univas_logo, 0, Window.frameHeight - (univas_logo.getHeight() + 10), 250, 70, null);
+            	
+                if(pnBaseFields != null){
+                	int btn_x = pnBaseFields.getX() + 110;
+                	int btn_y = pnBaseFields.getY() + pnBaseFields.getHeight() + 40;
+                    g2d.drawImage(imgBtnSave2, btn_x, btn_y, imgBtnSave2.getWidth(), imgBtnSave2.getHeight(), null);
+                    g2d.drawImage(imgBtnCancel, btn_x+360, btn_y, imgBtnCancel.getWidth(), imgBtnCancel.getHeight(), null);
+                }
+
+                g2d.drawString(msg, Window.frameWidth/2-200, Window.frameHeight - 8);
+            break;
             default:
             	ShowLoadingMessage(g2d);
 			break;
@@ -388,6 +438,14 @@ public class Framework extends Canvas {
     
     
     
+    
+    /**
+     * @return <code>true</code> if both status bar are visible, 
+     * <code>false</code> is are visible.
+     */
+    private boolean areStatusbarVisible(){
+    	return (game.runawayAliensStatus.isVisible() && game.shootsStatus.isVisible());
+    }
     
     
     

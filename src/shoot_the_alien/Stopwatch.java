@@ -22,11 +22,11 @@ public class Stopwatch extends JLabel implements Runnable {
 	/**
 	 * Sets the minutes of the stopwatch.
 	 */
-	private static int MINUTES = 2;
+	private static int MINUTES = 0;
 	/**
 	 * Sets the seconds of the stopwatch.
 	 */
-    private static int SECONDS = 1;
+    private static int SECONDS = 6;
 	/**
 	 * Control the execution of the stopwatch.
 	 */
@@ -68,9 +68,14 @@ public class Stopwatch extends JLabel implements Runnable {
 	 */
 	@Override
 	public void run() {
-		while(true){
+		
+		setVisible(true);
+		
+		while(Stopwatch.isStopwatchRunning){
 			uptadeStopwatch();
 		}
+		setVisible(false);
+		restart();
 	}
 	
 	
@@ -80,44 +85,32 @@ public class Stopwatch extends JLabel implements Runnable {
 	 * Sets the right format of the timer on the stopwatch. 
 	 */
 	private void uptadeStopwatch() {
-		
-		// Don't delete this row! I don't know why, but without it the stopwatch do not work right.
-		System.out.println();
-		
-		if(Stopwatch.isStopwatchRunning){
-			
-			// If is running, is visible.
-			setVisible(true);
-			
-			if(MINUTES == 0 && SECONDS == 0){
-				isStopwatchRunning = false;
-				Framework.gameState = Framework.GameState.GAMEOVER;
-						
-			}else{
-				if(MINUTES >= 0){
+
+		if(MINUTES == 0 && SECONDS == 0){
+			isStopwatchRunning = false;
 					
-					if(SECONDS > 0){
-						
-						--SECONDS;
-					}else{
-						SECONDS = 59;
-						--MINUTES;
-					}
+		}else{
+			if(MINUTES >= 0){
+				
+				if(SECONDS > 0){
+					
+					--SECONDS;
+				}else{
+					SECONDS = 59;
+					--MINUTES;
 				}
 			}
-
-			String mStr = (MINUTES < 10 ? "0"+MINUTES : ""+MINUTES);
-			String sStr = (SECONDS < 10 ? "0"+SECONDS : ""+SECONDS);
-			
-			super.setText(mStr+":"+sStr);
-			
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) { }
-		}else{
-			setVisible(false);
-			restart();
 		}
+
+		String mStr = (MINUTES < 10 ? "0"+MINUTES : ""+MINUTES);
+		String sStr = (SECONDS < 10 ? "0"+SECONDS : ""+SECONDS);
+		
+		super.setText(mStr+":"+sStr);
+		
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) { }
+		
 	}
 	
 	
@@ -131,9 +124,7 @@ public class Stopwatch extends JLabel implements Runnable {
 		MINUTES = save_min;
 		SECONDS = save_sec;
 	}
-	
-	
-	
+
 	
 	
 	
