@@ -140,7 +140,9 @@ public class Image {
 		
 		}catch (IllegalArgumentException ex) {
 			// Image package not found.
-			JOptionPane.showMessageDialog(null, "Pacote de imagens não encontrado!", "Univaders", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Erro ao carregar pacote de imagens!\n\n"
+					+ "- Verifique o endereço do pacote de imagens\n"
+					+ "- Os arquivos de imagens devem manter o mesmo nome", "Univaders", JOptionPane.ERROR_MESSAGE);
 			System.exit(0);
 		}
 	}

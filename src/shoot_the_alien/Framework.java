@@ -3,11 +3,12 @@ package shoot_the_alien;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
 import shoot_the_alien.Game;
 import shoot_the_alien.JoyStick;
 import shoot_the_alien.Framework;
 import shoot_the_alien.Stopwatch;
+import shoot_the_alien.screens.InitialScreen;
+import shoot_the_alien.screens.WinnerScreen;
 
 /**
  * Framework that controls the game (Game.java) that created it, update it 
@@ -59,18 +60,6 @@ public class Framework extends Canvas {
      */
     public static GameState gameState;
     /**
-     * Possible button selected.
-     */
-    public static enum ButtonSelected {NEW_GAME, RANKING, EXIT};   
-    /**
-     * The button currently selected.
-     */
-    public static ButtonSelected currentlyButtonSelected = ButtonSelected.NEW_GAME;
-    /**
-     * An array of ButtonSelected.
-     */
-    private ButtonSelected [] mainButtons = ButtonSelected.values();
-    /**
      * Elapsed game time in nanoseconds.
      */
     private long gameTime;
@@ -81,38 +70,7 @@ public class Framework extends Canvas {
     /**
      * Object of the actual game.
      */
-    private Game game;
-    /**
-     * Background image of the main menu.
-     */
-    private BufferedImage background_main_menu;    
-    /**
-     * Object BufferedImage to open the image of New Game button.
-     */
-    private BufferedImage imgBtnNewGame, imgBtnNewGame2; 
-    /**
-     * Object BufferedImage to open the image of Ranking button.
-     */
-    private BufferedImage imgBtnRanking, imgBtnRanking2;
-    /**
-     * Object BufferedImage to open the image of Exit button.
-     */
-    private BufferedImage imgBtnExit, imgBtnExit2;
-    /**
-     * Object to open a new image.
-     */
-    private BufferedImage background, background_winner, univas_logo;
-    /**
-     * Object BufferedImage to open the image of Cancel button.
-     */
-    private BufferedImage imgBtnCancel, imgBtnCancel2;
-    /**
-     * Object BufferedImage to open the image of Save button.
-     */
-    private BufferedImage imgBtnSave, imgBtnSave2;
-    
-    
-    
+    private Game game;  
     /**
      * Control the execution of the joystick controller.
      */
@@ -126,6 +84,14 @@ public class Framework extends Canvas {
      * and remaining shoots.
      */
     private StatusBar runawayAliens, shootStatus;
+    /**
+     * Object of the initial screen.
+     */
+    private InitialScreen screenMainMenu;
+    /**
+     * Object of the winner screen.
+     */
+    private WinnerScreen screenWinner;
     
     
     
@@ -138,6 +104,10 @@ public class Framework extends Canvas {
     public Framework ()
     {
         super();
+        
+        this.screenMainMenu = new InitialScreen(this);
+        this.screenWinner = new WinnerScreen();
+        
         createStatusBar();              
         
         // Get the instance of the joystick class.
@@ -192,29 +162,7 @@ public class Framework extends Canvas {
      * files for the actual game can be loaded in Game.java.
      */
     private void LoadContent()
-    {  	
-    	Image objImage = new Image();
-    	
-    	// Load the initial image background.
-    	background_main_menu = objImage.getBackgroundMenuImg();
-    	imgBtnNewGame = objImage.getBtnNewGameImg();
-    	imgBtnNewGame2 = objImage.getBtnNewGameImg2();
-    	imgBtnRanking = objImage.getBtnRankingImg();
-    	imgBtnRanking2 = objImage.getBtnRankingImg2();
-    	imgBtnExit = objImage.getBtnExitImg();
-    	imgBtnExit2 = objImage.getBtnExitImg2();
-    	
-    	imgBtnSave = objImage.getBtnSaveImg();
-    	imgBtnSave2 = objImage.getBtnSaveImg2();
-    	imgBtnCancel = objImage.getBtnCancelImg();
-    	imgBtnCancel2 = objImage.getBtnCancelImg2();
-    	
-    	background  = objImage.getBackgroundImg();
-    	background_winner  = objImage.getBackgroundWinnerImg();
-        univas_logo = objImage.getUnivasLogoImg();
-    	
-        
-        
+    {  	        
     	// Yeah! It's about two hours playing the sound of background =)
         PlayWAVFile pf = new PlayWAVFile(PlayWAVFile.INTRO_WARRIOR, 120);
         new Thread(pf).start();
@@ -283,7 +231,7 @@ public class Framework extends Canvas {
                 	if(game != null)
                 		setStatusBarsVisibility(false);
                 	
-                	checkButtonPressed();
+                	screenMainMenu.checkButtonPressed();
                 	
                 break;
                 case GAME_CONTENT_LOADING:
@@ -291,8 +239,6 @@ public class Framework extends Canvas {
                 	try {
 						Thread.sleep(500);
 					} catch (InterruptedException e) { }
-                	
-                	System.out.println("===<<>>===");
                 	
                 	try{
 	                	if(!Framework.th_stopwatch.isAlive())               		
@@ -320,8 +266,8 @@ public class Framework extends Canvas {
                 	
                 	if(areStatusbarVisible())
                 		setStatusBarsVisibility(false);
-                	if(super.pnBaseFields == null)
-                    	super.add(getPanelFields());
+                	if(screenWinner.pnBaseFields == null)
+                    	super.add(screenWinner.getPanelFields());
                 	
                 break;
                 case GAMEOVER:
@@ -389,8 +335,8 @@ public class Framework extends Canvas {
 	            
 	        break;
             case MAIN_MENU:
-            	ShowInitialMessage(g2d);
-                
+                screenMainMenu.drawInitialScreen(g2d);
+            	
             break;
             case GAME_CONTENT_LOADING:
             	ShowLoadingMessage(g2d);
@@ -400,21 +346,7 @@ public class Framework extends Canvas {
 	            game.DrawGameOver(g2d);
 	        break; 
             case WINNER:
-
-            	String msg = "Use TAB e Shift+TAB para navergar entre os campos";         	
-            	g2d.setColor(Color.WHITE);
-            	g2d.setFont(new Font("Lucida Sans", Font.BOLD, 16));
-            	g2d.drawImage(background_winner, 0, 0, Window.frameWidth, Window.frameHeight, null);                
-                g2d.drawImage(univas_logo, 0, Window.frameHeight - (univas_logo.getHeight() + 10), 250, 70, null);
-            	
-                if(pnBaseFields != null){
-                	int btn_x = pnBaseFields.getX() + 110;
-                	int btn_y = pnBaseFields.getY() + pnBaseFields.getHeight() + 40;
-                    g2d.drawImage(imgBtnSave2, btn_x, btn_y, imgBtnSave2.getWidth(), imgBtnSave2.getHeight(), null);
-                    g2d.drawImage(imgBtnCancel, btn_x+360, btn_y, imgBtnCancel.getWidth(), imgBtnCancel.getHeight(), null);
-                }
-
-                g2d.drawString(msg, Window.frameWidth/2-200, Window.frameHeight - 8);
+            	screenWinner.drawWinnerScreen(g2d);
             break;
             default:
             	ShowLoadingMessage(g2d);
@@ -458,127 +390,6 @@ public class Framework extends Canvas {
     	game.shootsStatus.setVisible(isVisibility);
     }
     
-    
-    
-    
-    
-    
-    /**The index of the currently selected button on the main menu.*/
-    private int btnSelectedIndex = 0;
-    
-    
-    /**
-     * Check which button was pressed and do anything.
-     */
-    private void checkButtonPressed(){
-    	boolean isStartPressed = JoyStick.getInstance().checkButtonPressed(JoyStick.BTN_START);               	
-    	boolean isUpPressed = JoyStick.getInstance().checkPOVPressed(JoyStick.BTN_UP);
-        boolean isDownPressed = JoyStick.getInstance().checkPOVPressed(JoyStick.BTN_DOWN);
-        	
-        mainButtons = ButtonSelected.values();
-        
-        
-    	if(isStartPressed){
-    		if(currentlyButtonSelected == ButtonSelected.NEW_GAME)
-    			LoadNewGame();
-    		if(currentlyButtonSelected == ButtonSelected.EXIT)
-    			System.exit(0);
-    	}
-    	
-    	if(isUpPressed || isDownPressed){
-    		if(isDownPressed){
-        		
-        		btnSelectedIndex = btnSelectedIndex == mainButtons.length - 1 ? 0 : ++btnSelectedIndex;
-        		currentlyButtonSelected = mainButtons[ btnSelectedIndex ];
-        	}
-        	if(isUpPressed){
-        		
-        		btnSelectedIndex = btnSelectedIndex == 0 ? btnSelectedIndex = mainButtons.length - 1 : --btnSelectedIndex;                   		
-        		currentlyButtonSelected = mainButtons[ btnSelectedIndex ];
-        	}
-        	
-        	PlayWAVFile pf = new PlayWAVFile(PlayWAVFile.CLICK, 1);
-    		Thread t = new Thread(pf);
-    		t.start();
-        	
-        	// Wait a little time to change the button again.
-			try {
-				Thread.sleep(180);
-			} catch (InterruptedException e1) { }
-    	}
-    }
-    
-    
-    
-    
-    
-    
-    // Images of menu's button.
-    BufferedImage imgNewGame=null;
-	BufferedImage imgRanking=null;
-	BufferedImage imgExit   =null;
-    
-    /**
-     * Draw the image of the currently button selected on the screen.
-     * @param g2d
-     */
-    private void drawSelectedButton(Graphics2D g2d){
-    	
-    	switch (currentlyButtonSelected) {
-			case NEW_GAME:
-				imgNewGame=imgBtnNewGame2;
-		    	imgRanking=imgBtnRanking;
-		    	imgExit   =imgBtnExit;
-				break;
-	
-			case RANKING:
-				imgNewGame=imgBtnNewGame;
-		    	imgRanking=imgBtnRanking2;
-		    	imgExit   =imgBtnExit;
-				break;
-			case EXIT:
-				imgNewGame=imgBtnNewGame;
-		    	imgRanking=imgBtnRanking;
-		    	imgExit   =imgBtnExit2;
-				break;
-			default:
-				currentlyButtonSelected = ButtonSelected.NEW_GAME;
-				break;
-		}
-    	int btn_x = (Window.frameWidth / 2) - (imgBtnNewGame.getWidth() / 2);
-    	int btn_y = (Window.frameHeight / 2) ;
-    	
-    	g2d.drawImage(imgNewGame, btn_x, btn_y, imgBtnNewGame.getWidth(), imgBtnNewGame.getHeight(), null); 
-    	g2d.drawImage(imgRanking, btn_x, (int) (btn_y*1.25), imgBtnRanking.getWidth(), imgBtnRanking.getHeight(), null); 
-    	g2d.drawImage(imgExit,    btn_x, (int) (btn_y*1.50), imgBtnExit.getWidth(), imgBtnExit.getHeight(), null); 
-    	
-    }
-    
-    
-    
-    
-    
-    
-    
-    
-    /**
-     * Show this message when the gamestate is MAIN_MENU.
-     * @param g2d
-     */
-    private void ShowInitialMessage(Graphics2D g2d){
-    	
-    	g2d.setColor(Color.red);
-        g2d.setFont(new Font("Lucida Sans", Font.BOLD, 18));
-    	
-    	g2d.drawImage(background_main_menu, 0, 0, Window.frameWidth, Window.frameHeight, null);
-   
-    	drawSelectedButton(g2d);
-    	
-        g2d.setColor(Color.white);
-        g2d.setFont(new Font("Lucida Sans", Font.BOLD, 25));
-        g2d.drawString("SISTEMAS DE INFORMAÇÃO - UNIVÁS - 2016", 10, Window.frameHeight - 10);
-    }
-    
 
     
     
@@ -586,7 +397,7 @@ public class Framework extends Canvas {
     /**
      * Starts a new game.
      */
-    private void LoadNewGame()
+    public void loadNewGame()
     {
         // We set gameTime to zero and lastTime to current time for later calculations.
         gameTime = 0;
