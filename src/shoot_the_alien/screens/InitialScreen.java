@@ -180,7 +180,7 @@ public class InitialScreen {
     	boolean isUpPressed = JoyStick.getInstance().checkPOVPressed(JoyStick.BTN_UP);
         boolean isDownPressed = JoyStick.getInstance().checkPOVPressed(JoyStick.BTN_DOWN);
         	
-        mainMenuButtons = ButtonSelected.values();
+       // mainMenuButtons = ButtonSelected.values();
         
         
     	if(isStartPressed){

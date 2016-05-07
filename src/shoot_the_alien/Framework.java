@@ -269,6 +269,8 @@ public class Framework extends Canvas {
                 	if(screenWinner.pnBaseFields == null)
                     	super.add(screenWinner.getPanelFields());
                 	
+                	screenWinner.checkButtonPressed();
+                	
                 break;
                 case GAMEOVER:
                 	// Stop the timewatch.

@@ -13,11 +13,15 @@ import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 
+import shoot_the_alien.Framework;
+import shoot_the_alien.Framework.GameState;
 import shoot_the_alien.Image;
+import shoot_the_alien.JoyStick;
+import shoot_the_alien.PlayWAVFile;
 import shoot_the_alien.Window;
 
 /**
- * 
+ * Build the winner screen.
  * 
  * @author Luiz Eduardo da Costa
  * @version 1.0, 05/05/2016
@@ -54,7 +58,10 @@ public class WinnerScreen {
      * The index of the currently selected button.
      */
     private int btnSelectedIndex = 0;
-    
+    /**
+     * Play a file sound.
+     */
+    private PlayWAVFile soundFile;
     
     
     
@@ -77,12 +84,14 @@ public class WinnerScreen {
 	 */
 	private void loadContent(){
 		objImage = new Image();		
-		background  = objImage.getBackgroundImg();
+		background  = objImage.getBackgroundWinnerImg();
 		univas_logo = objImage.getUnivasLogoImg();
 		imgBtnSave = objImage.getBtnSaveImg();
     	imgBtnSave2 = objImage.getBtnSaveImg2();
     	imgBtnCancel = objImage.getBtnCancelImg();
     	imgBtnCancel2 = objImage.getBtnCancelImg2();
+    	
+    	soundFile = new PlayWAVFile(PlayWAVFile.CLICK, 1);
 	}
 	
 	
@@ -175,15 +184,9 @@ public class WinnerScreen {
     	g2d.setFont(new Font("Lucida Sans", Font.BOLD, 16));
     	g2d.drawImage(background, 0, 0, Window.frameWidth, Window.frameHeight, null);                
         g2d.drawImage(univas_logo, 0, Window.frameHeight - (univas_logo.getHeight() + 10), 250, 70, null);
-    	
-        if(pnBaseFields != null){
-        	int btn_x = pnBaseFields.getX() + 110;
-        	int btn_y = pnBaseFields.getY() + pnBaseFields.getHeight() + 40;
-            g2d.drawImage(imgBtnSave2, btn_x, btn_y, imgBtnSave2.getWidth(), imgBtnSave2.getHeight(), null);
-            g2d.drawImage(imgBtnCancel, btn_x+360, btn_y, imgBtnCancel.getWidth(), imgBtnCancel.getHeight(), null);
-        }
-
         g2d.drawString(msg, Window.frameWidth/2-200, Window.frameHeight - 8);
+        
+        drawSelectedButton(g2d);
 	}
 	
 	
@@ -215,16 +218,56 @@ public class WinnerScreen {
 				currentlyButtonSelected = ButtonSelected.SAVE;
 				break;
 		}
-    	int btn_x = (Window.frameWidth / 2) - (imgBtnSave.getWidth() / 2);
-    	int btn_y = (Window.frameHeight / 2) ;
     	
-    	g2d.drawImage(imgSave, btn_x, btn_y, imgSave.getWidth(), imgSave.getHeight(), null); 
-    	g2d.drawImage(imgCancel, btn_x, (int) (btn_y*1.25), imgCancel.getWidth(), imgCancel.getHeight(), null); 
+    	
+    	if(pnBaseFields != null){
+        	int btn_x = pnBaseFields.getX() + 110;
+        	int btn_y = pnBaseFields.getY() + pnBaseFields.getHeight() + 40;
+            g2d.drawImage(imgSave, btn_x, btn_y, imgBtnSave2.getWidth(), imgBtnSave2.getHeight(), null);
+            g2d.drawImage(imgCancel, btn_x+360, btn_y, imgBtnCancel.getWidth(), imgBtnCancel.getHeight(), null);
+        }   
     }
 	
 	
 	
 	
+    
+    /**
+     * Check which button was pressed and do anything.
+     */
+    public void checkButtonPressed(){               	
+    	boolean isLeftPressed = JoyStick.getInstance().checkPOVPressed(JoyStick.BTN_LEFT);
+        boolean isRightPressed = JoyStick.getInstance().checkPOVPressed(JoyStick.BTN_RIGHT);
+        boolean isConfirmPressed = JoyStick.getInstance().checkButtonPressed(JoyStick.BTN_CONFIRM);
+
+        
+        if(isConfirmPressed && currentlyButtonSelected.equals(ButtonSelected.CANCEL)){
+        	pnBaseFields.setVisible(false);
+        	Framework.gameState = GameState.MAIN_MENU;
+        }
+        	
+        	
+        if(isLeftPressed || isRightPressed){
+        	
+        	if(isLeftPressed)
+            	btnSelectedIndex = btnSelectedIndex == 0 ? 1 : 0;
+            
+            if(isRightPressed)        	
+            	btnSelectedIndex = btnSelectedIndex == 1 ? 0 : 1;
+        	
+        	// Play the click sound.
+        	Thread th_click = new Thread(soundFile);
+    		th_click.start();
+        	
+        	// Wait a little time to change the button again.
+    		try {
+    			Thread.sleep(180);
+    		} catch (InterruptedException e1) { }
+        }
+        
+        currentlyButtonSelected = mainButtons[ btnSelectedIndex ];
+
+    }
 	
 	
 	
