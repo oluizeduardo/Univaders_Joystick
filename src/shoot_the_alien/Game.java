@@ -101,7 +101,6 @@ public class Game {
     	this.shootsStatus = shootsBar;
     	
     	
-    	
         Framework.gameState = Framework.GameState.GAME_CONTENT_LOADING;
         
         Thread threadForInitGame = new Thread() {

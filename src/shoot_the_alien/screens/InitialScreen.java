@@ -165,10 +165,7 @@ public class InitialScreen {
     
     
     
-    
-    
-    
-    
+   
     
     
     
@@ -176,14 +173,12 @@ public class InitialScreen {
      * Check which button was pressed and do anything.
      */
     public void checkButtonPressed(){
-    	boolean isStartPressed = JoyStick.getInstance().checkButtonPressed(JoyStick.BTN_START);               	
+    	boolean isConfirmPressed = JoyStick.getInstance().checkButtonPressed(JoyStick.BTN_START);               	
     	boolean isUpPressed = JoyStick.getInstance().checkPOVPressed(JoyStick.BTN_UP);
         boolean isDownPressed = JoyStick.getInstance().checkPOVPressed(JoyStick.BTN_DOWN);
-        	
-       // mainMenuButtons = ButtonSelected.values();
+        	        
         
-        
-    	if(isStartPressed){
+    	if(isConfirmPressed){
     		if(currentlyButtonSelected == ButtonSelected.NEW_GAME)
 
     			framework.loadNewGame();

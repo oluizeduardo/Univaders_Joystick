@@ -226,6 +226,7 @@ public class Framework extends Canvas {
                     gameState = GameState.MAIN_MENU;
                 break;
                 case MAIN_MENU:
+
                 	Stopwatch.isStopwatchRunning = false;
                 	
                 	if(game != null)
@@ -241,8 +242,9 @@ public class Framework extends Canvas {
 					} catch (InterruptedException e) { }
                 	
                 	try{
-	                	if(!Framework.th_stopwatch.isAlive())               		
-	                		Framework.th_stopwatch.start();
+	                	//if(!Framework.th_stopwatch.isAlive()) 
+                		    Thread th_stopwatch = new Thread(stopWatch);
+	                		th_stopwatch.start();
                 	}catch (IllegalThreadStateException e) { }
                 	
                 	// Turn on the Stopwatch.

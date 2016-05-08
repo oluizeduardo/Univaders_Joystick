@@ -23,11 +23,13 @@ public class PlayWAVFile implements Runnable {
 	public static final String SHOOT_LASER = "src/shoot_the_alien/resources/audio/shoot_laser.wav";
 	public static final String GAME_OVER = "src/shoot_the_alien/resources/audio/game_over.wav";
 	public static final String CLICK = "src/shoot_the_alien/resources/audio/click.wav";
+	public static final String WINNER = "src/shoot_the_alien/resources/audio/winner.wav";
 	
 	/*public static final String INTRO_WARRIOR = "audio/intro_warrior.wav";
 	public static final String SHOOT_LASER = "audio/shoot_laser.wav";
 	public static final String GAME_OVER = "audio/game_over.wav";
 	public static final String CLICK = "audio/click.wav";
+	public static final String WINNER = "audio/winner.wav";
 	*/
 	private File file = null;
 	

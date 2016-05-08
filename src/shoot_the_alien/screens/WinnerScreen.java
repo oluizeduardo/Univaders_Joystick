@@ -5,14 +5,12 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.image.BufferedImage;
-
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
-
 import shoot_the_alien.Framework;
 import shoot_the_alien.Framework.GameState;
 import shoot_the_alien.Image;
@@ -25,14 +23,18 @@ import shoot_the_alien.Window;
  * 
  * @author Luiz Eduardo da Costa
  * @version 1.0, 05/05/2016
- *
  */
 public class WinnerScreen {
 
+	/**
+	 * Used to load the buffer of an image.
+	 */
 	private BufferedImage background, univas_logo, 
 						  imgBtnSave, imgBtnSave2,
 						  imgBtnCancel, imgBtnCancel2;
-	
+	/**
+	 * Used to open an image.
+	 */
 	private Image objImage;
 	/**
      * The panel where will add the other components.
@@ -57,7 +59,7 @@ public class WinnerScreen {
     /**
      * The index of the currently selected button.
      */
-    private int btnSelectedIndex = 0;
+    private int indexBtnSelected = 0;
     /**
      * Play a file sound.
      */
@@ -102,7 +104,7 @@ public class WinnerScreen {
 	 * @return An instance setuped of a JPanel object.
 	 */
 	public JPanel getPanelFields(){
-    	
+		
     	GridLayout gridLayout = new GridLayout(3, 1);
     	gridLayout.setVgap(30);
         
@@ -112,6 +114,7 @@ public class WinnerScreen {
         int x = (Window.frameWidth / 2) - (pnBaseFields.getWidth() / 2);
         int y = (Window.frameHeight / 2) - (pnBaseFields.getHeight() / 2); 
         pnBaseFields.setLocation(x, y-50);
+        pnBaseFields.setVisible(false);// Set the initial visible as false.
         
         JPanel pnFields = new JPanel(gridLayout);
         pnFields.setSize(500, 300);
@@ -179,6 +182,20 @@ public class WinnerScreen {
      * @param g2d
      */
 	public void drawWinnerScreen(Graphics2D g2d){
+		
+		if(pnBaseFields != null){
+			
+			// Plays the sound if the panel is still invisible.
+			if(!pnBaseFields.isVisible()){
+				PlayWAVFile winnerSound = new PlayWAVFile(PlayWAVFile.WINNER, 1);
+				Thread th_sound = new Thread(winnerSound);
+				th_sound.start();
+			}
+			
+			pnBaseFields.setVisible(true);	
+		}
+			
+		
 		String msg = "Use TAB e Shift+TAB para navergar entre os campos";         	
     	g2d.setColor(Color.WHITE);
     	g2d.setFont(new Font("Lucida Sans", Font.BOLD, 16));
@@ -196,6 +213,9 @@ public class WinnerScreen {
 	
     /**
      * Draw the image of the currently button selected on the screen.
+     * <p>
+     * To do this, the method uses the flag 'currentlyButtonSelected'
+     * to know which button was pressed and which image print on the screen.
      * 
      * @param g2d Necessary to show the images on the screen.
      */
@@ -204,6 +224,7 @@ public class WinnerScreen {
         BufferedImage imgSave = null;
     	BufferedImage imgCancel = null;
     	
+    	// Change the button image depending on the state.
     	switch (currentlyButtonSelected) {
 			case SAVE:
 				imgSave = imgBtnSave2;
@@ -233,7 +254,7 @@ public class WinnerScreen {
 	
     
     /**
-     * Check which button was pressed and do anything.
+     * Check which button was pressed and do any action.
      */
     public void checkButtonPressed(){               	
     	boolean isLeftPressed = JoyStick.getInstance().checkPOVPressed(JoyStick.BTN_LEFT);
@@ -241,19 +262,20 @@ public class WinnerScreen {
         boolean isConfirmPressed = JoyStick.getInstance().checkButtonPressed(JoyStick.BTN_CONFIRM);
 
         
+        // Check if cancel button was pressed and return to main menu.
         if(isConfirmPressed && currentlyButtonSelected.equals(ButtonSelected.CANCEL)){
         	pnBaseFields.setVisible(false);
         	Framework.gameState = GameState.MAIN_MENU;
         }
         	
-        	
+        // Navigate to the buttons.
         if(isLeftPressed || isRightPressed){
         	
         	if(isLeftPressed)
-            	btnSelectedIndex = btnSelectedIndex == 0 ? 1 : 0;
+            	indexBtnSelected = indexBtnSelected == 0 ? 1 : 0;
             
             if(isRightPressed)        	
-            	btnSelectedIndex = btnSelectedIndex == 1 ? 0 : 1;
+            	indexBtnSelected = indexBtnSelected == 1 ? 0 : 1;
         	
         	// Play the click sound.
         	Thread th_click = new Thread(soundFile);
@@ -265,8 +287,8 @@ public class WinnerScreen {
     		} catch (InterruptedException e1) { }
         }
         
-        currentlyButtonSelected = mainButtons[ btnSelectedIndex ];
-
+        // Sets the currently button selected.
+        currentlyButtonSelected = mainButtons[ indexBtnSelected ];
     }
 	
 	
