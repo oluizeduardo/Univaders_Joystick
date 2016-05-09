@@ -1,0 +1,126 @@
+package shoot_the_alien.screens;
+
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import javax.swing.JPanel;
+import shoot_the_alien.Framework;
+import shoot_the_alien.Image;
+import shoot_the_alien.JoyStick;
+import shoot_the_alien.Window;
+import shoot_the_alien.Framework.GameState;
+
+/**
+ * It contains all about building Ranking screen.
+ * <p>
+ * There is the table to list the best winners.
+ * 
+ * 
+ * @author Luiz Eduardo da Costa
+ * @version 1.0, 08/05/16
+ */
+public class RankingScreen {
+
+	
+	/**
+	 * Used to open an image.
+	 */
+	private Image objImage;
+	/**
+	 * Used to load the buffer of an image.
+	 */
+	private BufferedImage img_background, img_univas_logo, img_btnCancelar;
+	/**
+     * The panel where will add the other components.
+     */
+	public JPanel pnBaseTable;
+	
+	
+	
+	
+	/**
+	 * The contructor of the class.
+	 */
+	public RankingScreen() {
+		
+		loadContent();
+	}
+	
+	
+	
+	
+	/**
+	 * Load all contents of the class, image, sounds, etc.
+	 */
+	private void loadContent(){
+		objImage = new Image();		
+		img_background  = objImage.getBackgroundImg();
+		img_univas_logo = objImage.getUnivasLogoImg();
+		img_btnCancelar = objImage.getBtnCancelImg2();
+	}
+	
+	
+	
+	
+	
+	
+	/**
+	 * It returns the base painel built and configured.
+	 */
+	public JPanel getPnTableBase(){
+		if(pnBaseTable == null){
+			pnBaseTable = new JPanel(null);
+			pnBaseTable.setBackground(new Color(0,0,0, 150));
+			pnBaseTable.setSize(880, 400);
+	        int x = (Window.frameWidth / 2) - (pnBaseTable.getWidth() / 2);
+	        int y = (Window.frameHeight / 2) - (pnBaseTable.getHeight() / 2); 
+	        pnBaseTable.setLocation(x, y-50);
+		}
+		return pnBaseTable;
+	}
+	
+	
+	
+	
+	/**
+	 * Draw the ranking screen: background image and selected buttom.
+	 * All this are drawing in the game state RANKING.
+     * @param g2d
+     */
+	public void drawRankingScreen(Graphics2D g2d){
+		
+		if(pnBaseTable != null){
+			int btn_x = (pnBaseTable.getX() + ((pnBaseTable.getWidth() / 2) - (img_btnCancelar.getWidth() / 2)));
+	    	int btn_y = pnBaseTable.getY() + pnBaseTable.getHeight() + 40;
+			
+			g2d.drawImage(img_background, 0, 0, Window.frameWidth, Window.frameHeight, null);                
+	        g2d.drawImage(img_univas_logo, 0, Window.frameHeight - (img_univas_logo.getHeight() + 10), 250, 70, null);
+	        g2d.drawImage(img_btnCancelar, btn_x, btn_y, img_btnCancelar.getWidth(), img_btnCancelar.getHeight(), null);
+		
+	        g2d.setColor(Color.RED);
+	        g2d.setFont(new Font("Lucida Sans", Font.BOLD, 16));
+	        g2d.drawString("Pressione BOTÃO 3", Window.frameWidth - 200, Window.frameHeight - 10);
+	        
+	        pnBaseTable.setVisible(true);	
+		}
+	}
+	
+	
+	
+	
+	
+	/**
+     * Check which button was pressed and do any action.
+     */
+    public void checkButtonPressed(){   
+    	boolean isConfirmPressed = JoyStick.getInstance().checkButtonPressed(JoyStick.BTN_CONFIRM);
+        
+        // Check if cancel button was pressed and return to main menu.
+        if(isConfirmPressed){
+        	pnBaseTable.setVisible(false);
+        	Framework.gameState = GameState.MAIN_MENU;
+        }
+    }
+	
+}

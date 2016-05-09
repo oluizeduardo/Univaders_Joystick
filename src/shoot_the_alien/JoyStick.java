@@ -20,8 +20,11 @@ import net.java.games.input.Component.Identifier;
 public class JoyStick implements Runnable {
 
 	
-	/** The code of the button to get the ammunition kit (L1).*/
+	/** The code of the button to get the ammunition kit (3).*/
 	public static final Identifier BTN_GET_KIT = Identifier.Button._2;
+	/** The code of the button to confirm Save or Cancel the winner registration.*/
+	public static final Identifier BTN_CONFIRM = Identifier.Button._2;
+	
 	/** The code of the button shoot (R1).*/
 	public static final Identifier BTN_SHOOT = Identifier.Button._5;
 	/** The code of the button SELECT.*/
@@ -32,6 +35,10 @@ public class JoyStick implements Runnable {
 	public static final float BTN_UP = Component.POV.UP;
 	/** The float value of the button DOWN.*/
 	public static final float BTN_DOWN = Component.POV.DOWN;
+	/** The float value of the button LEFT.*/
+	public static final float BTN_LEFT = Component.POV.LEFT;
+	/** The float value of the button RIGHT.*/
+	public static final float BTN_RIGHT = Component.POV.RIGHT;
 	
 	
 	

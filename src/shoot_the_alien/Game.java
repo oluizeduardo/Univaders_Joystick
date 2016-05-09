@@ -101,7 +101,6 @@ public class Game {
     	this.shootsStatus = shootsBar;
     	
     	
-    	
         Framework.gameState = Framework.GameState.GAME_CONTENT_LOADING;
         
         Thread threadForInitGame = new Thread() {
@@ -276,12 +275,6 @@ public class Game {
             	Framework.gameState = Framework.GameState.WINNER;
             }
         }
-          
-        
-        
-    	
-        
-        
     }
     
     
@@ -518,10 +511,19 @@ public class Game {
         g2d.setColor(Color.red);
         g2d.drawString("Game Over!!!", Window.frameWidth / 2 - 50, (int)(Window.frameHeight / 2)-40);
         g2d.drawString("Pontuação final: "+score, Window.frameWidth / 2 - 140, (int)(Window.frameHeight / 2));
-        g2d.drawString("Pressione SELECT ou ENTER para continuar", Window.frameWidth / 2 - 300, (int)(Window.frameHeight /2) + 50);
+        g2d.drawString("Pressione ESPAÇO ou ENTER para continuar", Window.frameWidth / 2 - 300, (int)(Window.frameHeight /2) + 50);
     }
     
     
+    
+    
+    
+    /**
+     * Return the currently score.
+     */
+    public int getScore(){
+    	return score;
+    }
     
     
     
