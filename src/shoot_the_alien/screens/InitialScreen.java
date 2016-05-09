@@ -5,7 +5,10 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import shoot_the_alien.Framework;
+<<<<<<< HEAD
 import shoot_the_alien.Framework.GameState;
+=======
+>>>>>>> d52c1a8f22c28717c07518d6cfd13162591d83f1
 import shoot_the_alien.Image;
 import shoot_the_alien.JoyStick;
 import shoot_the_alien.PlayWAVFile;
@@ -108,6 +111,7 @@ public class InitialScreen {
      */
     public void drawInitialScreen(Graphics2D g2d){
     	
+<<<<<<< HEAD
         g2d.setColor(Color.WHITE);
         g2d.setFont(new Font("Lucida Sans", Font.BOLD, 25));
         g2d.drawImage(imgBackground, 0, 0, Window.frameWidth, Window.frameHeight, null);
@@ -115,6 +119,12 @@ public class InitialScreen {
         g2d.setColor(Color.RED);
         g2d.setFont(new Font("Lucida Sans", Font.BOLD, 16));
         g2d.drawString("Pressione START", Window.frameWidth - 200, Window.frameHeight - 10);
+=======
+        g2d.setColor(Color.white);
+        g2d.setFont(new Font("Lucida Sans", Font.BOLD, 25));
+        g2d.drawImage(imgBackground, 0, 0, Window.frameWidth, Window.frameHeight, null);
+        g2d.drawString("SISTEMAS DE INFORMAÇÃO - UNIVÁS - 2016", 10, Window.frameHeight - 10);
+>>>>>>> d52c1a8f22c28717c07518d6cfd13162591d83f1
     
         drawSelectedButton(g2d);
     }
@@ -169,7 +179,14 @@ public class InitialScreen {
     
     
     
+<<<<<<< HEAD
    
+=======
+    
+    
+    
+    
+>>>>>>> d52c1a8f22c28717c07518d6cfd13162591d83f1
     
     
     
@@ -177,6 +194,7 @@ public class InitialScreen {
      * Check which button was pressed and do anything.
      */
     public void checkButtonPressed(){
+<<<<<<< HEAD
     	boolean isConfirmPressed = JoyStick.getInstance().checkButtonPressed(JoyStick.BTN_START);               	
     	boolean isUpPressed = JoyStick.getInstance().checkPOVPressed(JoyStick.BTN_UP);
         boolean isDownPressed = JoyStick.getInstance().checkPOVPressed(JoyStick.BTN_DOWN);
@@ -188,6 +206,19 @@ public class InitialScreen {
     		
     		if(currentlyButtonSelected == ButtonSelected.RANKING)
     			Framework.gameState = GameState.RANKING;
+=======
+    	boolean isStartPressed = JoyStick.getInstance().checkButtonPressed(JoyStick.BTN_START);               	
+    	boolean isUpPressed = JoyStick.getInstance().checkPOVPressed(JoyStick.BTN_UP);
+        boolean isDownPressed = JoyStick.getInstance().checkPOVPressed(JoyStick.BTN_DOWN);
+        	
+       // mainMenuButtons = ButtonSelected.values();
+        
+        
+    	if(isStartPressed){
+    		if(currentlyButtonSelected == ButtonSelected.NEW_GAME)
+
+    			framework.loadNewGame();
+>>>>>>> d52c1a8f22c28717c07518d6cfd13162591d83f1
     			
     		if(currentlyButtonSelected == ButtonSelected.EXIT)
     			System.exit(0);

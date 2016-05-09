@@ -8,7 +8,10 @@ import shoot_the_alien.JoyStick;
 import shoot_the_alien.Framework;
 import shoot_the_alien.Stopwatch;
 import shoot_the_alien.screens.InitialScreen;
+<<<<<<< HEAD
 import shoot_the_alien.screens.RankingScreen;
+=======
+>>>>>>> d52c1a8f22c28717c07518d6cfd13162591d83f1
 import shoot_the_alien.screens.WinnerScreen;
 
 /**
@@ -94,10 +97,13 @@ public class Framework extends Canvas {
      * Object of the winner screen.
      */
     private WinnerScreen screenWinner;
+<<<<<<< HEAD
     /**
      * Object to buid the ranking sreen.
      */
     private RankingScreen screenRanking;
+=======
+>>>>>>> d52c1a8f22c28717c07518d6cfd13162591d83f1
     
     
     
@@ -113,10 +119,14 @@ public class Framework extends Canvas {
         
         this.screenMainMenu = new InitialScreen(this);
         this.screenWinner = new WinnerScreen();
+<<<<<<< HEAD
         this.screenRanking = new RankingScreen();
         
         
         // Create the two statusbar on the top of the screen.
+=======
+        
+>>>>>>> d52c1a8f22c28717c07518d6cfd13162591d83f1
         createStatusBar();              
         
         // Get the instance of the joystick class.
@@ -287,7 +297,11 @@ public class Framework extends Canvas {
                 	if(areStatusbarVisible())
                 		setStatusBarsVisibility(false);
                 	if(screenWinner.pnBaseFields == null)
+<<<<<<< HEAD
                     	super.add(screenWinner.getPanelFields(game.getScore()));
+=======
+                    	super.add(screenWinner.getPanelFields());
+>>>>>>> d52c1a8f22c28717c07518d6cfd13162591d83f1
                 	
                 	screenWinner.checkButtonPressed();
                 	
@@ -368,9 +382,12 @@ public class Framework extends Canvas {
 	        break; 
             case WINNER:
             	screenWinner.drawWinnerScreen(g2d);
+<<<<<<< HEAD
             break;
             case RANKING:
             	screenRanking.drawRankingScreen(g2d);
+=======
+>>>>>>> d52c1a8f22c28717c07518d6cfd13162591d83f1
             break;
             default:
             	ShowLoadingMessage(g2d);

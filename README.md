@@ -3,6 +3,8 @@ Univaders project played with an USB controller
 
 You're a begginer student in Univás college and your mission is to eliminate the largest number of aliens and protect the university.
 
+![alt text] (https://github.com/oluizeduardo/Univaders_Joystick/blob/master/initialscreen.gif)
+
 <h3>Description:</h3>
 Use the buttom of the USB controller to shoot the aliens and other actions. 
 If you leave some aliens escape or if the time runs out, UNIVAS will be dominated and you lose the game.
