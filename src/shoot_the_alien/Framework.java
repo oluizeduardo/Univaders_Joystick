@@ -4,11 +4,14 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import shoot_the_alien.Game;
-import shoot_the_alien.JoyStick;
+import shoot_the_alien.model.JoyStick;
+import shoot_the_alien.model.PlayWAVFile;
+import shoot_the_alien.model.Stopwatch;
 import shoot_the_alien.Framework;
-import shoot_the_alien.Stopwatch;
-import shoot_the_alien.screens.InitialScreen;
-import shoot_the_alien.screens.WinnerScreen;
+import shoot_the_alien.view.screens.frame.Window;
+import shoot_the_alien.view.Canvas;
+import shoot_the_alien.view.StatusBar;
+import shoot_the_alien.view.screens.*;
 
 /**
  * Framework that controls the game (Game.java) that created it, update it 
@@ -54,7 +57,8 @@ public class Framework extends Canvas {
     public static enum GameState{STARTING, VISUALIZING, 
     							GAME_CONTENT_LOADING, 
     							MAIN_MENU, PLAYING, 
-    							RESTART, GAMEOVER, WINNER}
+    							RESTART, RANKING,
+    							GAMEOVER, WINNER}
     /**
      * Current state of the game.
      */
@@ -92,6 +96,10 @@ public class Framework extends Canvas {
      * Object of the winner screen.
      */
     private WinnerScreen screenWinner;
+    /**
+     * Object to buid the ranking sreen.
+     */
+    private RankingScreen screenRanking;
     
     
     
@@ -107,7 +115,10 @@ public class Framework extends Canvas {
         
         this.screenMainMenu = new InitialScreen(this);
         this.screenWinner = new WinnerScreen();
+        this.screenRanking = new RankingScreen();
         
+        
+        // Create the two statusbar on the top of the screen.
         createStatusBar();              
         
         // Get the instance of the joystick class.
@@ -264,12 +275,20 @@ public class Framework extends Canvas {
                 case RESTART:
                 	RestartGame();
                 break;
+                
+                case RANKING:
+                	
+                	add(screenRanking.getPnTableBase());                   	
+                	
+                	screenRanking.checkButtonPressed();
+                break;
+                
                 case WINNER:	
                 	
                 	if(areStatusbarVisible())
                 		setStatusBarsVisibility(false);
                 	if(screenWinner.pnBaseFields == null)
-                    	super.add(screenWinner.getPanelFields());
+                    	super.add(screenWinner.getPanelFields(game.getScore()));
                 	
                 	screenWinner.checkButtonPressed();
                 	
@@ -343,14 +362,16 @@ public class Framework extends Canvas {
             	
             break;
             case GAME_CONTENT_LOADING:
-            	ShowLoadingMessage(g2d);
-            	
+            	ShowLoadingMessage(g2d);	
             break;
             case GAMEOVER:
 	            game.DrawGameOver(g2d);
 	        break; 
             case WINNER:
             	screenWinner.drawWinnerScreen(g2d);
+            break;
+            case RANKING:
+            	screenRanking.drawRankingScreen(g2d);
             break;
             default:
             	ShowLoadingMessage(g2d);

@@ -8,7 +8,15 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Random;
-import shoot_the_alien.Alien;
+
+import shoot_the_alien.characters.Alien;
+import shoot_the_alien.characters.Ammunition;
+import shoot_the_alien.model.Image;
+import shoot_the_alien.model.JoyStick;
+import shoot_the_alien.model.PlayWAVFile;
+import shoot_the_alien.model.Stopwatch;
+import shoot_the_alien.view.StatusBar;
+import shoot_the_alien.view.screens.frame.Window;
 
 /**
  * The actual game.
@@ -275,12 +283,6 @@ public class Game {
             	Framework.gameState = Framework.GameState.WINNER;
             }
         }
-          
-        
-        
-    	
-        
-        
     }
     
     
@@ -517,10 +519,19 @@ public class Game {
         g2d.setColor(Color.red);
         g2d.drawString("Game Over!!!", Window.frameWidth / 2 - 50, (int)(Window.frameHeight / 2)-40);
         g2d.drawString("Pontuação final: "+score, Window.frameWidth / 2 - 140, (int)(Window.frameHeight / 2));
-        g2d.drawString("Pressione SELECT ou ENTER para continuar", Window.frameWidth / 2 - 300, (int)(Window.frameHeight /2) + 50);
+        g2d.drawString("Pressione ESPAÇO ou ENTER para continuar", Window.frameWidth / 2 - 300, (int)(Window.frameHeight /2) + 50);
     }
     
     
+    
+    
+    
+    /**
+     * Return the currently score.
+     */
+    public int getScore(){
+    	return score;
+    }
     
     
     
