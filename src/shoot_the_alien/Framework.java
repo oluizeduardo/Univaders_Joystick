@@ -8,10 +8,20 @@ import shoot_the_alien.model.JoyStick;
 import shoot_the_alien.model.PlayWAVFile;
 import shoot_the_alien.model.Stopwatch;
 import shoot_the_alien.Framework;
+<<<<<<< HEAD
 import shoot_the_alien.view.screens.frame.Window;
 import shoot_the_alien.view.Canvas;
 import shoot_the_alien.view.StatusBar;
 import shoot_the_alien.view.screens.*;
+=======
+import shoot_the_alien.Stopwatch;
+import shoot_the_alien.screens.InitialScreen;
+<<<<<<< HEAD
+import shoot_the_alien.screens.RankingScreen;
+=======
+>>>>>>> d52c1a8f22c28717c07518d6cfd13162591d83f1
+import shoot_the_alien.screens.WinnerScreen;
+>>>>>>> 045390c3cfb7f9085f2acb5d3123e6c4acd95930
 
 /**
  * Framework that controls the game (Game.java) that created it, update it 
@@ -96,10 +106,19 @@ public class Framework extends Canvas {
      * Object of the winner screen.
      */
     private WinnerScreen screenWinner;
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 045390c3cfb7f9085f2acb5d3123e6c4acd95930
     /**
      * Object to buid the ranking sreen.
      */
     private RankingScreen screenRanking;
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> d52c1a8f22c28717c07518d6cfd13162591d83f1
+>>>>>>> 045390c3cfb7f9085f2acb5d3123e6c4acd95930
     
     
     
@@ -115,10 +134,21 @@ public class Framework extends Canvas {
         
         this.screenMainMenu = new InitialScreen(this);
         this.screenWinner = new WinnerScreen();
+<<<<<<< HEAD
         this.screenRanking = new RankingScreen();
         
         
         // Create the two statusbar on the top of the screen.
+=======
+<<<<<<< HEAD
+        this.screenRanking = new RankingScreen();
+        
+        
+        // Create the two statusbar on the top of the screen.
+=======
+        
+>>>>>>> d52c1a8f22c28717c07518d6cfd13162591d83f1
+>>>>>>> 045390c3cfb7f9085f2acb5d3123e6c4acd95930
         createStatusBar();              
         
         // Get the instance of the joystick class.
@@ -278,7 +308,12 @@ public class Framework extends Canvas {
                 
                 case RANKING:
                 	
+<<<<<<< HEAD
                 	add(screenRanking.getPnTableBase());                   	
+=======
+                	if(screenRanking.pnBaseTable == null)
+                    	super.add(screenRanking.getPnTableBase());
+>>>>>>> 045390c3cfb7f9085f2acb5d3123e6c4acd95930
                 	
                 	screenRanking.checkButtonPressed();
                 break;
@@ -288,7 +323,15 @@ public class Framework extends Canvas {
                 	if(areStatusbarVisible())
                 		setStatusBarsVisibility(false);
                 	if(screenWinner.pnBaseFields == null)
+<<<<<<< HEAD
                     	super.add(screenWinner.getPanelFields(game.getScore()));
+=======
+<<<<<<< HEAD
+                    	super.add(screenWinner.getPanelFields(game.getScore()));
+=======
+                    	super.add(screenWinner.getPanelFields());
+>>>>>>> d52c1a8f22c28717c07518d6cfd13162591d83f1
+>>>>>>> 045390c3cfb7f9085f2acb5d3123e6c4acd95930
                 	
                 	screenWinner.checkButtonPressed();
                 	
@@ -369,6 +412,12 @@ public class Framework extends Canvas {
 	        break; 
             case WINNER:
             	screenWinner.drawWinnerScreen(g2d);
+<<<<<<< HEAD
+            break;
+            case RANKING:
+            	screenRanking.drawRankingScreen(g2d);
+=======
+>>>>>>> d52c1a8f22c28717c07518d6cfd13162591d83f1
             break;
             case RANKING:
             	screenRanking.drawRankingScreen(g2d);
