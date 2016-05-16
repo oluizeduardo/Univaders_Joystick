@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 /**
- * It works to generate the instance connection with database.
+ * It works to generate an instance connection with database.
  * 
  * @author Luiz Eduardo da Costa
  * @version 1.0, 14/05/2016

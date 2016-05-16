@@ -16,15 +16,17 @@ import javax.swing.ListSelectionModel;
  */
 public class TableWinners{
 
-
-	private static final long serialVersionUID = 1L;
 	/**
 	 * The model to be apply on the table.
 	 */
 	private WinnersTableModel model;
-	
+	/**
+	 * The table where will appear the informations about the best winners.
+	 */
 	private JTable table;
-	
+	/**
+	 * The panel will add the table.
+	 */
 	private JPanel pnBaseTable; 
 	
 	

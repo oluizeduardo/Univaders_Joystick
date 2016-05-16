@@ -191,28 +191,30 @@ public class InitialScreen {
     			
     		if(currentlyButtonSelected == ButtonSelected.EXIT)
     			System.exit(0);
-    	}
     	
-    	if(isUpPressed || isDownPressed){
-    		if(isDownPressed){
-        		
-        		btnSelectedIndex = btnSelectedIndex == mainMenuButtons.length - 1 ? 0 : ++btnSelectedIndex;
-        		currentlyButtonSelected = mainMenuButtons[ btnSelectedIndex ];
-        	}
-        	if(isUpPressed){
-        		
-        		btnSelectedIndex = btnSelectedIndex == 0 ? btnSelectedIndex = mainMenuButtons.length - 1 : --btnSelectedIndex;                   		
-        		currentlyButtonSelected = mainMenuButtons[ btnSelectedIndex ];
-        	}
-        	
-        	// Play the click sound.
-        	Thread th_click = new Thread(soundFile);
-    		th_click.start();
-        	
-        	// Wait a little time to change the button again.
-			try {
-				Thread.sleep(180);
-			} catch (InterruptedException e1) { }
+    	}else{
+    	
+	    	if(isUpPressed || isDownPressed){
+	    		if(isDownPressed){
+	        		
+	        		btnSelectedIndex = btnSelectedIndex == mainMenuButtons.length - 1 ? 0 : ++btnSelectedIndex;
+	        		currentlyButtonSelected = mainMenuButtons[ btnSelectedIndex ];
+	        	}
+	        	if(isUpPressed){
+	        		
+	        		btnSelectedIndex = btnSelectedIndex == 0 ? btnSelectedIndex = mainMenuButtons.length - 1 : --btnSelectedIndex;                   		
+	        		currentlyButtonSelected = mainMenuButtons[ btnSelectedIndex ];
+	        	}
+	        	
+	        	// Play the click sound.
+	        	Thread th_click = new Thread(soundFile);
+	    		th_click.start();
+	        	
+	        	// Wait a little time to change the button again.
+				try {
+					Thread.sleep(180);
+				} catch (InterruptedException e1) { }
+	    	}
     	}
     }
     

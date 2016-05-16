@@ -8,20 +8,10 @@ import shoot_the_alien.model.JoyStick;
 import shoot_the_alien.model.PlayWAVFile;
 import shoot_the_alien.model.Stopwatch;
 import shoot_the_alien.Framework;
-<<<<<<< HEAD
 import shoot_the_alien.view.screens.frame.Window;
 import shoot_the_alien.view.Canvas;
 import shoot_the_alien.view.StatusBar;
 import shoot_the_alien.view.screens.*;
-=======
-import shoot_the_alien.Stopwatch;
-import shoot_the_alien.screens.InitialScreen;
-<<<<<<< HEAD
-import shoot_the_alien.screens.RankingScreen;
-=======
->>>>>>> d52c1a8f22c28717c07518d6cfd13162591d83f1
-import shoot_the_alien.screens.WinnerScreen;
->>>>>>> 045390c3cfb7f9085f2acb5d3123e6c4acd95930
 
 /**
  * Framework that controls the game (Game.java) that created it, update it 
@@ -106,20 +96,14 @@ public class Framework extends Canvas {
      * Object of the winner screen.
      */
     private WinnerScreen screenWinner;
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> 045390c3cfb7f9085f2acb5d3123e6c4acd95930
     /**
      * Object to buid the ranking sreen.
      */
     private RankingScreen screenRanking;
-<<<<<<< HEAD
-=======
-=======
->>>>>>> d52c1a8f22c28717c07518d6cfd13162591d83f1
->>>>>>> 045390c3cfb7f9085f2acb5d3123e6c4acd95930
-    
+    /**
+     * Object to buid the gameover sreen.
+     */
+    private GameOverScreen screenGameOver;
     
     
     
@@ -134,21 +118,11 @@ public class Framework extends Canvas {
         
         this.screenMainMenu = new InitialScreen(this);
         this.screenWinner = new WinnerScreen();
-<<<<<<< HEAD
         this.screenRanking = new RankingScreen();
+        this.screenGameOver = new GameOverScreen();
         
         
         // Create the two statusbar on the top of the screen.
-=======
-<<<<<<< HEAD
-        this.screenRanking = new RankingScreen();
-        
-        
-        // Create the two statusbar on the top of the screen.
-=======
-        
->>>>>>> d52c1a8f22c28717c07518d6cfd13162591d83f1
->>>>>>> 045390c3cfb7f9085f2acb5d3123e6c4acd95930
         createStatusBar();              
         
         // Get the instance of the joystick class.
@@ -257,7 +231,8 @@ public class Framework extends Canvas {
 	                    visualizingTime += System.nanoTime() - lastVisualizingTime;
 	                    lastVisualizingTime = System.nanoTime();
 	                }	                
-	            break;                
+	            break;   
+	            
                 case STARTING: 
                     // Load files - images, sounds, ...
                     this.LoadContent();
@@ -266,16 +241,16 @@ public class Framework extends Canvas {
                     // we change game status to main menu.
                     gameState = GameState.MAIN_MENU;
                 break;
+                
                 case MAIN_MENU:
-
-                	Stopwatch.isStopwatchRunning = false;
                 	
-                	if(game != null)
+                	if(areStatusBarVisible())
                 		setStatusBarsVisibility(false);
                 	
                 	screenMainMenu.checkButtonPressed();
                 	
                 break;
+                
                 case GAME_CONTENT_LOADING:
                 	// Wait a time before start the game.
                 	try {
@@ -307,14 +282,12 @@ public class Framework extends Canvas {
                 break;
                 
                 case RANKING:
-                	
-<<<<<<< HEAD
-                	add(screenRanking.getPnTableBase());                   	
-=======
-                	if(screenRanking.pnBaseTable == null)
-                    	super.add(screenRanking.getPnTableBase());
->>>>>>> 045390c3cfb7f9085f2acb5d3123e6c4acd95930
-                	
+
+                	if(!screenRanking.pnBaseTable.isVisible()){
+                		add(screenRanking.getPnTableBase());
+                		screenRanking.pnBaseTable.setVisible(true);
+                		screenRanking.listTableWithBestWinners();
+                	}
                 	screenRanking.checkButtonPressed();
                 break;
                 
@@ -323,15 +296,7 @@ public class Framework extends Canvas {
                 	if(areStatusbarVisible())
                 		setStatusBarsVisibility(false);
                 	if(screenWinner.pnBaseFields == null)
-<<<<<<< HEAD
                     	super.add(screenWinner.getPanelFields(game.getScore()));
-=======
-<<<<<<< HEAD
-                    	super.add(screenWinner.getPanelFields(game.getScore()));
-=======
-                    	super.add(screenWinner.getPanelFields());
->>>>>>> d52c1a8f22c28717c07518d6cfd13162591d83f1
->>>>>>> 045390c3cfb7f9085f2acb5d3123e6c4acd95930
                 	
                 	screenWinner.checkButtonPressed();
                 	
@@ -339,6 +304,9 @@ public class Framework extends Canvas {
                 case GAMEOVER:
                 	// Stop the timewatch.
                 	if(!playedTheGameOverSound){
+                		
+                		screenGameOver.setFinalScore(game.getScore());
+                		
                 		// Stop the timewatch.
                 		Stopwatch.isStopwatchRunning = false;
                 		
@@ -352,13 +320,8 @@ public class Framework extends Canvas {
                         playedTheGameOverSound = true;
                 	}
                 	
-                	boolean isSelectedPressed = JoyStick.getInstance().checkButtonPressed(JoyStick.BTN_SELECT);
+                	screenGameOver.waitButtonPressed();
                 	
-                	if(isSelectedPressed){
-                		playedTheGameOverSound = false;
-                		gameState = GameState.MAIN_MENU;
-                	}
-                		
                 break;
 				default:
 					gameState = GameState.MAIN_MENU;
@@ -397,31 +360,21 @@ public class Framework extends Canvas {
         switch (gameState)
         {
 	        case PLAYING:
-	        	game.Draw(g2d);
-	            
+	        	game.Draw(g2d);         
 	        break;
             case MAIN_MENU:
                 screenMainMenu.drawInitialScreen(g2d);
-            	
-            break;
-            case GAME_CONTENT_LOADING:
-            	ShowLoadingMessage(g2d);	
             break;
             case GAMEOVER:
-	            game.DrawGameOver(g2d);
+	            screenGameOver.DrawGameOver(g2d);
 	        break; 
             case WINNER:
             	screenWinner.drawWinnerScreen(g2d);
-<<<<<<< HEAD
-            break;
-            case RANKING:
-            	screenRanking.drawRankingScreen(g2d);
-=======
->>>>>>> d52c1a8f22c28717c07518d6cfd13162591d83f1
             break;
             case RANKING:
             	screenRanking.drawRankingScreen(g2d);
             break;
+            case GAME_CONTENT_LOADING:
             default:
             	ShowLoadingMessage(g2d);
 			break;
@@ -465,6 +418,17 @@ public class Framework extends Canvas {
     }
     
 
+    /**
+     * It checks if the statusbars are visible.
+     */
+    private boolean areStatusBarVisible(){
+    	if(game != null){
+        	return (game.runawayAliensStatus.isVisible() && game.shootsStatus.isVisible());
+    	}else{
+    		return false;
+    	}
+    }
+    
     
     
     
@@ -473,6 +437,7 @@ public class Framework extends Canvas {
      */
     public void loadNewGame()
     {
+    	playedTheGameOverSound = false;
         // We set gameTime to zero and lastTime to current time for later calculations.
         gameTime = 0;
         lastTime = System.nanoTime();

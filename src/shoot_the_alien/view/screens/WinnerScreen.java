@@ -133,6 +133,7 @@ public class WinnerScreen {
         
         Font fontField = new Font("Arial", Font.BOLD, 40);
         Font fontLabel = new Font("Arial", Font.ITALIC + Font.BOLD, 50);
+        Font fontLabel2 = new Font("Arial", Font.ITALIC + Font.BOLD, 43);
         Border border = BorderFactory.createEtchedBorder(EtchedBorder.RAISED,null,new Color(0, 0, 0));
         
         tfName = new JTextField(); 
@@ -157,8 +158,8 @@ public class WinnerScreen {
         lbName.setFont(fontLabel);
         lbName.setForeground(Color.WHITE);
         
-        JLabel lbId = new JLabel("Escola", JLabel.CENTER);
-        lbId.setFont(fontLabel);
+        JLabel lbId = new JLabel("Escola/Cidade", JLabel.CENTER);
+        lbId.setFont(fontLabel2);
         lbId.setForeground(Color.WHITE);
         
         JLabel lbScore = new JLabel("Pontuação", JLabel.CENTER);
@@ -274,11 +275,12 @@ public class WinnerScreen {
         	
         	if(tfName.getText().isEmpty()){
         		JOptionPane.showMessageDialog(null, "Informe um nome!");
+        		tfName.grabFocus();
         	}else{
         		
         		if(tfIdentification.getText().isEmpty()){
         			JOptionPane.showMessageDialog(null, "Informe uma identificação sobre o vencedor.");
-        		
+        			tfIdentification.grabFocus();
         		}else{
         			String name = tfName.getText().toUpperCase();
                 	String id = tfIdentification.getText().toUpperCase();
@@ -288,8 +290,9 @@ public class WinnerScreen {
                 	WinnerDAO wdao = new WinnerDAO();
             		
             		if(wdao.insertNew(newWinner)){
-            			JOptionPane.showMessageDialog(null, "Vencedor inserido com sucesso!");
+            			JOptionPane.showMessageDialog(null, "VENCEDOR REGISTRADO COM SUCESSO!");
             			pnBaseFields.setVisible(false);
+            			pnBaseFields = null;
                     	Framework.gameState = GameState.MAIN_MENU;
             		} 
         		}
@@ -300,6 +303,7 @@ public class WinnerScreen {
         // Check if cancel button was pressed and return to main menu.
         if(isConfirmPressed && currentlyButtonSelected.equals(ButtonSelected.CANCEL)){
         	pnBaseFields.setVisible(false);
+        	pnBaseFields = null;
         	Framework.gameState = GameState.MAIN_MENU;
         }
         	

@@ -1,6 +1,5 @@
 package shoot_the_alien;
 
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -8,7 +7,6 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Random;
-
 import shoot_the_alien.characters.Alien;
 import shoot_the_alien.characters.Ammunition;
 import shoot_the_alien.model.Image;
@@ -32,7 +30,7 @@ public class Game {
 	/**
 	 * Maximum number of fugitives.
 	 */
-	public static final int MAX_ALIENS_RUNAWAY = 50;
+	public static final int MAX_ALIENS_RUNAWAY = 2;
 	/**
 	 * Maximum number of shoots.
 	 */
@@ -70,10 +68,6 @@ public class Game {
      * The time which must elapse between shots.
      */
     private long timeBetweenShots;
-    /**
-     * Red border to game over.
-     */
-    private BufferedImage red_borderImg;
     /**
      * The ammunition kit.
      */
@@ -156,7 +150,6 @@ public class Game {
     	
     	backgroundImg = objImage.getBackgroundImg();
     	univas_logo = objImage.getUnivasLogoImg();
-    	red_borderImg = objImage.getRedborderImg();
     	alienImg_1 = objImage.getAlienImg1();
     	alienImg_2 = objImage.getAlienImg2();
     }
@@ -279,7 +272,7 @@ public class Game {
         	Framework.gameState = Framework.GameState.GAMEOVER;
         }else{
         	// Check if the stopwatch is over.
-            if(!Stopwatch.isStopwatchRunning){
+            if(Stopwatch.isOver()){
             	Framework.gameState = Framework.GameState.WINNER;
             }
         }
@@ -446,6 +439,7 @@ public class Game {
     	this.isGetKitBtnPressed = JoyStick.getInstance().checkButtonPressed(JoyStick.BTN_GET_KIT);
     	
     	if(isSelectPressed){
+    		Stopwatch.isStopwatchRunning = false;    		
     		Framework.gameState = Framework.GameState.MAIN_MENU;
     	}
     }
@@ -475,22 +469,13 @@ public class Game {
         for(int i = 0; i < aliens.size(); i++)
             aliens.get(i).Draw(g2d);
       
-        g2d.setFont(new Font("monospaced", Font.BOLD, 25));
-    /*    g2d.setColor(Color.MAGENTA);
-
-        // Draw the scoreboard in the higher left corner.
-        g2d.drawString("FUGITIVOS..: " + runawayAliens, 10, 20);
-        g2d.drawString("CAPTURADOS.: " + killedAliens, 10, 45);
-        g2d.drawString("TIROS......: " + shoots, 10, 70);
-        g2d.drawString("PONTOS.....: " + score, 10, 95);*/
-        
+        g2d.setFont(new Font("monospaced", Font.BOLD, 25));  
         shootsStatus.setValue(shoots);
         runawayAliensStatus.setValue(MAX_ALIENS_RUNAWAY - runawayAliens);
      	runawayAliensStatus.setString("UNIVÁS "+runawayAliens+"/"+MAX_ALIENS_RUNAWAY);
     	shootsStatus.setString("TIROS "+shoots+"/"+MAX_SHOOTS);
         
-        
-        
+    	
         // Update the sight image on the screen.
     	JoyStick.getInstance().drawSight(g2d);
     	
@@ -498,33 +483,7 @@ public class Game {
         g2d.drawImage(univas_logo, 0, Window.frameHeight - (univas_logo.getHeight() + 10), 250, 70, null);
     }
     
-    
-    
-    
-    
-    
-    /**
-     * Draw the game over screen.
-     * 
-     * @param g2d Graphics2D
-     * @param mousePosition Current mouse position.
-     */
-    public void DrawGameOver(Graphics2D g2d)
-    {
-        Draw(g2d);
-        
-        // Draw the Game Over image.
-        g2d.drawImage(red_borderImg, 0, 0, Window.frameWidth, Window.frameHeight, null);
-        
-        g2d.setColor(Color.red);
-        g2d.drawString("Game Over!!!", Window.frameWidth / 2 - 50, (int)(Window.frameHeight / 2)-40);
-        g2d.drawString("Pontuação final: "+score, Window.frameWidth / 2 - 140, (int)(Window.frameHeight / 2));
-        g2d.drawString("Pressione ESPAÇO ou ENTER para continuar", Window.frameWidth / 2 - 300, (int)(Window.frameHeight /2) + 50);
-    }
-    
-    
-    
-    
+
     
     /**
      * Return the currently score.

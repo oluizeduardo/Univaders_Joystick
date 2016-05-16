@@ -5,9 +5,7 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.image.BufferedImage;
-import java.util.Random;
-
-import javax.swing.JOptionPane;
+import java.util.ArrayList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import shoot_the_alien.Framework;
@@ -51,7 +49,10 @@ public class RankingScreen {
 	 * Scroll panel to put the table over it.
 	 */
 	private JScrollPane pnScroll;
-	
+	/**
+	 * The list with the best winners.
+	 */
+	private ArrayList<Winner> listWinners;
 	
 	
 	
@@ -91,10 +92,23 @@ public class RankingScreen {
         int x = (Window.frameWidth / 2) - (pnBaseTable.getWidth() / 2);
         int y = (Window.frameHeight / 2) - (pnBaseTable.getHeight() / 2); 
         pnBaseTable.setLocation(x, y-20);
+        pnBaseTable.setBackground(new Color(0,0,0,100));
         
         tableWinners = new TableWinners(pnBaseTable);	        
         pnScroll = new JScrollPane(tableWinners.getTable());
         pnBaseTable.add(pnScroll);
+        pnBaseTable.setVisible(false);
+	}
+	
+	
+	
+	
+	/**
+	 * It list the table with a list of the best winners.
+	 */
+	public void listTableWithBestWinners(){
+		this.listWinners = WinnerDAO.getInstance().getAllWinners();
+		tableWinners.getTableModel().setList(listWinners);
 	}
 	
 	
@@ -105,7 +119,6 @@ public class RankingScreen {
 	 * It returns the base painel built and configured.
 	 */
 	public JPanel getPnTableBase(){
-		pnBaseTable.setVisible(true);
 		return pnBaseTable;	        
 	}
 	

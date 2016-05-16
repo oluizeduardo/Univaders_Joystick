@@ -1,10 +1,10 @@
 package shoot_the_alien.model.dao;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 import javax.swing.JOptionPane;
 import shoot_the_alien.model.Winner;
 
@@ -16,10 +16,18 @@ import shoot_the_alien.model.Winner;
 public class WinnerDAO {
 
 	
+	/**
+	 * The table's name.
+	 */
+	private static final String TABLE_NAME = "winners"; 
+	/**
+	 * The instance of this class.
+	 */
+	private static WinnerDAO instance;
     /**
      * It is used to build a new connection with the database.
      */
-    private java.sql.Connection conn = null;
+    private Connection conn = null;
     /**
      * It loads an instruction that will be executed on the database. 
      */
@@ -32,11 +40,21 @@ public class WinnerDAO {
 	
 	
 	
+    
     /**
-     * The default constructor.
+     * It uses the Singleton method to returs the instance of this class.
+     * 
+     * @return An instance of this class.
      */
-	public WinnerDAO() {  }
-	
+    public static WinnerDAO getInstance(){
+    	if(instance == null){
+    		instance = new WinnerDAO();
+    	}
+    	return instance;
+    }
+    
+    
+
 	
 	
 	/**
@@ -47,7 +65,7 @@ public class WinnerDAO {
 	 */
 	public boolean insertNew(Winner newWinner){
 		
-		String sql = "INSERT INTO winners (score, name, identification) "
+		String sql = "INSERT INTO "+TABLE_NAME+" (score, name, identification) "
 				+ "VALUES ("+newWinner.getFinalScore()+", "
 						+ "'"+newWinner.getName()+"', "
 						+ "'"+newWinner.getIdentification()+"')";
@@ -59,15 +77,22 @@ public class WinnerDAO {
 	
 	
 	
-	public List<Winner> getAllWinners(){
+	/**
+	 * It executes a research on the database.
+	 *  
+	 * @return A list with the winners ordered by the higher score.
+	 */
+	public ArrayList<Winner> getAllWinners(){
 		
-		String sql = "SELECT * FROM winners";
-		List<Winner> registeredWinners = new ArrayList<Winner>();
+		// Reserach's statement.
+		String sql = "SELECT * FROM "+TABLE_NAME+" ORDER BY score DESC LIMIT 10";
+		ArrayList<Winner> registeredWinners = new ArrayList<Winner>();
 		Winner winner = null;
 		
 		
         try {
 
+        	// Open the connections with the database.
         	openConnection();
         	
             preStm = conn.prepareStatement(sql);
@@ -90,6 +115,7 @@ public class WinnerDAO {
         	
         }finally{
             try {
+            	// Close the connections with the database.
                 closeConnections();
             } catch (SQLException e) {
                 System.out.println("\nErro ao fechar conexões com o banco de dados!\n"+e.getMessage());

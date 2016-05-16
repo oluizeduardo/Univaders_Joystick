@@ -22,13 +22,13 @@ public class Stopwatch extends JLabel implements Runnable {
 	/**
 	 * Sets the minutes of the stopwatch.
 	 */
-	private static int MINUTES = 0;
+	private static int MINUTES = 1;
 	/**
 	 * Sets the seconds of the stopwatch.
 	 */
-    private static int SECONDS = 10;
+    private static int SECONDS = 60;
 	/**
-	 * Control the execution of the stopwatch.
+	 * It controls the execution of the stopwatch.
 	 */
 	public static boolean isStopwatchRunning = false;
 	/**
@@ -125,6 +125,14 @@ public class Stopwatch extends JLabel implements Runnable {
 		SECONDS = save_sec;
 	}
 
+	
+	
+	/**
+	 * Check if the stopwatch is over.
+	 */
+	public static boolean isOver(){
+		return (MINUTES == 0 && SECONDS == 0);
+	}
 	
 	
 	
