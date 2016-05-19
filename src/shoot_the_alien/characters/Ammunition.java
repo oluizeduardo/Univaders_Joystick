@@ -1,13 +1,9 @@
 package shoot_the_alien.characters;
-
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-
 import shoot_the_alien.FloatingObject;
 import shoot_the_alien.model.Image;
 import shoot_the_alien.view.screens.frame.Window;
-
-
 
 /**
  * The ammunation kit of the game.
@@ -52,6 +48,10 @@ public class Ammunition implements FloatingObject {
      * Indicate which is next alien line that the ammunition will  appear.
      */
     public static int nextAmmunitionLine = 0;
+    /**
+     * Used to load the ammunition's image.
+     */
+    private Image img = new Image();
     
     
     
@@ -59,12 +59,18 @@ public class Ammunition implements FloatingObject {
     
     /**
      * Setup a new instance of Ammunition object.
+     * 
+     * @param posX Position on the axis X.
+     * @param posY Position on the axis Y.
      */
     public Ammunition(int posX, int posY) { 
     	this.x = posX;
     	this.y = posY;
-    	this.ammunationImage = new Image().getAmmunitionKitImg(); 
+    	this.ammunationImage = img.getAmmunitionKitImg(); 
     }
+    
+    
+    
     
     
     
@@ -96,15 +102,23 @@ public class Ammunition implements FloatingObject {
     }
 	
 	
-    
+    /**
+     * Return the position X.
+     */
     public int getX(){
     	return x;
     }
     
     
+    /**
+     * Return the position Y.
+     */
     public int getY(){
     	return y;
     }
+    
+    
+    
     
     
     

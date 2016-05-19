@@ -32,7 +32,7 @@ public class WinnerScreen {
 	/**
 	 * Used to load the buffer of an image.
 	 */
-	private BufferedImage background, univas_logo, 
+	private BufferedImage background, 
 						  imgBtnSave, imgBtnSave2,
 						  imgBtnCancel, imgBtnCancel2;
 	/**
@@ -90,7 +90,6 @@ public class WinnerScreen {
 	private void loadContent(){
 		objImage = new Image();		
 		background  = objImage.getBackgroundWinnerImg();
-		univas_logo = objImage.getUnivasLogoImg();
 		imgBtnSave = objImage.getBtnSaveImg();
     	imgBtnSave2 = objImage.getBtnSaveImg2();
     	imgBtnCancel = objImage.getBtnCancelImg();
@@ -158,7 +157,7 @@ public class WinnerScreen {
         lbName.setFont(fontLabel);
         lbName.setForeground(Color.WHITE);
         
-        JLabel lbId = new JLabel("Escola/Cidade", JLabel.CENTER);
+        JLabel lbId = new JLabel("Curso/Cidade", JLabel.CENTER);
         lbId.setFont(fontLabel2);
         lbId.setForeground(Color.WHITE);
         
@@ -204,10 +203,9 @@ public class WinnerScreen {
 			
 		
 		String msg = "Use TAB e Shift+TAB para navergar entre os campos, 3 para confirmar";         	
-    	g2d.setColor(Color.WHITE);
+    	g2d.setColor(Color.RED);
     	g2d.setFont(new Font("Lucida Sans", Font.BOLD, 16));
     	g2d.drawImage(background, 0, 0, Window.frameWidth, Window.frameHeight, null);                
-        g2d.drawImage(univas_logo, 0, Window.frameHeight - (univas_logo.getHeight() + 10), 250, 70, null);
         g2d.drawString(msg, Window.frameWidth/2-250, Window.frameHeight - 10);
         
         
@@ -293,7 +291,7 @@ public class WinnerScreen {
             			JOptionPane.showMessageDialog(null, "VENCEDOR REGISTRADO COM SUCESSO!");
             			pnBaseFields.setVisible(false);
             			pnBaseFields = null;
-                    	Framework.gameState = GameState.MAIN_MENU;
+                    	Framework.gameState = GameState.SUPPORT;
             		} 
         		}
         	}      	

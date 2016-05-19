@@ -26,8 +26,17 @@ public class Image {
 	/** Buffer of the Background's image. */
 	private BufferedImage bfbackground, bfbackground_winner;
 	
+	/** Buffer of the Background's GameOver image. */
+	private BufferedImage bfbkgdGameOver;
+	
 	/** Buffer of the Logo Univás image.*/
 	private BufferedImage bfUnivasLogo;
+	
+	/** Buffer of the Univás Logo with background white.*/
+	private BufferedImage bfUnivasLogo2;
+	
+	/** Buffer of the image with the logo of the enterprise supporting the developing.*/
+	private BufferedImage bfSupportLogo;
 	
 	/**Buffer of the Alien image.*/
 	private BufferedImage bfAlien_1;
@@ -37,9 +46,6 @@ public class Image {
 	
 	/**Buffer of ammunition image.*/
 	private BufferedImage bfAmmunition;
-	
-	/**Buffer of the Red border image.*/
-	private BufferedImage bfRedBorder;
 	
 	/**Buffer of the sight image.*/
 	private BufferedImage bfSight;
@@ -102,17 +108,23 @@ public class Image {
             url = this.getClass().getResource(strUrl+"backgrounds/bkgd_winner.gif");
             bfbackground_winner = ImageIO.read(url);
             
-            url = this.getClass().getResource(strUrl+"backgrounds/logo_base.png");
+            url = this.getClass().getResource(strUrl+"logos/logo_base.png");
             bfUnivasLogo = ImageIO.read(url);
+            
+            url = this.getClass().getResource(strUrl+"logos/logo_base.gif");
+            bfUnivasLogo2 = ImageIO.read(url);
+            
+            url = this.getClass().getResource(strUrl+"logos/logo_LinkMG.jpg");
+            bfSupportLogo = ImageIO.read(url);
+            
+            url = this.getClass().getResource(strUrl+"backgrounds/bkgd_gameover.gif");
+            bfbkgdGameOver = ImageIO.read(url);
             
             url = this.getClass().getResource(strUrl+"aliens/alien1.png");
             bfAlien_1 = ImageIO.read(url);
             
             url = this.getClass().getResource(strUrl+"aliens/alien2.png");
             bfAlien_2 = ImageIO.read(url);
-            
-            url = this.getClass().getResource(strUrl+"backgrounds/red_border.png");
-            bfRedBorder = ImageIO.read(url);
 
             url = this.getClass().getResource(strUrl+"buttons/btn_newgame.png");
             bfBtnNewGame = ImageIO.read(url);
@@ -176,15 +188,21 @@ public class Image {
 		return bfbackground_winner;
 	}
 	
-	public BufferedImage getRedborderImg(){
-		return bfRedBorder;
-	}
-	
+	public BufferedImage getBackgroundGameOver(){
+		return bfbkgdGameOver;
+	}	
 	
 	public BufferedImage getUnivasLogoImg(){
 		return bfUnivasLogo;
 	}
 	
+	public BufferedImage getUnivasLogoImg_2(){
+		return bfUnivasLogo2;
+	}
+	
+	public BufferedImage getSupportLogoImg(){
+		return bfSupportLogo;
+	}
 	
 	public BufferedImage getAlienImg1(){
 		return bfAlien_1;

@@ -4,26 +4,41 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-
 import shoot_the_alien.Framework;
 import shoot_the_alien.Framework.GameState;
 import shoot_the_alien.model.Image;
 import shoot_the_alien.model.JoyStick;
 import shoot_the_alien.view.screens.frame.Window;
 
+/**
+ * It builds the gameover screen.
+ * 
+ * @author Luiz Eduardo da Costa
+ * @version 1.0, 16/05/16
+ */
 public class GameOverScreen {
 
 	
-	 /**
-	 * Red border to game over.
+	/**
+	 * Background of the screen.
 	 */
-    private BufferedImage red_borderImg;
     private BufferedImage backgroundImg;
-    
-    
+    /**
+   	 * Image of the Cancel button.
+   	 */
+    private BufferedImage imgBtnCancelar;
+    /**
+     * It is used to open an image.
+     */
 	private Image objImage;
-	
+	/**
+	 * The winner's final score.
+	 */
 	private int score = 0;
+	/**
+	 * The number of dead aliens.
+	 */
+	private int killedAliens = 0;
 	
 	
 	
@@ -46,14 +61,22 @@ public class GameOverScreen {
 	}
 	
 	
+	/**
+	 * It sets the number of dead aliens.
+	 */
+	public void setNumberOfKilledAliens(int kills){
+		this.killedAliens = kills;
+	}
+	
+	
 	
 	/**
 	 * It loads all the media contents: images, sounds, etc.
 	 */
 	private void loadContents(){
 		objImage = new Image();
-		red_borderImg = objImage.getRedborderImg();
-		backgroundImg = objImage.getBackgroundImg();
+		backgroundImg = objImage.getBackgroundGameOver();
+		imgBtnCancelar = objImage.getBtnCancelImg2();
 	}
 	
 	
@@ -65,17 +88,26 @@ public class GameOverScreen {
      * @param mousePosition Current mouse position.
      */
     public void DrawGameOver(Graphics2D g2d)
-    {    
-    	g2d.setFont(new Font("monospaced", Font.BOLD, 25)); 
-    	
+    {   
         // Draw the Game Over image.
     	g2d.drawImage(backgroundImg, 0, 0, Window.frameWidth, Window.frameHeight, null);
-        g2d.drawImage(red_borderImg, 0, 0, Window.frameWidth, Window.frameHeight, null);
         
-        g2d.setColor(Color.red);
-        g2d.drawString("Game Over!!!", Window.frameWidth / 2 - 50, (int)(Window.frameHeight / 2)-40);
-        g2d.drawString("Pontuação final: "+score, Window.frameWidth / 2 - 140, (int)(Window.frameHeight / 2));
-        g2d.drawString("Pressione 3 ou ESPAÇO para continuar", Window.frameWidth / 2 - 250, (int)(Window.frameHeight /2) + 50);
+        g2d.setColor(Color.WHITE);
+        g2d.setFont(new Font("monospaced", Font.BOLD, 25));
+        g2d.drawString("Você falhou na missão e a UNIVÁS foi atacada...", Window.frameWidth / 2 - 350, (int)(Window.frameHeight / 2)-45);
+        
+        g2d.setFont(new Font("monospaced", Font.BOLD, 30));
+        g2d.drawString("Aliens Mortos: "+killedAliens, Window.frameWidth / 2 - 120, (int)(Window.frameHeight / 2)+20);
+        g2d.drawString("Pontuação final: "+score, Window.frameWidth / 2 - 150, (int)(Window.frameHeight / 2)+80);
+        
+        int btn_x = ((Window.frameWidth / 2) - (imgBtnCancelar.getWidth() / 2));
+    	int btn_y = (Window.frameHeight / 2) + 220;
+		
+        g2d.drawImage(imgBtnCancelar, btn_x, btn_y, imgBtnCancelar.getWidth(), imgBtnCancelar.getHeight(), null);
+    	
+        g2d.setColor(Color.RED);
+        g2d.setFont(new Font("Lucida Sans", Font.BOLD, 16));
+        g2d.drawString("Pressione BOTÃO 3", Window.frameWidth - 200, Window.frameHeight - 10);
     }
 	
     
@@ -88,8 +120,7 @@ public class GameOverScreen {
     	boolean isSelectedPressed = JoyStick.getInstance().checkButtonPressed(JoyStick.BTN_CONFIRM);
     	
     	if(isSelectedPressed){
-    		//playedTheGameOverSound = false;
-    		Framework.gameState = GameState.MAIN_MENU;
+    		Framework.gameState = GameState.SUPPORT;
     	}
     }
     

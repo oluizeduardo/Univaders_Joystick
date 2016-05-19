@@ -36,7 +36,7 @@ public class RankingScreen {
 	/**
 	 * Used to load the buffer of an image.
 	 */
-	private BufferedImage img_background, img_univas_logo, img_btnCancelar;
+	private BufferedImage img_background, img_btnCancelar;
 	/**
      * The panel where will add the other components.
      */
@@ -75,7 +75,6 @@ public class RankingScreen {
 	private void loadContent(){
 		objImage = new Image();		
 		img_background  = objImage.getBackgroundRankingImg();
-		img_univas_logo = objImage.getUnivasLogoImg();
 		img_btnCancelar = objImage.getBtnCancelImg2();
 	}
 	
@@ -138,7 +137,6 @@ public class RankingScreen {
     	int btn_y = pnBaseTable.getY() + pnBaseTable.getHeight() + 30;
 		
 		g2d.drawImage(img_background, 0, 0, Window.frameWidth, Window.frameHeight, null);                
-        g2d.drawImage(img_univas_logo, 0, Window.frameHeight - (img_univas_logo.getHeight() + 10), 250, 70, null);
         g2d.drawImage(img_btnCancelar, btn_x, btn_y, img_btnCancelar.getWidth(), img_btnCancelar.getHeight(), null);
 	
         g2d.setColor(Color.RED);

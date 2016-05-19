@@ -30,7 +30,7 @@ public class Game {
 	/**
 	 * Maximum number of fugitives.
 	 */
-	public static final int MAX_ALIENS_RUNAWAY = 2;
+	public static final int MAX_ALIENS_RUNAWAY = 50;
 	/**
 	 * Maximum number of shoots.
 	 */
@@ -99,6 +99,7 @@ public class Game {
      */
     public Game(StatusBar aliensBar, StatusBar shootsBar)
     {  	    	
+    	// Set the status bars.
     	this.runawayAliensStatus = aliensBar;   	
     	this.shootsStatus = shootsBar;
     	
@@ -238,8 +239,8 @@ public class Game {
             		t.start();
             		
             		shoots = MAX_SHOOTS;
-            		ammunition = null;
-            		isGetKitBtnPressed = false;
+            		ammunition = null;// Desappear the ammunition icon.
+            		isGetKitBtnPressed = false;// Flag to control this block.
         		}
         	}
         }
@@ -377,7 +378,7 @@ public class Game {
 			
 			int x = Ammunition.ammunitionLines[Ammunition.nextAmmunitionLine][0] + random.nextInt(200);
 	    	int y = Ammunition.ammunitionLines[Ammunition.nextAmmunitionLine][1] ;
-			
+	    	
 			ammunition = new Ammunition(x, y);// Create a new ammunition object.
 			
 			if(Ammunition.nextAmmunitionLine < Ammunition.ammunitionLines.length - 1)
@@ -476,7 +477,7 @@ public class Game {
     	shootsStatus.setString("TIROS "+shoots+"/"+MAX_SHOOTS);
         
     	
-        // Update the sight image on the screen.
+        // Update the sight gun image on the screen.
     	JoyStick.getInstance().drawSight(g2d);
     	
     	// Draw the Univás logo in the lower left corner.
@@ -493,7 +494,12 @@ public class Game {
     }
     
     
-    
+    /**
+     * It returns the number of killed aliens.
+     */
+    public int getKilledAliens(){
+    	return killedAliens;
+    }
     
     
     

@@ -57,7 +57,7 @@ public class Framework extends Canvas {
     public static enum GameState{STARTING, VISUALIZING, 
     							GAME_CONTENT_LOADING, 
     							MAIN_MENU, PLAYING, 
-    							RESTART, RANKING,
+    							RESTART, RANKING, SUPPORT,
     							GAMEOVER, WINNER}
     /**
      * Current state of the game.
@@ -101,6 +101,10 @@ public class Framework extends Canvas {
      */
     private RankingScreen screenRanking;
     /**
+     * Object to buid the support sreen.
+     */
+    private SupportScreen supportScreen;
+    /**
      * Object to buid the gameover sreen.
      */
     private GameOverScreen screenGameOver;
@@ -120,6 +124,7 @@ public class Framework extends Canvas {
         this.screenWinner = new WinnerScreen();
         this.screenRanking = new RankingScreen();
         this.screenGameOver = new GameOverScreen();
+        this.supportScreen = new SupportScreen();
         
         
         // Create the two statusbar on the top of the screen.
@@ -301,11 +306,21 @@ public class Framework extends Canvas {
                 	screenWinner.checkButtonPressed();
                 	
                 break;
+                
+                case SUPPORT:
+					try {
+						Thread.sleep(3000);
+					} catch (InterruptedException e) { }
+					
+					gameState = GameState.MAIN_MENU;
+                break;
+                
                 case GAMEOVER:
                 	// Stop the timewatch.
                 	if(!playedTheGameOverSound){
                 		
                 		screenGameOver.setFinalScore(game.getScore());
+                		screenGameOver.setNumberOfKilledAliens(game.getKilledAliens());
                 		
                 		// Stop the timewatch.
                 		Stopwatch.isStopwatchRunning = false;
@@ -373,6 +388,9 @@ public class Framework extends Canvas {
             break;
             case RANKING:
             	screenRanking.drawRankingScreen(g2d);
+            break;
+            case SUPPORT:
+            	supportScreen.drawSupportScreen(g2d);
             break;
             case GAME_CONTENT_LOADING:
             default:

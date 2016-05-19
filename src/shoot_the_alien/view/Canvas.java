@@ -11,9 +11,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
-
 import shoot_the_alien.Framework;
-import shoot_the_alien.Framework.GameState;
 import shoot_the_alien.model.Stopwatch;
 import shoot_the_alien.view.screens.frame.Window;
 
@@ -35,12 +33,9 @@ public abstract class Canvas extends JPanel {
     
   	/**
      * The stopwatch of the game.
+     * This object will be started when the game state is GAME_CONTENT_LOADING.
      */
     public Stopwatch stopWatch = null;
-    /**
-     * An object Thread to start the chronometer of the game.
-     */
-   // public static Thread th_stopwatch = null;
     
     
   	
@@ -65,8 +60,6 @@ public abstract class Canvas extends JPanel {
         this.stopWatch = new Stopwatch();
         this.stopWatch.setBounds((Window.frameWidth-220)/2, 10, 220, 50);
         super.add(stopWatch);
-        //th_stopwatch = new Thread(stopWatch);
-        // The object th_stopwatch must to be started when the game state is GAME_CONTENT_LOADING.
         
         // Adds the keyboard listener to JPanel to receive key events from this component.
         this.addKeyListener(getKeyListener());
@@ -117,11 +110,6 @@ public abstract class Canvas extends JPanel {
     	        if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
     	    		// ESC - Exit the game.
     	        	System.exit(0);
-    	    		
-    	    	}else if(e.getKeyCode() == KeyEvent.VK_SPACE ||
-    	    			e.getKeyCode() == KeyEvent.VK_ENTER){
-    	    		// SPACE or ENTER - Stop the game and return to main menu.
-    	    		Framework.gameState = Framework.GameState.MAIN_MENU;
     	    	
     	    	}else if(e.getKeyCode() == KeyEvent.VK_R){
     	    		// R - Restart the game

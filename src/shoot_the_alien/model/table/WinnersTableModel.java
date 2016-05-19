@@ -27,7 +27,7 @@ public class WinnersTableModel extends AbstractTableModel {
 	private ArrayList<Winner> listWinners = new ArrayList<Winner>();
 	
 	// Names of the table columns.
-	private String[] columns = {"Pontuação", "Nome", "Escola/Cidade"};
+	private String[] columns = {"Pontuação", "Nome", "Curso/Cidade"};
 	
 	
 	
