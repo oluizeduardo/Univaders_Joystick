@@ -309,7 +309,7 @@ public class Framework extends Canvas {
                 
                 case SUPPORT:
 					try {
-						Thread.sleep(3000);
+						Thread.sleep(4000);
 					} catch (InterruptedException e) { }
 					
 					gameState = GameState.MAIN_MENU;
