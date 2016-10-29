@@ -65,10 +65,10 @@ public class WinnerDAO {
 	 */
 	public boolean insertNew(Winner newWinner){
 		
-		String sql = "INSERT INTO "+TABLE_NAME+" (score, name, identification) "
+		String sql = "INSERT INTO "+TABLE_NAME+" (score, name, identification, date) "
 				+ "VALUES ("+newWinner.getFinalScore()+", "
 						+ "'"+newWinner.getName()+"', "
-						+ "'"+newWinner.getIdentification()+"')";
+						+ "'"+newWinner.getIdentification()+"', '31/10/16')";
 		
 		return executeSQL(sql);
 	}
@@ -85,7 +85,7 @@ public class WinnerDAO {
 	public ArrayList<Winner> getAllWinners(){
 		
 		// Reserach's statement.
-		String sql = "SELECT * FROM "+TABLE_NAME+" ORDER BY score DESC LIMIT 10";
+		String sql = "SELECT * FROM "+TABLE_NAME+" where date = '31/10/16' ORDER BY score DESC LIMIT 10";
 		ArrayList<Winner> registeredWinners = new ArrayList<Winner>();
 		Winner winner = null;
 		

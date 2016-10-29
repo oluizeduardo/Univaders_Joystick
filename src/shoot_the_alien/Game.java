@@ -30,7 +30,7 @@ public class Game {
 	/**
 	 * Maximum number of fugitives.
 	 */
-	public static final int MAX_ALIENS_RUNAWAY = 50;
+	public static final int MAX_ALIENS_RUNAWAY = 30;
 	/**
 	 * Maximum number of shoots.
 	 */

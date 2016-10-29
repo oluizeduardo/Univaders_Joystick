@@ -302,7 +302,7 @@ public class WinnerScreen {
         if(isConfirmPressed && currentlyButtonSelected.equals(ButtonSelected.CANCEL)){
         	pnBaseFields.setVisible(false);
         	pnBaseFields = null;
-        	Framework.gameState = GameState.MAIN_MENU;
+        	Framework.gameState = GameState.SUPPORT;
         }
         	
         // Navigate to the buttons.

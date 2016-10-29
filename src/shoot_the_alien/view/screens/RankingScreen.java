@@ -87,11 +87,11 @@ public class RankingScreen {
 	 */
 	private void buildTableBase(){
 		pnBaseTable = new JPanel(new GridLayout(1, 1));
-		pnBaseTable.setSize(900, 450);
+		pnBaseTable.setSize(1000, 450);
         int x = (Window.frameWidth / 2) - (pnBaseTable.getWidth() / 2);
         int y = (Window.frameHeight / 2) - (pnBaseTable.getHeight() / 2); 
         pnBaseTable.setLocation(x, y-20);
-        pnBaseTable.setBackground(new Color(0,0,0,100));
+        //pnBaseTable.setBackground(new Color(0,0,0,100));
         
         tableWinners = new TableWinners(pnBaseTable);	        
         pnScroll = new JScrollPane(tableWinners.getTable());

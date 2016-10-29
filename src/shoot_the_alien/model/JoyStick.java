@@ -311,9 +311,36 @@ public class JoyStick implements Runnable {
      * 
      * @return value of axis in percentage.
      */
+    
+    float anterior=0;
     private int getAxisValueInPercentage(float axisValue)
     {    	
-        return (int)(((2 - (1 - axisValue)) * Window.frameWidth) / 2);
+    	/*if(axisValue < min){
+    		min = axisValue;
+    		System.out.println("MIN: "+min);
+    	}
+    	if(axisValue > max){
+    		max = axisValue;
+    		System.out.println("MAX: "+max);
+    	}*/
+    	//System.out.println(axisValue);
+        //return (int)(((2 - (1 - axisValue)) * Window.frameWidth) / 2);
+//    	float tmp = (int)((axisValue + 1) * Window.frameWidth / 2);;
+    	
+//    	float dif = tmp - anterior;
+//    	
+//    	if(Math.abs(dif) < Window.frameWidth * 0.001) {
+//    		System.out.println(dif);
+//    		return (int)anterior;
+//    	} else {
+//    		
+//    		System.out.println("não manter");
+//    	}
+//    	
+//    	anterior = tmp;// - dif / 1.3f;
+//    	
+    //	return (int)anterior;
+    	return (int)((axisValue + 1) * Window.frameWidth / 2);
     }
     
     
