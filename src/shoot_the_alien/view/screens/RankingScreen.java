@@ -11,7 +11,7 @@ import javax.swing.JScrollPane;
 import shoot_the_alien.Framework;
 import shoot_the_alien.Framework.GameState;
 import shoot_the_alien.model.Image;
-import shoot_the_alien.model.JoyStick;
+import shoot_the_alien.model.AbstractJoyStick;
 import shoot_the_alien.model.Winner;
 import shoot_the_alien.model.dao.WinnerDAO;
 import shoot_the_alien.model.table.TableWinners;
@@ -26,7 +26,7 @@ import shoot_the_alien.view.screens.frame.Window;
  * @author Luiz Eduardo da Costa
  * @version 1.0, 08/05/16
  */
-public class RankingScreen {
+public class RankingScreen implements ConfirmButtonListener {
 
 	
 	/**
@@ -61,7 +61,7 @@ public class RankingScreen {
 	 * The contructor of the class.
 	 */
 	public RankingScreen() {
-		
+		AbstractJoyStick.getInstance().addConfirmListener(this);
 		loadContent();
 		buildTableBase();
 	}
@@ -148,19 +148,13 @@ public class RankingScreen {
 	
 	
 	
-	/**
-     * Check which button was pressed and do any action.
-     */
-    public void checkButtonPressed(){   
-    	boolean isConfirmPressed = JoyStick.getInstance().checkButtonPressed(JoyStick.BTN_CONFIRM);
-        
-        // Check if cancel button was pressed and return to main menu.
-        if(isConfirmPressed){
-        	
-        	pnBaseTable.setVisible(false);
-        	Framework.gameState = GameState.MAIN_MENU;
-        }
-    }
+	@Override 
+	public void confirmPressed() {
+		if(Framework.gameState.equals(Framework.GameState.RANKING)) {
+			pnBaseTable.setVisible(false);
+			Framework.gameState = GameState.MAIN_MENU;
+		}
+	}
     
     
     

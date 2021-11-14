@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.image.BufferedImage;
+
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -12,10 +13,11 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
+
 import shoot_the_alien.Framework;
 import shoot_the_alien.Framework.GameState;
+import shoot_the_alien.model.AbstractJoyStick;
 import shoot_the_alien.model.Image;
-import shoot_the_alien.model.JoyStick;
 import shoot_the_alien.model.PlayWAVFile;
 import shoot_the_alien.model.Winner;
 import shoot_the_alien.model.dao.WinnerDAO;
@@ -27,7 +29,7 @@ import shoot_the_alien.view.screens.frame.Window;
  * @author Luiz Eduardo da Costa
  * @version 1.0, 05/05/2016
  */
-public class WinnerScreen {
+public class WinnerScreen implements ConfirmButtonListener, WinnerListener {
 
 	/**
 	 * Used to load the buffer of an image.
@@ -77,6 +79,8 @@ public class WinnerScreen {
 	 * Load all the contents in its initialization.
 	 */
 	public WinnerScreen() {
+		AbstractJoyStick.getInstance().addConfirmListener(this);
+		AbstractJoyStick.getInstance().setWinnerListener(this);
 		loadContent();
 	}
 	
@@ -254,81 +258,74 @@ public class WinnerScreen {
             g2d.drawImage(imgCancel, btn_x+360, btn_y, imgBtnCancel.getWidth(), imgBtnCancel.getHeight(), null);
         }   
     }
-	
-	
-	
-	
-    
-    /**
-     * Check which button was pressed and do any action.
-     */
-    public void checkButtonPressed(){               	
-    	boolean isLeftPressed = JoyStick.getInstance().checkPOVPressed(JoyStick.BTN_LEFT);
-        boolean isRightPressed = JoyStick.getInstance().checkPOVPressed(JoyStick.BTN_RIGHT);
-        boolean isConfirmPressed = JoyStick.getInstance().checkButtonPressed(JoyStick.BTN_CONFIRM);
 
-        
-        // Check if cancel button was pressed and return to main menu.
-        if(isConfirmPressed && currentlyButtonSelected.equals(ButtonSelected.SAVE)){
-        	
-        	if(tfName.getText().isEmpty()){
-        		JOptionPane.showMessageDialog(null, "Informe um nome!");
-        		tfName.grabFocus();
-        	}else{
-        		
-        		if(tfIdentification.getText().isEmpty()){
-        			JOptionPane.showMessageDialog(null, "Informe uma identificação sobre o vencedor.");
-        			tfIdentification.grabFocus();
-        		}else{
-        			String name = tfName.getText().toUpperCase();
-                	String id = tfIdentification.getText().toUpperCase();
-                	int score = Integer.parseInt(tfFinalScore.getText());
 
-                	Winner newWinner = new Winner(name, id, score);
-                	WinnerDAO wdao = new WinnerDAO();
-            		
-            		if(wdao.insertNew(newWinner)){
-            			JOptionPane.showMessageDialog(null, "VENCEDOR REGISTRADO COM SUCESSO!");
-            			pnBaseFields.setVisible(false);
-            			pnBaseFields = null;
-                    	Framework.gameState = GameState.SUPPORT;
-            		} 
-        		}
-        	}      	
+	@Override
+	public void confirmPressed() {
+		if(!Framework.gameState.equals(Framework.GameState.WINNER)) {
+			return;
+		}
+
+        if(currentlyButtonSelected.equals(ButtonSelected.SAVE)){
+
+			if(tfName.getText().isEmpty()){
+				JOptionPane.showMessageDialog(null, "Informe um nome!");
+				tfName.grabFocus();
+			}else{
+				
+				if(tfIdentification.getText().isEmpty()){
+					JOptionPane.showMessageDialog(null, "Informe uma identificação sobre o vencedor.");
+					tfIdentification.grabFocus();
+				}else{
+					String name = tfName.getText().toUpperCase();
+			    	String id = tfIdentification.getText().toUpperCase();
+			    	int score = Integer.parseInt(tfFinalScore.getText());
+	
+			    	Winner newWinner = new Winner(name, id, score);
+			    	WinnerDAO wdao = new WinnerDAO();
+					
+					if(wdao.insertNew(newWinner)){
+						JOptionPane.showMessageDialog(null, "VENCEDOR REGISTRADO COM SUCESSO!");
+						pnBaseFields.setVisible(false);
+						pnBaseFields = null;
+			        	Framework.gameState = GameState.SUPPORT;
+					} 
+				}
+			}
         }
-        
-        
-        // Check if cancel button was pressed and return to main menu.
-        if(isConfirmPressed && currentlyButtonSelected.equals(ButtonSelected.CANCEL)){
+
+        if(currentlyButtonSelected.equals(ButtonSelected.CANCEL)){
         	pnBaseFields.setVisible(false);
         	pnBaseFields = null;
         	Framework.gameState = GameState.MAIN_MENU;
         }
-        	
-        // Navigate to the buttons.
-        if(isLeftPressed || isRightPressed){
-        	
-        	if(isLeftPressed)
-            	indexBtnSelected = indexBtnSelected == 0 ? 1 : 0;
-            
-            if(isRightPressed)        	
-            	indexBtnSelected = indexBtnSelected == 1 ? 0 : 1;
-        	
-        	// Play the click sound.
-        	Thread th_click = new Thread(soundFile);
-    		th_click.start();
-        	
-        	// Wait a little time to change the button again.
-    		try {
-    			Thread.sleep(180);
-    		} catch (InterruptedException e1) { }
-        }
-        
+	}
+
+	@Override
+	public void rightPressed() {
+		indexBtnSelected = indexBtnSelected == 1 ? 0 : 1;
+    	playSound();
         // Sets the currently button selected.
         currentlyButtonSelected = mainButtons[ indexBtnSelected ];
-    }
-	
-	
-	
+	}
+
+	@Override
+	public void leftPressed() {
+		indexBtnSelected = indexBtnSelected == 0 ? 1 : 0;
+    	playSound();
+        // Sets the currently button selected.
+        currentlyButtonSelected = mainButtons[ indexBtnSelected ];
+	}
+
+	private void playSound() {
+		// Play the click sound.
+		Thread th_click = new Thread(soundFile);
+		th_click.start();
+		
+		// Wait a little time to change the button again.
+		try {
+			Thread.sleep(180);
+		} catch (InterruptedException e1) { }
+	}
 	
 }

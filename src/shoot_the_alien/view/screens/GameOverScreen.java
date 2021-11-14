@@ -6,8 +6,9 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import shoot_the_alien.Framework;
 import shoot_the_alien.Framework.GameState;
+import shoot_the_alien.Game;
 import shoot_the_alien.model.Image;
-import shoot_the_alien.model.JoyStick;
+import shoot_the_alien.model.AbstractJoyStick;
 import shoot_the_alien.view.screens.frame.Window;
 
 /**
@@ -16,7 +17,7 @@ import shoot_the_alien.view.screens.frame.Window;
  * @author Luiz Eduardo da Costa
  * @version 1.0, 16/05/16
  */
-public class GameOverScreen {
+public class GameOverScreen implements ConfirmButtonListener {
 
 	
 	/**
@@ -47,7 +48,7 @@ public class GameOverScreen {
 	 * The constructor.
 	 */
 	public GameOverScreen() {
-
+		AbstractJoyStick.getInstance().addConfirmListener(this);
 		loadContents();
 	}
 	
@@ -109,20 +110,16 @@ public class GameOverScreen {
         g2d.setFont(new Font("Lucida Sans", Font.BOLD, 16));
         g2d.drawString("Pressione BOTÃO 3", Window.frameWidth - 200, Window.frameHeight - 10);
     }
-	
-    
-    
-    
+
     /**
      * Wait for a button press to return to the Main menu Screen.
      */
-    public void waitButtonPressed(){
-    	boolean isSelectedPressed = JoyStick.getInstance().checkButtonPressed(JoyStick.BTN_CONFIRM);
-    	
-    	if(isSelectedPressed){
-    		Framework.gameState = GameState.SUPPORT;
-    	}
-    }
+	@Override
+	public void confirmPressed() {
+		if(Framework.gameState.equals(Framework.GameState.GAMEOVER)) {
+			Framework.gameState = GameState.SUPPORT;
+		}
+	}
     
     
     

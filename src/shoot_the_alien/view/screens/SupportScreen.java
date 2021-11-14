@@ -15,7 +15,7 @@ import shoot_the_alien.view.screens.frame.Window;
  * @author Luiz Eduardo da Costa
  * @version 1.0, 18/05/16
  */
-public class SupportScreen {
+public class SupportScreen  {
 
 	/**
 	 * It's used to load an image of Univás' logo.
@@ -64,8 +64,8 @@ public class SupportScreen {
 	public void drawSupportScreen(Graphics2D g2d){
 		
     	g2d.setColor(Color.WHITE);
-        g2d.setFont(new Font("Lucida Sans", Font.BOLD, 35));
-        g2d.drawString("APOIO...", 40, 60);
+        g2d.setFont(new Font("Lucida Sans", Font.BOLD, 40));
+        g2d.drawString("Sistemas de Informação", 200, 60);
     	
         int x1 = 150;
         int y1 = ((Window.frameHeight / 2) - (imgUnivas.getHeight() / 2));

@@ -3,15 +3,18 @@ package shoot_the_alien;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import shoot_the_alien.Game;
-import shoot_the_alien.model.JoyStick;
+
+import shoot_the_alien.model.AbstractJoyStick;
 import shoot_the_alien.model.PlayWAVFile;
 import shoot_the_alien.model.Stopwatch;
-import shoot_the_alien.Framework;
-import shoot_the_alien.view.screens.frame.Window;
 import shoot_the_alien.view.Canvas;
 import shoot_the_alien.view.StatusBar;
-import shoot_the_alien.view.screens.*;
+import shoot_the_alien.view.screens.GameOverScreen;
+import shoot_the_alien.view.screens.InitialScreen;
+import shoot_the_alien.view.screens.RankingScreen;
+import shoot_the_alien.view.screens.SupportScreen;
+import shoot_the_alien.view.screens.WinnerScreen;
+import shoot_the_alien.view.screens.frame.Window;
 
 /**
  * Framework that controls the game (Game.java) that created it, update it 
@@ -78,7 +81,7 @@ public class Framework extends Canvas {
     /**
      * Control the execution of the joystick controller.
      */
-    private JoyStick joyStick = null;
+    private AbstractJoyStick joyStick = null;
     /**
      * A flag to control the execution of the GameOver sound.
      */
@@ -126,12 +129,12 @@ public class Framework extends Canvas {
         this.screenGameOver = new GameOverScreen();
         this.supportScreen = new SupportScreen();
         
-        
         // Create the two statusbar on the top of the screen.
         createStatusBar();              
         
         // Get the instance of the joystick class.
-    	this.joyStick = JoyStick.getInstance();
+    	this.joyStick = AbstractJoyStick.getInstance();
+    	this.joyStick.configure(this);
     	
     	// Check if any controller was found.
     	if(joyStick.thereAreControllers()){
@@ -145,9 +148,9 @@ public class Framework extends Canvas {
                     GameLoop();
                 }
             };
+            gameState = GameState.VISUALIZING;//para não dar null pointer caso a thread iniciar rápido demais
             gameThread.start();
             
-            gameState = GameState.VISUALIZING;
             
     	}else{
     		
@@ -252,8 +255,6 @@ public class Framework extends Canvas {
                 	if(areStatusBarVisible())
                 		setStatusBarsVisibility(false);
                 	
-                	screenMainMenu.checkButtonPressed();
-                	
                 break;
                 
                 case GAME_CONTENT_LOADING:
@@ -293,7 +294,6 @@ public class Framework extends Canvas {
                 		screenRanking.pnBaseTable.setVisible(true);
                 		screenRanking.listTableWithBestWinners();
                 	}
-                	screenRanking.checkButtonPressed();
                 break;
                 
                 case WINNER:	
@@ -302,8 +302,6 @@ public class Framework extends Canvas {
                 		setStatusBarsVisibility(false);
                 	if(screenWinner.pnBaseFields == null)
                     	super.add(screenWinner.getPanelFields(game.getScore()));
-                	
-                	screenWinner.checkButtonPressed();
                 	
                 break;
                 
@@ -335,8 +333,6 @@ public class Framework extends Canvas {
                         playedTheGameOverSound = true;
                 	}
                 	
-                	screenGameOver.waitButtonPressed();
-                	
                 break;
 				default:
 					gameState = GameState.MAIN_MENU;
@@ -360,9 +356,6 @@ public class Framework extends Canvas {
             } catch (InterruptedException ex) { }
         }
     }
-    
-    
-    
     
     
     
@@ -399,7 +392,6 @@ public class Framework extends Canvas {
            
         }
     }
-    
     
     
     
@@ -481,8 +473,4 @@ public class Framework extends Canvas {
         gameState = GameState.PLAYING;
     }
 
-    
-    
-    
-    
 }

@@ -4,10 +4,11 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+
 import shoot_the_alien.Framework;
 import shoot_the_alien.Framework.GameState;
+import shoot_the_alien.model.AbstractJoyStick;
 import shoot_the_alien.model.Image;
-import shoot_the_alien.model.JoyStick;
 import shoot_the_alien.model.PlayWAVFile;
 import shoot_the_alien.view.screens.frame.Window;
 
@@ -24,7 +25,7 @@ import shoot_the_alien.view.screens.frame.Window;
  * @version 1.0, 05/05/16
  *
  */
-public class InitialScreen {
+public class InitialScreen implements InitialScreenListener {
 
 	
 	/**
@@ -74,6 +75,7 @@ public class InitialScreen {
 	public InitialScreen(Framework fw) { 
 		
 		this.framework = fw;
+		AbstractJoyStick.getInstance().setInitialListener(this);
 		loadContent();
 	}
 	
@@ -109,9 +111,9 @@ public class InitialScreen {
     public void drawInitialScreen(Graphics2D g2d){
     	
         g2d.setColor(Color.WHITE);
-        g2d.setFont(new Font("Lucida Sans", Font.BOLD, 25));
+        g2d.setFont(new Font("Calibri", Font.BOLD, 45));
         g2d.drawImage(imgBackground, 0, 0, Window.frameWidth, Window.frameHeight, null);
-        g2d.drawString("SISTEMAS DE INFORMAÇÃO - UNIVÁS - 2016", 10, Window.frameHeight - 10);
+        g2d.drawString("SISTEMAS DE INFORMAÇÃO - UNIVÁS", 10, Window.frameHeight - 10);
         g2d.setColor(Color.RED);
         g2d.setFont(new Font("Lucida Sans", Font.BOLD, 16));
         g2d.drawString("Pressione START", Window.frameWidth - 200, Window.frameHeight - 10);
@@ -167,56 +169,44 @@ public class InitialScreen {
     	
     }
     
-    
-    
-   
-    
-    
-    
-    /**
-     * Check which button was pressed and do anything.
-     */
-    public void checkButtonPressed(){
-    	boolean isConfirmPressed = JoyStick.getInstance().checkButtonPressed(JoyStick.BTN_START);               	
-    	boolean isUpPressed = JoyStick.getInstance().checkPOVPressed(JoyStick.BTN_UP);
-        boolean isDownPressed = JoyStick.getInstance().checkPOVPressed(JoyStick.BTN_DOWN);
-        	        
-        
-    	if(isConfirmPressed){
-    		if(currentlyButtonSelected == ButtonSelected.NEW_GAME)
-    			framework.loadNewGame();
-    		
-    		if(currentlyButtonSelected == ButtonSelected.RANKING)
-    			Framework.gameState = GameState.RANKING;
-    			
-    		if(currentlyButtonSelected == ButtonSelected.EXIT)
-    			System.exit(0);
-    	
-    	}else{
-    	
-	    	if(isUpPressed || isDownPressed){
-	    		if(isDownPressed){
-	        		
-	        		btnSelectedIndex = btnSelectedIndex == mainMenuButtons.length - 1 ? 0 : ++btnSelectedIndex;
-	        		currentlyButtonSelected = mainMenuButtons[ btnSelectedIndex ];
-	        	}
-	        	if(isUpPressed){
-	        		
-	        		btnSelectedIndex = btnSelectedIndex == 0 ? btnSelectedIndex = mainMenuButtons.length - 1 : --btnSelectedIndex;                   		
-	        		currentlyButtonSelected = mainMenuButtons[ btnSelectedIndex ];
-	        	}
-	        	
-	        	// Play the click sound.
-	        	Thread th_click = new Thread(soundFile);
-	    		th_click.start();
-	        	
-	        	// Wait a little time to change the button again.
-				try {
-					Thread.sleep(180);
-				} catch (InterruptedException e1) { }
-	    	}
-    	}
-    }
+	public void playSound() {
+		// Play the click sound.
+		Thread th_click = new Thread(soundFile);
+		th_click.start();
+		
+		// Wait a little time to change the button again.
+		try {
+			Thread.sleep(180);
+		} catch (InterruptedException e1) { }
+	}
+
+
+   @Override
+	public  void upPressed() {
+		btnSelectedIndex = btnSelectedIndex == 0 ? btnSelectedIndex = mainMenuButtons.length - 1 : --btnSelectedIndex;                   		
+		currentlyButtonSelected = mainMenuButtons[ btnSelectedIndex ];
+    	playSound();
+	}
+
+
+   @Override
+	public  void downPressed() {
+		btnSelectedIndex = btnSelectedIndex == mainMenuButtons.length - 1 ? 0 : ++btnSelectedIndex;
+		currentlyButtonSelected = mainMenuButtons[ btnSelectedIndex ];
+    	playSound();
+	}
+
+   @Override
+	public   void confirmed() {
+		if(currentlyButtonSelected == ButtonSelected.NEW_GAME)
+			framework.loadNewGame();
+		
+		if(currentlyButtonSelected == ButtonSelected.RANKING)
+			Framework.gameState = GameState.RANKING;
+			
+		if(currentlyButtonSelected == ButtonSelected.EXIT)
+			System.exit(0);
+	}
     
     
     

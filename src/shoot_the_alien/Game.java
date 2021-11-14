@@ -10,7 +10,7 @@ import java.util.Random;
 import shoot_the_alien.characters.Alien;
 import shoot_the_alien.characters.Ammunition;
 import shoot_the_alien.model.Image;
-import shoot_the_alien.model.JoyStick;
+import shoot_the_alien.model.AbstractJoyStick;
 import shoot_the_alien.model.PlayWAVFile;
 import shoot_the_alien.model.Stopwatch;
 import shoot_the_alien.view.StatusBar;
@@ -24,17 +24,16 @@ import shoot_the_alien.view.screens.frame.Window;
  * @category Game Control
  * @version 2.0
  */
-public class Game {
-    
+public class Game implements GameButtons {
 	
 	/**
 	 * Maximum number of fugitives.
 	 */
-	public static final int MAX_ALIENS_RUNAWAY = 50;
+	public static final int MAX_ALIENS_RUNAWAY = 200;
 	/**
 	 * Maximum number of shoots.
 	 */
-	public static final int MAX_SHOOTS = 100;
+	public static final int MAX_SHOOTS = 25;
 	/**
 	 * Limit shoots to appear the ammunition kit on the screen.
 	 * This constante is to use when
@@ -82,10 +81,13 @@ public class Game {
     /** How many times a player is shot?   */
     private int shoots = MAX_SHOOTS;
     
+	private PlayWAVFile pfLaser = new PlayWAVFile(PlayWAVFile.SHOOT_LASER, 1);
+
+    
     // It said if the button was pressed or not.
-    private boolean isSelectPressed = false;
-    private boolean isShootPressed = false;
-    private boolean isGetKitBtnPressed = false;
+//    private boolean isSelectPressed = false;
+//    private boolean isShootPressed = false;
+//    private boolean isGetKitBtnPressed = false;
     
     /**Progress bar which will display the status of the game.*/
     public StatusBar runawayAliensStatus, shootsStatus;
@@ -102,6 +104,7 @@ public class Game {
     	// Set the status bars.
     	this.runawayAliensStatus = aliensBar;   	
     	this.shootsStatus = shootsBar;
+    	AbstractJoyStick.getInstance().setGameListener(this);
     	
     	
         Framework.gameState = Framework.GameState.GAME_CONTENT_LOADING;
@@ -189,10 +192,7 @@ public class Game {
      * @param mousePosition Current mouse position.
      */
     public void UpdateGame(long gameTime)
-    {
-    	// Check if any main button was pressed while game is running.
-    	checkButtonsPressed();
-    	
+    {    	
     	// Creates a new alien, if it's the time, and add it to the array list.
         if(System.nanoTime() - Alien.lastAlienTime >= Alien.timeBetweenAliens)
         {
@@ -223,51 +223,6 @@ public class Game {
         		ammunition = null;
         	}
         }
-        
-        // Does it was pressed the button to get the ammunition kit?
-        if(isGetKitBtnPressed){
-        	
-        	// The ammunition icon is on the screen?
-        	if(ammunition != null){
-        		
-        		// Check if the ammunition kit was captured.
-        		if(isAmmunitionCaptured()){
-        			
-        			// Play the sound of shoot.
-            		PlayWAVFile pf = new PlayWAVFile(PlayWAVFile.CLICK, 1);
-            		Thread t = new Thread(pf);
-            		t.start();
-            		
-            		shoots = MAX_SHOOTS;
-            		ammunition = null;// Desappear the ammunition icon.
-            		isGetKitBtnPressed = false;// Flag to control this block.
-        		}
-        	}
-        }
-        
-        
-        // Does player shoots?
-        if(isShootPressed)
-        {
-        
-        	// Check if there are ammunition to shoot.
-        	if(shoots > 0){
-        		if(System.nanoTime() - lastTimeShoot >= timeBetweenShots){
-            		
-            		// Play the sound of shoot.
-        			PlayWAVFile pf = new PlayWAVFile(PlayWAVFile.SHOOT_LASER, 1);
-            		Thread t = new Thread(pf);
-            		t.start();
-        			
-        			// Count one new shoot.
-        			shoots = shoots <= 0 ? 0 : --shoots;
-        			
-        			checkSomeAlienDead();
-                    
-        			lastTimeShoot = System.nanoTime();
-            	}
-        	}
-        }
         // When 'MAX_ALIENS_RUNAWAY' aliens runaway, the game ends.
         if(runawayAliens >= MAX_ALIENS_RUNAWAY){
         	Framework.gameState = Framework.GameState.GAMEOVER;
@@ -278,11 +233,7 @@ public class Game {
             }
         }
     }
-    
-    
-    
-    
-    
+
     /**
      * Check if the ammunition kit was captured.
      */
@@ -294,7 +245,7 @@ public class Game {
     	
     	Rectangle rec = new Rectangle(pos_x, pos_y, width, height);
     
-    	Point p = JoyStick.getInstance().getJoystickPosition();
+    	Point p = AbstractJoyStick.getInstance().getJoystickPosition();
     	
     	return rec.contains(p);
     }
@@ -347,7 +298,7 @@ public class Game {
         	
         	Rectangle rec = new Rectangle(x, y, width, height);
         
-        	Point p = JoyStick.getInstance().getJoystickPosition();
+        	Point p = AbstractJoyStick.getInstance().getJoystickPosition();
         	
         	// We check, if the sight was over the aliens body, when player has shot.
         	if(rec.contains(p)){
@@ -411,9 +362,9 @@ public class Game {
     	
     	// Check if the selected number is even or odd.
     	if((random % 2) == 0)
-    		newAlien = new Alien(x, y, speed, score, alienImg_1);
+    		newAlien = new Alien(x, y, speed * 2, score, alienImg_1);
     	else
-    		newAlien = new Alien(x, y, speed * 2, score * 2, alienImg_2);
+    		newAlien = new Alien(x, y, speed * 3, score * 2, alienImg_2);
     	
     	// After created a new alien, must add it to the array list.
     	aliens.add(newAlien);
@@ -423,32 +374,7 @@ public class Game {
     }
     
     
-    
-    
-    
-        
-    
-    
-    /**
-     * Verifies if any of the mains buttons of the controller were pressed.
-     * This method must to be used while the game is running.
-     */
-    private void checkButtonsPressed(){
-    	
-    	this.isSelectPressed = JoyStick.getInstance().checkButtonPressed(JoyStick.BTN_SELECT);
-    	this.isShootPressed = JoyStick.getInstance().checkButtonPressed(JoyStick.BTN_SHOOT);
-    	this.isGetKitBtnPressed = JoyStick.getInstance().checkButtonPressed(JoyStick.BTN_GET_KIT);
-    	
-    	if(isSelectPressed){
-    		Stopwatch.isStopwatchRunning = false;    		
-    		Framework.gameState = Framework.GameState.MAIN_MENU;
-    	}
-    }
-    
-    
-   
- 
-    
+
     
     /**
      * Draw the game to the screen.
@@ -478,10 +404,15 @@ public class Game {
         
     	
         // Update the sight gun image on the screen.
-    	JoyStick.getInstance().drawSight(g2d);
+    	AbstractJoyStick.getInstance().drawSight(g2d);
     	
     	// Draw the Univás logo in the lower left corner.
-        g2d.drawImage(univas_logo, 0, Window.frameHeight - (univas_logo.getHeight() + 10), 250, 70, null);
+    	if(univas_logo == null) { 
+    		System.err.println("univas_logo is null");
+    		//precisa deste if, pois algumas vezes demora para carregar a imagem e dá null pointer por causa do univas_logo
+    	} else {
+    		g2d.drawImage(univas_logo, 0, Window.frameHeight - (univas_logo.getHeight() + 10), 250, 70, null);
+    	}
     }
     
 
@@ -501,6 +432,61 @@ public class Game {
     	return killedAliens;
     }
     
+
+	@Override
+	public void shoot() {
+		if(!Framework.gameState.equals(Framework.GameState.PLAYING)) {
+			return;
+		}
+		// Check if there are ammunition to shoot.
+		if(shoots > 0){
+			if(System.nanoTime() - lastTimeShoot >= timeBetweenShots){
+				
+				// Play the sound of shoot.
+				Thread t = new Thread(pfLaser);
+				t.start();
+				
+				// Count one new shoot.
+				shoots = shoots <= 0 ? 0 : --shoots;
+				
+				checkSomeAlienDead();
+		        
+				lastTimeShoot = System.nanoTime();
+			}
+		}
+	}
+
+	@Override
+	public void gotKit() {
+		if(!Framework.gameState.equals(Framework.GameState.PLAYING)) {
+			return;
+		}
+		// The ammunition icon is on the screen?
+		if(ammunition != null){
+			
+			// Check if the ammunition kit was captured.
+			if(isAmmunitionCaptured()){
+				
+				// Play the sound of shoot.
+				PlayWAVFile pf = new PlayWAVFile(PlayWAVFile.CLICK, 1);
+				Thread t = new Thread(pf);
+				t.start();
+				
+				shoots = MAX_SHOOTS;
+				ammunition = null;// Desappear the ammunition icon.
+			}
+		}
+	}
+    
+	@Override
+	public void selected() {
+		if(!Framework.gameState.equals(Framework.GameState.PLAYING)) {
+			return;
+		}
+		Stopwatch.isStopwatchRunning = false;    		
+		Framework.gameState = Framework.GameState.MAIN_MENU;
+	}
+ 
     
     
 }
