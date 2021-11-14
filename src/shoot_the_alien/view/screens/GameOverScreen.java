@@ -120,9 +120,4 @@ public class GameOverScreen implements ConfirmButtonListener {
 			Framework.gameState = GameState.SUPPORT;
 		}
 	}
-    
-    
-    
-	
-	
 }

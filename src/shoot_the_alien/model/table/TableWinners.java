@@ -33,9 +33,7 @@ public class TableWinners{
 	
 	
 	/**
-	 * Construtor da classe tabela.
-	 * 
-	 * @param model Algum filho de TableModel para ser aplicado como modelo da tabela.
+	 * The constructor.
 	 */
 	public TableWinners(JPanel pnBase) {
 		
@@ -64,10 +62,12 @@ public class TableWinners{
 		table.getColumnModel().getColumn(0).setCellRenderer(model.centerCell());
 		table.getColumnModel().getColumn(1).setCellRenderer(model.centerCell());
 		table.getColumnModel().getColumn(2).setCellRenderer(model.centerCell());
-
-		setPreferredWidthPercentage(0, 20);// Final Score
-		setPreferredWidthPercentage(1, 39.6f);// Name
-		setPreferredWidthPercentage(2, 40);// Identification
+		table.getColumnModel().getColumn(3).setCellRenderer(model.centerCell());
+				
+		setPreferredWidthPercentage(0, 9);// Position
+		setPreferredWidthPercentage(1, 18.51f);// Final Score
+		setPreferredWidthPercentage(2, 36);// Name
+		setPreferredWidthPercentage(3, 36);// Identification
 		
 		return table;
 	}

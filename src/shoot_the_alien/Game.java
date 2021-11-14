@@ -29,11 +29,11 @@ public class Game implements GameButtons {
 	/**
 	 * Maximum number of fugitives.
 	 */
-	public static final int MAX_ALIENS_RUNAWAY = 200;
+	public static final int MAX_ALIENS_RUNAWAY = 30;
 	/**
 	 * Maximum number of shoots.
 	 */
-	public static final int MAX_SHOOTS = 25;
+	public static final int MAX_SHOOTS = 100;
 	/**
 	 * Limit shoots to appear the ammunition kit on the screen.
 	 * This constante is to use when

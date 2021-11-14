@@ -5,6 +5,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
 	<classpathentry kind="lib" path="jinput-2.0.6.jar"/>
 	<classpathentry kind="lib" path="jutils-1.0.0.jar"/>
-	<classpathentry kind="lib" path="postgresql-8.2-512.jdbc4.jar"/>
+	<classpathentry kind="lib" path="postgresql-9.3-1102.jdbc3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

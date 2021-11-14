@@ -22,10 +22,6 @@ public class SupportScreen  {
 	 */
 	private BufferedImage imgUnivas;
 	/**
-	 * It's used to load an image of support image.
-	 */
-	//private BufferedImage imgSupport;
-	/**
 	 * It's used to load an image in its address.
 	 */
 	private Image objImg;
@@ -50,7 +46,6 @@ public class SupportScreen  {
 		objImg = new Image();
 		
 		imgUnivas = objImg.getUnivasLogoImg_2();
-		//imgSupport = objImg.getSupportLogoImg();
 	}
 	
 	
@@ -67,14 +62,10 @@ public class SupportScreen  {
         g2d.setFont(new Font("Lucida Sans", Font.BOLD, 40));
         g2d.drawString("Sistemas de Informação", 200, 60);
     	
-        int x1 = 150;
+        int x1 = ((Window.frameWidth / 2) - (imgUnivas.getWidth() / 2));
         int y1 = ((Window.frameHeight / 2) - (imgUnivas.getHeight() / 2));
-        
-        int x2 = 750;
-       // int y2 = ((Window.frameHeight / 2) - (imgSupport.getHeight() / 2));
-        
-		g2d.drawImage(imgUnivas, x1, y1, imgUnivas.getWidth(), imgUnivas.getHeight(), null);                
-      //  g2d.drawImage(imgSupport, x2, y2, imgSupport.getWidth(), imgSupport.getHeight(), null);  
+                        
+		g2d.drawImage(imgUnivas, x1, y1, imgUnivas.getWidth(), imgUnivas.getHeight(), null);         
 	}
 	
 	

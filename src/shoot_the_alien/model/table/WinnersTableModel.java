@@ -27,7 +27,7 @@ public class WinnersTableModel extends AbstractTableModel {
 	private ArrayList<Winner> listWinners = new ArrayList<Winner>();
 	
 	// Names of the table columns.
-	private String[] columns = {"Pontuação", "Nome", "Curso/Cidade"};
+	private String[] columns = {"#","Pontuação", "Nome", "Curso/Cidade"};
 	
 	
 	
@@ -36,10 +36,7 @@ public class WinnersTableModel extends AbstractTableModel {
 	/**
 	 * Constructor.
 	 */
-	public WinnersTableModel() {
-		
-		
-	}
+	public WinnersTableModel() {  }
 	
 	
 	
@@ -78,6 +75,7 @@ public class WinnersTableModel extends AbstractTableModel {
 	}
 
 	
+//	int position = 0;
 	
 	@Override
 	public Object getValueAt(int row, int column) {
@@ -86,10 +84,12 @@ public class WinnersTableModel extends AbstractTableModel {
 		
 		switch (column) {
 			case 0:
-				return winner.getFinalScore();
+				return row + 1;		
 			case 1:
-				return winner.getName();
+				return winner.getFinalScore();
 			case 2:
+				return winner.getName();
+			case 3:
 				return winner.getIdentification();
 			default:
 				throw new IndexOutOfBoundsException("There is no index '"+column+"'in the list.");

@@ -22,7 +22,7 @@ public class Stopwatch extends JLabel implements Runnable {
 	/**
 	 * Sets the minutes of the stopwatch.
 	 */
-	private static int MINUTES = 2;
+	private static int MINUTES = 1;
 	/**
 	 * Sets the seconds of the stopwatch.
 	 */

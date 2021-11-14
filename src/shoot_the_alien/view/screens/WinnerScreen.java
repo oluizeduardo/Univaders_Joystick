@@ -327,5 +327,4 @@ public class WinnerScreen implements ConfirmButtonListener, WinnerListener {
 			Thread.sleep(180);
 		} catch (InterruptedException e1) { }
 	}
-	
 }
