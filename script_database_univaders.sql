@@ -2,6 +2,9 @@
 CREATE DATABASE "Univaders";
 
 
+CREATE SEQUENCE seq_winner_id INCREMENT 1;
+
+
 CREATE TABLE winners
 (
   cod integer NOT NULL DEFAULT nextval('seq_winner_id'),
@@ -13,7 +16,4 @@ CREATE TABLE winners
   CONSTRAINT pk_winners PRIMARY KEY (cod)
 );
 
-
-
-CREATE SEQUENCE seq_winner_id INCREMENT 1;
 

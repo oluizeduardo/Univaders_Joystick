@@ -13,27 +13,20 @@ import java.sql.SQLException;
  */
 public class DatabaseConnection {
 	
-	
 	/**
 	 * An instance of the class.
 	 */
 	public static DatabaseConnection instance = null;
 		
-		
 	// PostgreSQL data connection
 	private String address = "127.0.0.1";
 	private String port = "5432";
-	private String nameDataBase = "Univaders";
+	private String nameDataBase = "aluno";
     private String url = "jdbc:postgresql://"+address+":"+port+"/"+nameDataBase;  
-    private String username = "postgres";  
-    private String password = "postgres";  
+    private String username = "aluno";  
+    private String password = "aluno";  
     private String driver = "org.postgresql.Driver";
 		
-	    
-	    
-	    
-	    
-	    
     /**
      * It returns an instance of this class.
      */
@@ -43,12 +36,6 @@ public class DatabaseConnection {
         }
         return instance;
     }
-	    
-	    
-	    
-	    
-	    
-	    
 	    
     /**
      * It returns an object <code>Connection</code> containing
@@ -74,11 +61,6 @@ public class DatabaseConnection {
 		}catch (SQLException e) {
 			System.err.println("SQL Error!!\n"+e.getMessage());
 		}
-        
         return conn;
     }
-	    
-
 }
-
-

@@ -1,6 +1,5 @@
 package shoot_the_alien.model;
 
-
 /**
  * There are the attributes to register a new winner.
  * 
@@ -13,8 +12,6 @@ public class Winner {
 	private int finalScore;
 	private String name;
 	private String identification;
-	
-	
 	
 	/**
 	 * Build a new winner and sets up its attributes.
@@ -29,15 +26,12 @@ public class Winner {
 		this.finalScore = score;
 	}
 	
-	
-
 	/**
 	 * @return the name
 	 */
 	public String getName() {
 		return name;
 	}
-
 
 	/**
 	 * @param name the name to set
@@ -46,14 +40,12 @@ public class Winner {
 		this.name = name;
 	}
 
-
 	/**
 	 * @return The identification
 	 */
 	public String getIdentification() {
 		return identification;
 	}
-
 
 	/**
 	 * An winner identification can be the school where he studes
@@ -65,14 +57,12 @@ public class Winner {
 		this.identification = identification;
 	}
 
-
 	/**
 	 * @return the finalScore
 	 */
 	public int getFinalScore() {
 		return finalScore;
 	}
-
 
 	/**
 	 * @param finalScore the finalScore to set
@@ -81,7 +71,6 @@ public class Winner {
 		this.finalScore = finalScore;
 	}
 	
-	
 	/**
 	 * @return The Winner's cod identificator.
 	 */
@@ -89,17 +78,10 @@ public class Winner {
 		return cod;
 	}
 
-
 	/**
 	 * @param It sets the Winner's cod identificator.
 	 */
 	public void setCod(int newCod) {
 		this.cod = newCod;
 	}
-	
-	
-	
-	
-	
-	
 }

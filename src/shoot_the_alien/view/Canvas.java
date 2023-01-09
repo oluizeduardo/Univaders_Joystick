@@ -12,10 +12,7 @@ import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 import shoot_the_alien.Framework;
-import shoot_the_alien.model.Stopwatch;
 import shoot_the_alien.view.screens.frame.Window;
-
-
 
 /**
  * Create a JPanel on which we draw the images and listen to the mouse events.
@@ -26,8 +23,6 @@ import shoot_the_alien.view.screens.frame.Window;
  * @version 2.0
  */
 public abstract class Canvas extends JPanel {
-    
-    
 	
   	private static final long serialVersionUID = 1L;
     
@@ -36,10 +31,6 @@ public abstract class Canvas extends JPanel {
      * This object will be started when the game state is GAME_CONTENT_LOADING.
      */
     public Stopwatch stopWatch = null;
-    
-    
-  	
-    
     
     /**
      * Setup and create a new panel.
@@ -51,7 +42,6 @@ public abstract class Canvas extends JPanel {
         super.setFocusable(true);
         super.setBackground(Color.black);
         super.setLayout(null);
-        
         
         BufferedImage blankCursorImg = new BufferedImage(20, 20, BufferedImage.TYPE_INT_ARGB);
         Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(blankCursorImg, new Point(0, 0), null);
@@ -65,14 +55,8 @@ public abstract class Canvas extends JPanel {
         this.addKeyListener(getKeyListener());
     }
     
-    
     // This method is overridden in the class Framework.java and is used for drawing on the screen.
     public abstract void Draw(Graphics2D g2d);
-    
-    
-    
-    
-    
     
     /**
      * The JPanel object is an invisible component until setup the method paintComponent(...). 
@@ -91,10 +75,7 @@ public abstract class Canvas extends JPanel {
         super.paintComponent(g2d); // Prepare the component to receive new paint.
         Draw(g2d);
     }
-       
- 
-    
-    
+
     /**
      * Sets up a listener of the keyboard.
      * 
@@ -106,7 +87,6 @@ public abstract class Canvas extends JPanel {
     		@Override
     	    public void keyPressed(KeyEvent e) 
     	    {
-    	    	
     	        if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
     	    		// ESC - Exit the game.
     	        	System.exit(0);
@@ -118,7 +98,4 @@ public abstract class Canvas extends JPanel {
     	    }
 		};
     }
-    
-    
-    
 }

@@ -6,16 +6,18 @@ import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+
 import shoot_the_alien.Framework;
 import shoot_the_alien.Framework.GameState;
+import shoot_the_alien.control.AbstractJoyStick;
 import shoot_the_alien.model.Image;
-import shoot_the_alien.model.JoyStick;
 import shoot_the_alien.model.Winner;
 import shoot_the_alien.model.dao.WinnerDAO;
-import shoot_the_alien.model.table.TableWinners;
 import shoot_the_alien.view.screens.frame.Window;
+import shoot_the_alien.view.table.TableWinners;
 
 /**
  * It contains all about building Ranking screen.
@@ -26,9 +28,8 @@ import shoot_the_alien.view.screens.frame.Window;
  * @author Luiz Eduardo da Costa
  * @version 1.0, 08/05/16
  */
-public class RankingScreen {
+public class RankingScreen implements ConfirmButtonListener {
 
-	
 	/**
 	 * Used to open an image.
 	 */
@@ -54,20 +55,14 @@ public class RankingScreen {
 	 */
 	private ArrayList<Winner> listWinners;
 	
-	
-	
-	
 	/**
 	 * The contructor of the class.
 	 */
 	public RankingScreen() {
-		
+		AbstractJoyStick.getInstance().addConfirmListener(this);
 		loadContent();
 		buildTableBase();
 	}
-	
-	
-	
 	
 	/**
 	 * Load all contents of the class, image, sounds, etc.
@@ -77,10 +72,6 @@ public class RankingScreen {
 		img_background  = objImage.getBackgroundRankingImg();
 		img_btnCancelar = objImage.getBtnCancelImg2();
 	}
-	
-	
-	
-	
 	
 	/**
 	 * Build the panel for the table base.
@@ -99,9 +90,6 @@ public class RankingScreen {
         pnBaseTable.setVisible(false);
 	}
 	
-	
-	
-	
 	/**
 	 * It list the table with a list of the best winners.
 	 */
@@ -110,21 +98,12 @@ public class RankingScreen {
 		tableWinners.getTableModel().setList(listWinners);
 	}
 	
-	
-	
-	
-	
 	/**
 	 * It returns the base painel built and configured.
 	 */
 	public JPanel getPnTableBase(){
 		return pnBaseTable;	        
 	}
-	
-	
-	
-	
-	
 	
 	/**
 	 * Draw the ranking screen: background image and selected buttom.
@@ -145,23 +124,11 @@ public class RankingScreen {
 
 	}
 	
-	
-	
-	
-	/**
-     * Check which button was pressed and do any action.
-     */
-    public void checkButtonPressed(){   
-    	boolean isConfirmPressed = JoyStick.getInstance().checkButtonPressed(JoyStick.BTN_CONFIRM);
-        
-        // Check if cancel button was pressed and return to main menu.
-        if(isConfirmPressed){
-        	
-        	pnBaseTable.setVisible(false);
-        	Framework.gameState = GameState.MAIN_MENU;
-        }
-    }
-    
-    
-    
+	@Override 
+	public void confirmPressed() {
+		if(Framework.gameState.equals(Framework.GameState.RANKING)) {
+			pnBaseTable.setVisible(false);
+			Framework.gameState = GameState.MAIN_MENU;
+		}
+	}
 }

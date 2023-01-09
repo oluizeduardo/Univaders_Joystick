@@ -1,4 +1,4 @@
-package shoot_the_alien.model;
+package shoot_the_alien.view;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -13,10 +13,6 @@ import javax.swing.JLabel;
  * @version 1.0, 02/04/16
  */
 public class Stopwatch extends JLabel implements Runnable {
-
-
-	
-	
 	private static final long serialVersionUID = 1L;
 	
 	/**
@@ -30,7 +26,7 @@ public class Stopwatch extends JLabel implements Runnable {
 	/**
 	 * It controls the execution of the stopwatch.
 	 */
-	public static boolean isStopwatchRunning = false;
+	public static boolean isRunning = false;
 	/**
 	 * Save the value of the initial minute.
 	 */
@@ -39,11 +35,7 @@ public class Stopwatch extends JLabel implements Runnable {
 	 * Save the value of the initial minute.
 	 */
 	private static int save_sec;
-	
-	
-	
-	
-	
+
 	/**
 	 * The constructor of the class.
 	 * Save the initial values of the stopwatch.
@@ -60,9 +52,6 @@ public class Stopwatch extends JLabel implements Runnable {
 		super.setVisible(false);
 	}
 	
-	
-	
-	
 	/**
 	 * Run the updating of the chronometer.
 	 */
@@ -71,15 +60,12 @@ public class Stopwatch extends JLabel implements Runnable {
 		
 		setVisible(true);
 		
-		while(Stopwatch.isStopwatchRunning){
+		while(Stopwatch.isRunning){
 			uptadeStopwatch();
 		}
 		setVisible(false);
 		restart();
 	}
-	
-	
-	
 	
 	/**
 	 * Sets the right format of the timer on the stopwatch. 
@@ -87,13 +73,10 @@ public class Stopwatch extends JLabel implements Runnable {
 	private void uptadeStopwatch() {
 
 		if(MINUTES == 0 && SECONDS == 0){
-			isStopwatchRunning = false;
-					
+			isRunning = false;
 		}else{
 			if(MINUTES >= 0){
-				
 				if(SECONDS > 0){
-					
 					--SECONDS;
 				}else{
 					SECONDS = 59;
@@ -113,10 +96,6 @@ public class Stopwatch extends JLabel implements Runnable {
 		
 	}
 	
-	
-	
-
-	
 	/**
 	 * Restart to the initial values of the stopwatch.
 	 */
@@ -124,8 +103,6 @@ public class Stopwatch extends JLabel implements Runnable {
 		MINUTES = save_min;
 		SECONDS = save_sec;
 	}
-
-	
 	
 	/**
 	 * Check if the stopwatch is over.
@@ -134,7 +111,11 @@ public class Stopwatch extends JLabel implements Runnable {
 		return (MINUTES == 0 && SECONDS == 0);
 	}
 	
+	public static void turnOn() {
+		isRunning = true;
+	}
 	
-	
-	
+	public static void turnOff() {
+		isRunning = false;
+	}
 }

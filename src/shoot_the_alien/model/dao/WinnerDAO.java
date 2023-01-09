@@ -14,7 +14,6 @@ import shoot_the_alien.model.Winner;
  * @version 1.0, 14/05/16
  */
 public class WinnerDAO {
-
 	
 	/**
 	 * The table's name.
@@ -37,10 +36,6 @@ public class WinnerDAO {
      */
     private ResultSet resSet = null;
 	
-	
-	
-	
-    
     /**
      * It uses the Singleton method to returs the instance of this class.
      * 
@@ -52,10 +47,6 @@ public class WinnerDAO {
     	}
     	return instance;
     }
-    
-    
-
-	
 	
 	/**
 	 * It inserts a new Winner into database.
@@ -73,10 +64,6 @@ public class WinnerDAO {
 		return executeSQL(sql);
 	}
 	
-	
-	
-	
-	
 	/**
 	 * It executes a research on the database.
 	 *  
@@ -88,7 +75,6 @@ public class WinnerDAO {
 		String sql = "SELECT * FROM "+TABLE_NAME+" ORDER BY score DESC LIMIT 10";
 		ArrayList<Winner> registeredWinners = new ArrayList<Winner>();
 		Winner winner = null;
-		
 		
         try {
 
@@ -125,10 +111,6 @@ public class WinnerDAO {
 		return registeredWinners;
 	}
 	
-	
-	
-	
-	
 	/**
 	 * It executes some SQL statement on the database. 
 	 * 
@@ -162,19 +144,12 @@ public class WinnerDAO {
         }
     }
 	
-	
-	
-	
 	/**
 	 * Open a connnection with the database.
 	 */
 	private void openConnection(){
         this.conn = DatabaseConnection.getInstance().getConnection(); 
     }
-	
-	
-	
-	
 	
 	/**
 	 * Close the connections with the database.
@@ -184,10 +159,5 @@ public class WinnerDAO {
         if(conn   != null) conn.close();
         if(preStm != null) preStm.close();
         if(resSet != null) resSet.close();
-    }
-	
-	
-	
-	
-	
+    }	
 }

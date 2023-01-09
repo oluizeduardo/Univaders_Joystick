@@ -1,16 +1,21 @@
-package shoot_the_alien.model;
+package shoot_the_alien.control;
 
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import javax.swing.JOptionPane;
-import net.java.games.input.Component;
-import net.java.games.input.Controller;
-import net.java.games.input.ControllerEnvironment;
-import net.java.games.input.Component.Identifier;
-import shoot_the_alien.view.screens.frame.Window;
+import java.util.List;
 
+import javax.swing.JOptionPane;
+
+import net.java.games.input.Component;
+import net.java.games.input.Component.Identifier;
+import shoot_the_alien.Framework;
+import shoot_the_alien.GameButtons;
+import shoot_the_alien.view.screens.ConfirmButtonListener;
+import shoot_the_alien.view.screens.InitialScreenListener;
+import shoot_the_alien.view.screens.WinnerListener;
+import shoot_the_alien.view.screens.frame.Window;
 
 /**
  * Control the actions of the joystick.
@@ -18,329 +23,263 @@ import shoot_the_alien.view.screens.frame.Window;
  * @author Luiz Eduardo da Costa
  * @version 1.0, 03/04/2016
  */
-public class JoyStick implements Runnable {
+public abstract class AbstractJoyStick implements Runnable {
 
+	public static final float NO_VALUE_PRESSED = -1f;
 	
-	/** The code of the button to get the ammunition kit (3).*/
-	public static final Identifier BTN_GET_KIT = Identifier.Button._2;
-	/** The code of the button to confirm Save or Cancel the winner registration.*/
-	public static final Identifier BTN_CONFIRM = Identifier.Button._2;
-	
-	/** The code of the button shoot (R1).*/
+	/** The code of the button to get the ammunition kit (3). */
+	public static final Identifier BTN_GET_KIT = Identifier.Button._9;
+	public static final Identifier BTN_GET_KIT_2 = Identifier.Button.THUMB2;
+	/**
+	 * The code of the button to confirm Save or Cancel the winner registration.
+	 */
+	public static final Identifier BTN_CONFIRM = Identifier.Button._9;
+
+	/** The code of the button shoot (R1). */
 	public static final Identifier BTN_SHOOT = Identifier.Button._5;
-	/** The code of the button SELECT.*/
+	public static final Identifier BTN_SHOOT_2 = Identifier.Button.PINKIE;
+	/** The code of the button SELECT. */
 	public static final Identifier BTN_SELECT = Identifier.Button._8;
-	/** The code of the button start.*/
+	/** The code of the button start. */
 	public static final Identifier BTN_START = Identifier.Button._9;
-	/** The float value of the button UP.*/
+	public static final Identifier BTN_START_2 = Identifier.Button.BASE4;
+	/** The float value of the button UP. */
 	public static final float BTN_UP = Component.POV.UP;
-	/** The float value of the button DOWN.*/
+	/** The float value of the button DOWN. */
 	public static final float BTN_DOWN = Component.POV.DOWN;
-	/** The float value of the button LEFT.*/
+	/** The float value of the button LEFT. */
 	public static final float BTN_LEFT = Component.POV.LEFT;
-	/** The float value of the button RIGHT.*/
+	/** The float value of the button RIGHT. */
 	public static final float BTN_RIGHT = Component.POV.RIGHT;
-	
-	
-	
-	
+
 	/**
-     * Instance of the class, used in the Singleton statement.
-     */
-    private static JoyStick joystick = null;	
-	/**
-	 * ArrayList with the controllers used to play the game.
+	 * Instance of the class, used in the Singleton statement.
 	 */
-	private ArrayList<Controller> foundControllers = null;
+	private static AbstractJoyStick joystick = null;
 	/**
-	 * The instance of the first controller found.
+	 * Buffer of the shotgun sight image.
 	 */
-	private Controller controller;
+	protected BufferedImage sightImg;
 	/**
-	 * The controller's components.
+	 * The point location of the Soystick sight.
 	 */
-	private Component[] components = null;
-    /**
-     * Buffer of the shotgun sight image.
-     */
-    private BufferedImage sightImg;
-    /**
-     * The point location of the Soystick sight.
-     */
-    private Point location = new Point();
-    
-    
-    
-    
-    
-    
+	private Point location = new Point();
+
+	private GameButtons gameListener;
 	
-    /**
-     * The private constructor of the class.
-     */
-    private JoyStick(){
-    	initialize();
-    }
-    
-    
-    
-    /**
-     * Get the instance of the class. Singleton query.
-     * It is necessary to exist just one instance of the class in all parts of the program.
-     * 
-     * @return An instance of joystick class.
-     */
-	public static JoyStick getInstance() {  		
-		if(joystick == null){
+	private InitialScreenListener initialListener;
+	
+	private List<ConfirmButtonListener> confirmListeners = new ArrayList<ConfirmButtonListener>();
+	
+	private WinnerListener winnerListener;
+	
+	public void setGameListener(GameButtons gameListener) {
+		this.gameListener = gameListener;
+	}
+
+	public void setInitialListener(InitialScreenListener initialListener) {
+		this.initialListener = initialListener;
+	}
+
+	public void setWinnerListener(WinnerListener winnerListener) {
+		this.winnerListener = winnerListener;
+	}
+	
+	public void addConfirmListener(ConfirmButtonListener listener) {
+		confirmListeners.add(listener);
+	}
+
+	public abstract Point getJoystickPosition();
+
+	public abstract void update();
+
+	public abstract boolean initialize();
+
+	public abstract boolean thereAreControllers();
+
+	public abstract void configure(Framework framework);
+
+	/**
+	 * Get the instance of the class. Singleton query. It is necessary to exist
+	 * just one instance of the class in all parts of the program.
+	 * 
+	 * @return An instance of joystick class.
+	 */
+	public static AbstractJoyStick getInstance() {
+		if (joystick == null) {
 			joystick = new JoyStick();
+			boolean success = joystick.initialize();
+			if (!success) {
+				System.out.println("Erro inicializando Joystick. Iniciando teclado...");
+				joystick = new Keyboard();
+				joystick.initialize();
+			}
 		}
 		return joystick;
 	}
-	
-	
-	
-	
 	
 	/**
 	 * Run the update of the controller's values and the joystick position.
 	 */
 	@Override
 	public void run() {
-		
-		// This loop must to be infite to update the controler values.
-        while (true) {
-        	update();
-        	location = getJoystickPosition();
-        }
-	}
-	
-	
-	
-	
-	/**
-	 * Initialize the objects.
-	 */
-	private void initialize(){		
-		foundControllers = new ArrayList<Controller>();
-		sightImg = new Image().getSightImg();
-		
-		searchForControllers();
-		
-		if(foundControllers.size() > 0){
-			controller = foundControllers.get( 0 );
+
+		// This loop must to be infinite to update the controller values.
+		while (true) {
+			// pega a posição
+			location = getJoystickPosition();
+
+			update();
+
+			// verifica os botões
+			checkButtons();
+
+			try {
+				Thread.sleep(50);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 	}
-	
-	
-	
-	
-    /**
-     * Search for all controllers connected.
-     */
-    private void searchForControllers() {
-        Controller[] controllers = ControllerEnvironment.getDefaultEnvironment().getControllers();
 
-        for(int i = 0; i < controllers.length; i++){
-            Controller controller = controllers[i];
-            
-            // Verify if it is a stick controller.
-            if (controller.getType() == Controller.Type.STICK)
-            {
-                // Add new controller to the list of all controllers.
-                foundControllers.add(controller);
-            }
-        }
-    }
-	
-	
-	
+	protected abstract Identifier[] readButtonsPressed();
+
+	protected abstract float getValuePressed();
+
+	/**
+	 * Verifies if any of the mains buttons of the controller were pressed. This
+	 * method must to be used while the game is running.
+	 */
+	private void checkButtons() {
+
+		Identifier buttonPressed[] = readButtonsPressed();
+		if(buttonPressed == null) {
+			//System.out.println("checkButtons return 1");
+			return;
+		}
+		boolean flag = false;
+		for (Identifier id : buttonPressed) {
+			if(id!= null) {
+//				System.out.println("Check Buttons: " + id.getName());
+				flag = true;
+			}
+		}
+		if(flag) {
+//			System.out.println();
+		} else {
+			System.out.println("checkButtons return 2");
+			return;
+		}
+		for (Identifier id : buttonPressed) {
+			if(id == null) {
+				System.out.println("checkButtons continue");
+				continue;
+			}
+
+			if (id.equals(BTN_GET_KIT) || id.equals(BTN_GET_KIT_2) || id.equals(BTN_START) || id.equals(BTN_START_2) || id.equals(BTN_CONFIRM)) {
+				
+				for (ConfirmButtonListener listener : confirmListeners) {
+					System.out.println("BTN_CONFIRM");
+					listener.confirmPressed();
+				}
+
+				System.out.println("BTN_START");
+				initialListener.confirmed();
+
+				if(gameListener != null) { //botão direito
+					System.out.println("BTN_GET_KIT");
+					gameListener.gotKit();
+				}
+//			} else if (id.equals(BTN_CONFIRM)) {
+//				
+//				for (ConfirmButtonListener listener : confirmListeners) {
+//					System.out.println("BTN_CONFIRM");
+//					listener.confirmPressed();
+//				}
+				
+			} else if (id.equals(BTN_SHOOT) || id.equals(BTN_SHOOT_2)) {
+				if(gameListener != null) { //botão esquerdo
+					System.out.println("BTN_SHOOT");
+					gameListener.shoot();
+				}
+			} else if (id.equals(BTN_SELECT)) {
+				if(gameListener != null) { //botão do meio
+					System.out.println("BTN_SELECT");
+					gameListener.selected();
+				}
+//			} else if (id.equals(BTN_START)) {
+//				System.out.println("BTN_START");
+//				initialListener.confirmed();
+			} else if (id == Component.Identifier.Axis.POV) {
+
+				float valuePressed = getValuePressed();
+
+				if (Float.compare(valuePressed, BTN_UP) == 0) {
+					System.out.println("BTN_UP");
+					initialListener.upPressed();
+				} else if (Float.compare(valuePressed, BTN_DOWN) == 0) {
+					System.out.println("BTN_DOWN");
+					initialListener.downPressed();
+				} else if (Float.compare(valuePressed, BTN_LEFT) == 0) {
+					System.out.println("BTN_LEFT");
+					winnerListener.leftPressed();
+				} else if (Float.compare(valuePressed, BTN_RIGHT) == 0) {
+					System.out.println("BTN_RIGHT");
+					winnerListener.rightPressed();
+				} else {
+					System.out.println("Nenhum botão mapeado para: " + valuePressed);
+					//System.out.println("else: " + valuePressed);
+				}
+			}
+		}
+	}
+
 	/**
 	 * Draw the sight on the screen.
+	 * 
 	 * @param g2d
 	 */
-	public void drawSight(Graphics2D g2d){
-		
+	public void drawSight(Graphics2D g2d) {
+
 		int x = (int) location.getX();
 		int y = (int) location.getY();
-		
-		if(x >= Window.frameWidth){
+
+		if (x >= Window.frameWidth) {
 			x = (Window.frameWidth - sightImg.getWidth());
 		}
-		
-		if(y >= Window.frameHeight){
+
+		if (y >= Window.frameHeight) {
 			y = Window.frameHeight - sightImg.getHeight();
 		}
-		
-        g2d.drawImage(sightImg, x , y , null);
+
+		g2d.drawImage(sightImg, x, y, null);
 	}
-	
-	
-	
-	
-	
-	
+
 	/**
-     * Verify if there are any controller on the list.
-     * @return true or false.
-     */
-    public boolean thereAreControllers(){
-    	return (foundControllers.size() > 0);
-    }
-	
-	
-    
-    
-    
-    /**
-     * Use the method pool() to make an update in the state of the component.
-     * This action makes every round of the game loop the updated data controls 
-     * are available to be read. 
-     * 
-     * Also it helps to verify if the controller is still connected.
-     * If the method pool() returns false, it's mean there is no controller connected.
-     * 
-     * If there's no controller connected, show an error message.
-     */
-    private void update() {
-    	// get the first controller of the list.
-    	if(!controller.poll()){
-        	showControllerDisconected();
-        }
-    }
+	 * Given value of axis in percentage. Percentages increases from left/top to
+	 * right/bottom.
+	 * 
+	 * @return value of axis in percentage.
+	 */
+	protected int getAxisValueInPercentage(float axisValue) {
+		return (int) (((2 - (1 - axisValue)) * Window.frameWidth) / 2);
+	}
 
+	/**
+	 * Show the message of none controller found.
+	 */
+	public void showControllerNotFound() {
+		String msg = "Nenhum controle encontrado!!\n\n" + "Conecte um controlador USB e reinicie o jogo.";
+		JOptionPane.showMessageDialog(null, msg, "Univaders", JOptionPane.ERROR_MESSAGE);
+		System.exit(0);
+	}
 
-
-    
-    /**
-     * Check if the button was pressed.
-     * 
-     * @param button The code of the button. (0-12)
-     * @return true or false.
-     */
-    public boolean checkButtonPressed(Identifier idBtn) {
-
-    	// Get the components of the first controller found.
-        this.components = this.controller.getComponents();
-        
-        for (int c = 0; c < components.length; c++) {
-
-        	Component comp = components[ c ];
-            Identifier id = comp.getIdentifier();
-        
-            if(id.equals(idBtn)){
-            	if(comp.getPollData() != 0.0f)
-            		return true;
-            }
-        }
-        return false;
-    }
-    
-    
-    
-    
-
-    /**
-     * Check if some POV button was pressed.
-     * 
-     * @param componentPOV The float value of the button.
-     * @return true or false.
-     */
-    public boolean checkPOVPressed(float componentPOV){
-    	// Get the components of the first controller found.
-        this.components = this.controller.getComponents();
-        
-        for (int c = 0; c < components.length; c++) {
-        	Component comp = components[ c ];
-            Identifier id = comp.getIdentifier();
-        
-            if(id == Component.Identifier.Axis.POV){
-        		
-            	float valuePressed = comp.getPollData();
-
-        		if(Float.compare(valuePressed, componentPOV) == 0)
-                    return true;
-            }
-        }
-        return false;
-    }
-    
-   
-    
-    
-    
-    /** 
-     * @return The position of the joystick.
-     */
-    public Point getJoystickPosition(){    	
-
-    	 // X axis and Y axis
-        int xAxisPercentage = 0;
-        int yAxisPercentage = 0;
-    	
-    	components = controller.getComponents();
-
-    	for(int i=0; i < components.length; i++){
-    		if(components[ i ].isAnalog()){
-    			
-    			Component compStick = components[ i ];
-    			
-    			float axisValue = compStick.getPollData();
-    			Identifier compIdentifier = compStick.getIdentifier();
-    	        int axisValueInPercentage = getAxisValueInPercentage(axisValue);
-    	            	        
-    	        // X axis
-    	        if(compIdentifier == Component.Identifier.Axis.X){
-    	            xAxisPercentage = axisValueInPercentage;
-    	        }
-    	        // Y axis
-    	        if(compIdentifier == Component.Identifier.Axis.Y){
-    	            yAxisPercentage = axisValueInPercentage;
-    	        }
-    		}
-    	}    	
-    	return new Point(xAxisPercentage, yAxisPercentage);
-    }
-    
-    
-    
-    
-    
-    /**
-     * Given value of axis in percentage.
-     * Percentages increases from left/top to right/bottom.
-     * 
-     * @return value of axis in percentage.
-     */
-    private int getAxisValueInPercentage(float axisValue)
-    {    	
-        return (int)(((2 - (1 - axisValue)) * Window.frameWidth) / 2);
-    }
-    
-    
-    
-    
-    
-    
-    /**
-     * Show the message of none controller found.
-     */
-    public void showControllerNotFound(){
-    	String msg = "Nenhum controle encontrado!!\n\n"
-    			+ "Conecte um controlador USB e reinicie o jogo.";
-    	JOptionPane.showMessageDialog(null, msg, "Univaders", JOptionPane.ERROR_MESSAGE);
-		System.exit( 0 );
-    }
-   
-
-    /**
-     * Show the message of controller disconected.
-     */
-    public void showControllerDisconected(){
-    	String msg = "Controle Desconectado!!\n\n"
-    			+ "Reconecte o controle e reinicie o jogo.";
-    	JOptionPane.showMessageDialog(null, msg, "Univaders", JOptionPane.ERROR_MESSAGE);
-		System.exit( 0 );
-    }
-    
-	
+	/**
+	 * Show the message of controller disconected.
+	 */
+	public void showControllerDisconected() {
+		String msg = "Controle Desconectado!!\n\n" + "Reconecte o controle e reinicie o jogo.";
+		JOptionPane.showMessageDialog(null, msg, "Univaders", JOptionPane.ERROR_MESSAGE);
+		System.exit(0);
+	}
 }

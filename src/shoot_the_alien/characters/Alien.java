@@ -3,7 +3,6 @@ package shoot_the_alien.characters;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
-import shoot_the_alien.FloatingObject;
 import shoot_the_alien.Framework;
 import shoot_the_alien.view.screens.frame.Window;;
 
@@ -67,10 +66,6 @@ public class Alien implements FloatingObject{
      */
     private BufferedImage alienImage;
 
-    
-    
-    
-    
     /**
      * Creates new alien.
      * 
@@ -89,9 +84,6 @@ public class Alien implements FloatingObject{
         this.alienImage = img;             
     }
     
-    
-    
-    
     /**
      * Move the alien.
      */
@@ -100,10 +92,6 @@ public class Alien implements FloatingObject{
     {
     	 x -= speed;
     }
-    
-    
-    
-    
     
     /**
      * Draw the alien to the screen.
@@ -115,8 +103,6 @@ public class Alien implements FloatingObject{
         g2d.drawImage(alienImage, x, y, null);
     }
 
-    
-    
     /**
      * @return The image of this Alien.
      */
@@ -124,13 +110,4 @@ public class Alien implements FloatingObject{
     public BufferedImage getImage(){
     	return alienImage;
     }
-
-
-
-
-
-    
-    
-    
-    
 }

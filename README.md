@@ -1,9 +1,11 @@
 # Univaders_Joystick
-Univaders project played with an USB controller
+Você é um aluno novato na Univás, sua missão é eliminar o maior número de alienígenas e proteger a universidade.
 
 You're a begginer student in Univás college and your mission is to eliminate the largest number of aliens and protect the university.
 
 ![alt text] (https://github.com/oluizeduardo/Univaders_Joystick/blob/master/initialscreen.gif)
+
+In a new version, now it can be played with an USB controller
 
 <h3>Description:</h3>
 Use the buttom of the USB controller to shoot the aliens and other actions. 

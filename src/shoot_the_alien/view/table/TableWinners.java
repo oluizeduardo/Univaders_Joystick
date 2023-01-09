@@ -1,4 +1,4 @@
-package shoot_the_alien.model.table;
+package shoot_the_alien.view.table;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -29,9 +29,6 @@ public class TableWinners{
 	 */
 	private JPanel pnBaseTable; 
 	
-	
-	
-	
 	/**
 	 * Construtor da classe tabela.
 	 * 
@@ -42,9 +39,6 @@ public class TableWinners{
 		this.pnBaseTable = pnBase;
 		this.model = new WinnersTableModel();		
 	}
-	
-	
-	
 	
 	/**
 	 * Build and sets the table.
@@ -72,16 +66,12 @@ public class TableWinners{
 		return table;
 	}
 	
-	
-	
-	
 	/**
 	 * It returns the model applied on the table.
 	 */
 	public WinnersTableModel getTableModel(){
 		return model;
 	}
-	
 	
 	/**
 	 * 
@@ -93,6 +83,4 @@ public class TableWinners{
 		float minWidht = (pnBaseTable.getWidth() * percentage / 100);
 		table.getColumnModel().getColumn(column).setMinWidth((int)minWidht);
 	}
-	
-	
 }

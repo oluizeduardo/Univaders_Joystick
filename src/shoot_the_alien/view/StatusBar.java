@@ -19,19 +19,13 @@ import javax.swing.plaf.basic.BasicProgressBarUI;
  * @version 1.0, 22/04/16
  */
 public class StatusBar extends JProgressBar{
-
 	
 	private static final long serialVersionUID = 1L;
 
-	
-	
 	/**
 	 * A border to apply in the progress bar.
 	 */
 	private Border BORDER = BorderFactory.createEtchedBorder(EtchedBorder.RAISED,null,new Color(0, 0, 0));
-	
-	
-	
 	
 	/**
 	 * The constructor of the class. Build a new statusbar.
@@ -39,10 +33,6 @@ public class StatusBar extends JProgressBar{
 	public StatusBar() {
 		build();
 	}
-	
-	
-	
-	
 	
 	/**
 	 * It configures and build a new progress bar.
@@ -60,9 +50,6 @@ public class StatusBar extends JProgressBar{
               
 		});
 	}
-	
-	
-	
 	
 	/**
 	 * Put a different color on the bar depending on the input value
@@ -92,10 +79,4 @@ public class StatusBar extends JProgressBar{
 			setForeground(color);
 		super.setValue(value);
 	}
-	
-	
-	
-	
-	
-	
 }

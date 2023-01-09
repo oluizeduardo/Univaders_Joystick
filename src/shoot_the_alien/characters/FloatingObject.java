@@ -1,4 +1,4 @@
-package shoot_the_alien;
+package shoot_the_alien.characters;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;

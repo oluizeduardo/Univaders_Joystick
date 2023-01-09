@@ -6,8 +6,6 @@ import java.net.URL;
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 
-
-
 /**
  * Stores the informations and location about the images used on the game.
  * 
@@ -15,7 +13,7 @@ import javax.swing.JOptionPane;
  */
 public class Image {
 
-	
+	String strUrl = "/images/";
 	
 	/** Buffer of the Background Menu's image. */
 	private BufferedImage bfBackgroundMenu;
@@ -65,10 +63,6 @@ public class Image {
 	/**Buffer of the Cancel button image.*/
 	private BufferedImage bfBtnCancel, bfBtnCancel2;
 	
-	
-	
-	
-	
 	/**
 	 * The constructor load the images and stores them in a BufferedImage object.
 	 */
@@ -76,19 +70,13 @@ public class Image {
 		loadContent();
 	}
 	
-
-	
-	
-	
 	/**
 	 * Load the images in a BufferedImage object.
 	 */
 	private void loadContent(){
 		
 		// URL common to all files.
-    	String strUrl = "/shoot_the_alien/resources/images/";
 		URL url;
-    	
 		try {
 			url = this.getClass().getResource(strUrl+"sight.png");
         	bfSight = ImageIO.read(url);
@@ -151,11 +139,12 @@ public class Image {
             url = this.getClass().getResource(strUrl+"buttons/btn_cancel2.png");
             bfBtnCancel2 = ImageIO.read(url);
             
-        	
 		} catch (IOException e) {
+			e.printStackTrace();
 			System.err.println("Erro ao carregar a imagem!\n\n"+e.getMessage());
 		
 		}catch (IllegalArgumentException ex) {
+			ex.printStackTrace();
 			// Image package not found.
 			JOptionPane.showMessageDialog(null, "Erro ao carregar pacote de imagens!\n\n"
 					+ "- Verifique o endereço do pacote de imagens\n"
@@ -164,13 +153,9 @@ public class Image {
 		}
 	}
 	
-	
-	
-	
 	public BufferedImage getSightImg(){		
 		return bfSight;
 	}
-
 	
 	public BufferedImage getBackgroundMenuImg(){
 		return bfBackgroundMenu;

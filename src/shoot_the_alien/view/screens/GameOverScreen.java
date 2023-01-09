@@ -4,10 +4,11 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+
 import shoot_the_alien.Framework;
 import shoot_the_alien.Framework.GameState;
+import shoot_the_alien.control.AbstractJoyStick;
 import shoot_the_alien.model.Image;
-import shoot_the_alien.model.JoyStick;
 import shoot_the_alien.view.screens.frame.Window;
 
 /**
@@ -16,8 +17,7 @@ import shoot_the_alien.view.screens.frame.Window;
  * @author Luiz Eduardo da Costa
  * @version 1.0, 16/05/16
  */
-public class GameOverScreen {
-
+public class GameOverScreen implements ConfirmButtonListener {
 	
 	/**
 	 * Background of the screen.
@@ -40,18 +40,13 @@ public class GameOverScreen {
 	 */
 	private int killedAliens = 0;
 	
-	
-	
-	
 	/**
 	 * The constructor.
 	 */
 	public GameOverScreen() {
-
+		AbstractJoyStick.getInstance().addConfirmListener(this);
 		loadContents();
 	}
-	
-	
 	
 	/**
 	 * It sets the final score.
@@ -60,15 +55,12 @@ public class GameOverScreen {
 		this.score = finalScore;
 	}
 	
-	
 	/**
 	 * It sets the number of dead aliens.
 	 */
 	public void setNumberOfKilledAliens(int kills){
 		this.killedAliens = kills;
 	}
-	
-	
 	
 	/**
 	 * It loads all the media contents: images, sounds, etc.
@@ -78,8 +70,6 @@ public class GameOverScreen {
 		backgroundImg = objImage.getBackgroundGameOver();
 		imgBtnCancelar = objImage.getBtnCancelImg2();
 	}
-	
-	
 	
 	 /**
      * Draw the game over screen.
@@ -109,23 +99,14 @@ public class GameOverScreen {
         g2d.setFont(new Font("Lucida Sans", Font.BOLD, 16));
         g2d.drawString("Pressione BOTÃO 3", Window.frameWidth - 200, Window.frameHeight - 10);
     }
-	
-    
-    
-    
+
     /**
      * Wait for a button press to return to the Main menu Screen.
      */
-    public void waitButtonPressed(){
-    	boolean isSelectedPressed = JoyStick.getInstance().checkButtonPressed(JoyStick.BTN_CONFIRM);
-    	
-    	if(isSelectedPressed){
-    		Framework.gameState = GameState.SUPPORT;
-    	}
-    }
-    
-    
-    
-	
-	
+	@Override
+	public void confirmPressed() {
+		if(Framework.gameState.equals(Framework.GameState.GAMEOVER)) {
+			Framework.gameState = GameState.SUPPORT;
+		}
+	}
 }

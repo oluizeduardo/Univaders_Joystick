@@ -1,7 +1,7 @@
 package shoot_the_alien.characters;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import shoot_the_alien.FloatingObject;
+
 import shoot_the_alien.model.Image;
 import shoot_the_alien.view.screens.frame.Window;
 
@@ -16,8 +16,6 @@ import shoot_the_alien.view.screens.frame.Window;
  */
 public class Ammunition implements FloatingObject {
 
-	
-	
 	/**
      * X coordinate.
      */
@@ -53,10 +51,6 @@ public class Ammunition implements FloatingObject {
      */
     private Image img = new Image();
     
-    
-    
-    
-    
     /**
      * Setup a new instance of Ammunition object.
      * 
@@ -69,11 +63,6 @@ public class Ammunition implements FloatingObject {
     	this.ammunationImage = img.getAmmunitionKitImg(); 
     }
     
-    
-    
-    
-    
-    
     /**
      * Draw the ammunition icon on the screen.
      */
@@ -82,7 +71,6 @@ public class Ammunition implements FloatingObject {
 		g2d.drawImage(ammunationImage, x, y, null);
 	}
 
-	
 	/**
 	 * Update the position of the ammunition icon.
 	 */
@@ -90,8 +78,6 @@ public class Ammunition implements FloatingObject {
 	public void Update() {
 		this.x -= speed;
 	}
-	
-	
 	
 	/**
      * @return The image of this ammunition kit instance.
@@ -101,7 +87,6 @@ public class Ammunition implements FloatingObject {
     	return ammunationImage;
     }
 	
-	
     /**
      * Return the position X.
      */
@@ -109,19 +94,10 @@ public class Ammunition implements FloatingObject {
     	return x;
     }
     
-    
     /**
      * Return the position Y.
      */
     public int getY(){
     	return y;
     }
-    
-    
-    
-    
-    
-    
-	
-
 }

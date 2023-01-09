@@ -3,7 +3,6 @@ package shoot_the_alien.view.screens.frame;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
 
 import shoot_the_alien.Framework;
 
@@ -16,9 +15,7 @@ import shoot_the_alien.Framework;
  * @version 2.0
  */
 public class Window extends JFrame{
-        
-	
-	
+    
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -34,13 +31,10 @@ public class Window extends JFrame{
 	 */
     private Dimension screenDimension;
 	
-	
-	
-
 	/**
 	 * Sets the properties of the frame.
 	 */
-	private Window()
+	public Window()
     {				
         // Sets the title for this frame. It will be visible when setUndecorated() is false.
         super.setTitle("UNIVADERS - Shoot The Alien");
@@ -59,25 +53,5 @@ public class Window extends JFrame{
         this.setContentPane(new Framework());
         // Set visible of the frame.
         this.setVisible(true);
-    }
-
-    
-    
-	
-	
-    /**
-     * Main method loads the start of the game.
-     * 
-     * @param args
-     */
-    public static void main(String[] args)
-    {
-        // Use the event dispatch thread to build the UI for thread-safety.
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new Window();
-            }
-        });
     }
 }

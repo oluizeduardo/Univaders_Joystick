@@ -3,15 +3,18 @@ package shoot_the_alien;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import shoot_the_alien.Game;
-import shoot_the_alien.model.JoyStick;
+
+import shoot_the_alien.control.AbstractJoyStick;
 import shoot_the_alien.model.PlayWAVFile;
-import shoot_the_alien.model.Stopwatch;
-import shoot_the_alien.Framework;
-import shoot_the_alien.view.screens.frame.Window;
 import shoot_the_alien.view.Canvas;
 import shoot_the_alien.view.StatusBar;
-import shoot_the_alien.view.screens.*;
+import shoot_the_alien.view.Stopwatch;
+import shoot_the_alien.view.screens.GameOverScreen;
+import shoot_the_alien.view.screens.InitialScreen;
+import shoot_the_alien.view.screens.RankingScreen;
+import shoot_the_alien.view.screens.SupportScreen;
+import shoot_the_alien.view.screens.WinnerScreen;
+import shoot_the_alien.view.screens.frame.Window;
 
 /**
  * Framework that controls the game (Game.java) that created it, update it 
@@ -23,7 +26,6 @@ import shoot_the_alien.view.screens.*;
  * @version 2.0
  */
 public class Framework extends Canvas {
-    
   
 	private static final long serialVersionUID = 1L;
 
@@ -46,6 +48,7 @@ public class Framework extends Canvas {
      * Increase or decrease this value moves at the speed of aliens.
      */
     private final int GAME_FPS = 60;// Initial value: 60.
+    
     /**
      * Pause between updates. It is in nanoseconds.
      */
@@ -78,7 +81,7 @@ public class Framework extends Canvas {
     /**
      * Control the execution of the joystick controller.
      */
-    private JoyStick joyStick = null;
+    private AbstractJoyStick joyStick = null;
     /**
      * A flag to control the execution of the GameOver sound.
      */
@@ -109,10 +112,6 @@ public class Framework extends Canvas {
      */
     private GameOverScreen screenGameOver;
     
-    
-    
-    
-    
     /** 
      * Construtor da classe Framework.
      */
@@ -126,12 +125,12 @@ public class Framework extends Canvas {
         this.screenGameOver = new GameOverScreen();
         this.supportScreen = new SupportScreen();
         
-        
         // Create the two statusbar on the top of the screen.
         createStatusBar();              
         
         // Get the instance of the joystick class.
-    	this.joyStick = JoyStick.getInstance();
+    	this.joyStick = AbstractJoyStick.getInstance();
+    	this.joyStick.configure(this);
     	
     	// Check if any controller was found.
     	if(joyStick.thereAreControllers()){
@@ -145,18 +144,13 @@ public class Framework extends Canvas {
                     GameLoop();
                 }
             };
+            gameState = GameState.VISUALIZING;//para não dar null pointer caso a thread iniciar rápido demais
             gameThread.start();
             
-            gameState = GameState.VISUALIZING;
-            
     	}else{
-    		
     		joyStick.showControllerNotFound();
     	}
     }
-    
-    
-    
     
     /**
      * Create the game's status bars.
@@ -173,8 +167,6 @@ public class Framework extends Canvas {
         super.add(runawayAliens);
         super.add(shootStatus);
     }
- 
-    
     
     /**
      * Load content - images, sounds, ...
@@ -187,11 +179,6 @@ public class Framework extends Canvas {
         PlayWAVFile pf = new PlayWAVFile(PlayWAVFile.INTRO_WARRIOR, 120);
         new Thread(pf).start();
     }
-    
-    
-    
-    
-    
     
     /**
      * In specific intervals of time (GAME_UPDATE_PERIOD) the game/logic is up to date 
@@ -208,8 +195,7 @@ public class Framework extends Canvas {
         // put thread to sleep to meet the GAME_FPS.
         long beginTime, timeTaken, timeLeft;
         
-        
-        while(true)
+        while(true) 
         {
             beginTime = System.nanoTime();
             
@@ -252,8 +238,6 @@ public class Framework extends Canvas {
                 	if(areStatusBarVisible())
                 		setStatusBarsVisibility(false);
                 	
-                	screenMainMenu.checkButtonPressed();
-                	
                 break;
                 
                 case GAME_CONTENT_LOADING:
@@ -269,7 +253,7 @@ public class Framework extends Canvas {
                 	}catch (IllegalThreadStateException e) { }
                 	
                 	// Turn on the Stopwatch.
-                	Stopwatch.isStopwatchRunning = true;               	
+                	Stopwatch.turnOn();               	
                 	
                 	setStatusBarsVisibility(true);
                 	
@@ -293,7 +277,6 @@ public class Framework extends Canvas {
                 		screenRanking.pnBaseTable.setVisible(true);
                 		screenRanking.listTableWithBestWinners();
                 	}
-                	screenRanking.checkButtonPressed();
                 break;
                 
                 case WINNER:	
@@ -302,8 +285,6 @@ public class Framework extends Canvas {
                 		setStatusBarsVisibility(false);
                 	if(screenWinner.pnBaseFields == null)
                     	super.add(screenWinner.getPanelFields(game.getScore()));
-                	
-                	screenWinner.checkButtonPressed();
                 	
                 break;
                 
@@ -323,7 +304,7 @@ public class Framework extends Canvas {
                 		screenGameOver.setNumberOfKilledAliens(game.getKilledAliens());
                 		
                 		// Stop the timewatch.
-                		Stopwatch.isStopwatchRunning = false;
+                		Stopwatch.turnOff();
                 		
                 		setStatusBarsVisibility(false);
                 		
@@ -334,8 +315,6 @@ public class Framework extends Canvas {
                         
                         playedTheGameOverSound = true;
                 	}
-                	
-                	screenGameOver.waitButtonPressed();
                 	
                 break;
 				default:
@@ -360,11 +339,6 @@ public class Framework extends Canvas {
             } catch (InterruptedException ex) { }
         }
     }
-    
-    
-    
-    
-    
     
     /**
      * Draw the game to the screen. It is called through repaint() method in GameLoop() method.
@@ -396,12 +370,8 @@ public class Framework extends Canvas {
             default:
             	ShowLoadingMessage(g2d);
 			break;
-           
         }
     }
-    
-    
-    
     
     /**
      * Show this message when the game is loading.
@@ -413,9 +383,6 @@ public class Framework extends Canvas {
         g2d.drawString("CARREGANDO...", Window.frameWidth / 2 - 120, Window.frameHeight / 2);
     }
     
-    
-    
-    
     /**
      * @return <code>true</code> if both status bar are visible, 
      * <code>false</code> is are visible.
@@ -423,8 +390,6 @@ public class Framework extends Canvas {
     private boolean areStatusbarVisible(){
     	return (game.runawayAliensStatus.isVisible() && game.shootsStatus.isVisible());
     }
-    
-    
     
     /**
      * Set the visibility of the progress bars.
@@ -435,7 +400,6 @@ public class Framework extends Canvas {
     	game.shootsStatus.setVisible(isVisibility);
     }
     
-
     /**
      * It checks if the statusbars are visible.
      */
@@ -446,9 +410,6 @@ public class Framework extends Canvas {
     		return false;
     	}
     }
-    
-    
-    
     
     /**
      * Starts a new game.
@@ -461,8 +422,6 @@ public class Framework extends Canvas {
         lastTime = System.nanoTime();
         game = new Game(runawayAliens, shootStatus);
     }
-    
-    
   
     /**
      *  Restart game - reset game time and call RestartGame() method 
@@ -480,9 +439,4 @@ public class Framework extends Canvas {
         // We change game status so that the game can start.
         gameState = GameState.PLAYING;
     }
-
-    
-    
-    
-    
 }

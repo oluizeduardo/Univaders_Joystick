@@ -1,4 +1,4 @@
-package shoot_the_alien.model.table;
+package shoot_the_alien.view.table;
 
 import java.util.ArrayList;
 import javax.swing.SwingConstants;
@@ -17,7 +17,6 @@ import shoot_the_alien.model.Winner;
  */
 public class WinnersTableModel extends AbstractTableModel {
 
-
 	private static final long serialVersionUID = 1L;
 
 	// Cell Renderer.
@@ -29,20 +28,11 @@ public class WinnersTableModel extends AbstractTableModel {
 	// Names of the table columns.
 	private String[] columns = {"Pontuação", "Nome", "Curso/Cidade"};
 	
-	
-	
-	
-	
 	/**
 	 * Constructor.
 	 */
 	public WinnersTableModel() {
-		
-		
 	}
-	
-	
-	
 	
 	/**
      * It sets the object <code>DefaultTableCellRenderer</code> to, 
@@ -58,8 +48,6 @@ public class WinnersTableModel extends AbstractTableModel {
         return rendererCell;       
     }
 	
-	
-	
     /**
      * It returns the númeber of table columns.
      */
@@ -67,7 +55,6 @@ public class WinnersTableModel extends AbstractTableModel {
 	public int getColumnCount() {
 		return columns.length;
 	}
-
 	
 	/**
      * It returns the númeber of table rows.
@@ -76,14 +63,11 @@ public class WinnersTableModel extends AbstractTableModel {
 	public int getRowCount() {
 		return listWinners.size();
 	}
-
-	
 	
 	@Override
 	public Object getValueAt(int row, int column) {
 		
 		Winner winner = listWinners.get(row);
-		
 		switch (column) {
 			case 0:
 				return winner.getFinalScore();
@@ -96,11 +80,6 @@ public class WinnersTableModel extends AbstractTableModel {
 		}	
 	}
 
-	
-	
-	
-	
-	
 	/**
 	 * It returns the column name in the specific position.
 	 */
@@ -109,8 +88,6 @@ public class WinnersTableModel extends AbstractTableModel {
 		return columns[column];
 	}
 
-	
-	
 	/**
 	 * It returns the data type of the content in the cell.
 	 */
@@ -118,8 +95,6 @@ public class WinnersTableModel extends AbstractTableModel {
 	public Class<?> getColumnClass(int columnIndex) {
 		return String.class;
 	}
-	
-	
 	
 	/**
 	 * Locks editing of all columns
@@ -129,9 +104,6 @@ public class WinnersTableModel extends AbstractTableModel {
 		return false;
 	}
 	
-	
-	
-
 	/**
 	 * Sets a new list to be applied in the table model.
 	 * @param novaLista
@@ -141,8 +113,6 @@ public class WinnersTableModel extends AbstractTableModel {
 		fireTableDataChanged();
 	}
 	
-	
-	
 	/**
 	 * Add a new object in the list.
 	 * @param newWinner
@@ -151,7 +121,5 @@ public class WinnersTableModel extends AbstractTableModel {
 		listWinners.add(newWinner);
 		fireTableDataChanged();
 	}
-	
-	
 	
 }
