@@ -33,9 +33,6 @@ public class Image {
 	/** Buffer of the Univás Logo with background white.*/
 	private BufferedImage bfUnivasLogo2;
 	
-	/** Buffer of the image with the logo of the enterprise supporting the developing.*/
-	//private BufferedImage bfSupportLogo;
-	
 	/**Buffer of the Alien image.*/
 	private BufferedImage bfAlien_1;
 	
@@ -101,9 +98,6 @@ public class Image {
             
             url = this.getClass().getResource(strUrl+"logos/logo_base.gif");
             bfUnivasLogo2 = ImageIO.read(url);
-            
-           // url = this.getClass().getResource(strUrl+"logos/logo_LinkMG.jpg");
-           // bfSupportLogo = ImageIO.read(url);
             
             url = this.getClass().getResource(strUrl+"backgrounds/bkgd_gameover.gif");
             bfbkgdGameOver = ImageIO.read(url);
@@ -184,10 +178,6 @@ public class Image {
 	public BufferedImage getUnivasLogoImg_2(){
 		return bfUnivasLogo2;
 	}
-	
-	/*public BufferedImage getSupportLogoImg(){
-		return bfSupportLogo;
-	}*/
 	
 	public BufferedImage getAlienImg1(){
 		return bfAlien_1;

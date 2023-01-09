@@ -29,7 +29,7 @@ public class Game implements GameButtons {
 	/**
 	 * Maximum number of fugitives.
 	 */
-	public static final int MAX_ALIENS_RUNAWAY = 200;
+	public static final int MAX_ALIENS_RUNAWAY = 50;
 	/**
 	 * Maximum number of shoots.
 	 */
